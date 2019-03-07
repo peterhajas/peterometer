@@ -80,17 +80,13 @@ for drink in all_drink_types:
         data_for_chart_for_drink.append(data_for_date.get(drink, 0))
     data_for_chart.append(data_for_chart_for_drink)
 
-tick_count = 10
-ticks = [ ]
-for i in range(0, len(all_dates), int(len(all_dates) / tick_count)):
-    date = all_dates[i]
-    ticks.append(date)
+ticks = all_dates
 
 mp_pyplot.stackplot(all_dates, data_for_chart, labels=all_drink_types, colors=colors_sorted)
 mp_pyplot.legend(loc='upper center', ncol=4, bbox_to_anchor=(0.5, 1.0))
 mp_pyplot.gca().xaxis.set_major_formatter(mp_dates.DateFormatter('%Y/%m/%d'))
 mp_pyplot.gca().xaxis.set_major_locator(mp_dates.DayLocator())
-mp_pyplot.gcf().set_size_inches(18.5, 8.5)
+mp_pyplot.gcf().set_size_inches(18.5, 6.5)
 mp_pyplot.gcf().autofmt_xdate()
-mp_pyplot.xticks(ticks)
+mp_pyplot.xticks(ticks, rotation='vertical')
 mp_pyplot.savefig('hydration.png', transparent=True, dpi=200, bbox_inches="tight")
