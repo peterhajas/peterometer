@@ -82,8 +82,8 @@ for drink in all_drink_types:
 
 ticks = all_dates
 
-mp_pyplot.stackplot(all_dates, data_for_chart, labels=all_drink_types, colors=colors_sorted)
-mp_pyplot.legend(loc='upper center', ncol=4, bbox_to_anchor=(0.5, 1.0))
+mp_pyplot.stackplot(all_dates, data_for_chart, labels=all_drink_types, colors=colors_sorted, baseline='weighted_wiggle')
+mp_pyplot.legend(loc='upper center', ncol=1, bbox_to_anchor=(-0.1, 1.0))
 mp_pyplot.gca().xaxis.set_major_formatter(mp_dates.DateFormatter('%Y/%m/%d'))
 mp_pyplot.gca().xaxis.set_major_locator(mp_dates.DayLocator())
 mp_pyplot.gcf().set_size_inches(18.5, 6.5)
