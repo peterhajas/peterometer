@@ -65,6 +65,18 @@ all_drink_types = list(set(all_drink_types))
 all_drink_types.sort(key=lambda drink: drinks_to_oz_totals[drink])
 all_drink_types.reverse()
 
+# Output a multimarkdown table for drink types
+print('Drink | fluid oz. |')
+print('----- | ----- |')
+
+total_oz = 0
+for drink_type in all_drink_types:
+    oz_total = drinks_to_oz_totals[drink_type]
+    oz_total = round(oz_total, 1)
+    print('{} | `{}` |'.format(drink_type, oz_total))
+    total_oz += oz_total
+print('**Total** | **`{}`** |'.format(total_oz))
+
 colors_sorted = [ ]
 for drink_type in all_drink_types:
     colors_sorted.append(colors[drink_type])
