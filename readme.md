@@ -1,3 +1,3 @@
 # peterometer
 
-A series of scripts and tools to parse stats I've gathered about myself
+An API for the data I collect about myself
