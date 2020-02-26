@@ -3,6 +3,8 @@ from typing import NamedTuple
 from datetime import datetime, date, time
 import csv
 
+from common import *
+
 # An entry for hydration consumed
 class HydrationEntry(NamedTuple):
     # The type of drink, for example "Water", "Coffee", or "Soda"
@@ -35,8 +37,8 @@ def get_hydration():
 
             entry = HydrationEntry(drink_type=drink_type,
                     drink_name=drink_name,
-                    volume_floz=volume_floz,
-                    effective_hydration_floz=effective_hydration_floz,
+                    volume_floz=attempt_float(volume_floz),
+                    effective_hydration_floz=attempt_float(effective_hydration_floz),
                     date=entry_datetime)
 
             entries.append(entry)
