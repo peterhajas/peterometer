@@ -4,7 +4,7 @@ from datetime import datetime, date, time
 from pathlib import Path
 import csv
 
-from common import *
+from .common import *
 
 # An entry for food consumed
 class FoodEntry:

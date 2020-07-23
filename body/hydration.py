@@ -3,7 +3,7 @@ from typing import NamedTuple
 from datetime import datetime, date, time
 import csv
 
-from common import *
+from .common import *
 
 # An entry for hydration consumed
 class HydrationEntry(NamedTuple):
