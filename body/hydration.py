@@ -20,7 +20,7 @@ class HydrationEntry(NamedTuple):
 
 def get_hydration():
     entries = [ ]
-    with open("/Users/phajas/metrics/body/hydration/waterminder/export.csv") as input_file:
+    with open("/Users/phajas/metrics/body/hydration/waterminder/waterminder-logs.csv") as input_file:
         reader = csv.DictReader(input_file)
         for row in reader:
             drink_type = row["Drink Type"]
