@@ -1,0 +1,8 @@
+/* Here is a CSS cheat sheet: */
+/* - # for ids */
+/* - . for classes */
+/* - a b for all b inside a */
+
+#data {
+    display: none;
+}
