@@ -1,12 +1,69 @@
 function onlyUnique(value, index, self) {
-  return self.indexOf(value) === index;
+    return self.indexOf(value) === index;
 }
 
-function updateMetric(metricItem) {
+function dateFromHealthExportDateString(dateString) {
+    let date = dateString.split(' ')[0]
+    let year = date.split('-')[0]
+    let month = date.split('-')[1]
+    let day = date.split('-')[2]
+
+    let time = dateString.split(' ')[1]
+    let hour = time.split(':')[0]
+    let minute = time.split(':')[1]
+    let second = time.split(':')[2]
+
+    let gmtOffset = dateString.split(' ')[2]
+
+    var outDate = new Date()
+
+    outDate.setDate(Number.parseInt(day))
+    outDate.setMonth(Number.parseInt(month)-1)
+    outDate.setFullYear(Number.parseInt(year))
+    outDate.setHours(Number.parseInt(hour))
+    outDate.setMinutes(Number.parseInt(minute))
+    outDate.setSeconds(Number.parseInt(second))
+
+    return outDate
+}
+
+function metricAggregatesDaily(name) {
+    return name.includes('dietary')
+    || name.includes('carbohydrates')
+    || name.includes('fat')
+    || name.includes('fiber')
+    || name.includes('protein')
+    || name.includes('sodium')
+    || name.includes('apple')
+    || name.includes('energy')
+}
+
+function updateMetric(metricItem, dateRange) {
     // Skip empty items
     if (metricItem['data'].length == 0) {
         return;
     }
+
+    const metricContainer = d3.create('div')
+    .classed('metricContainer', true)
+
+    const dataEntries = metricContainer.append('svg')
+    .selectAll('svg')
+    .data(metricItem['data'])
+    .join('ellipse')
+    .attr('color', 'red')
+    .attr('cx', function(datum, index, _) {
+        let date = dateFromHealthExportDateString(datum['date'])
+        let fraction = dateRange(date)
+        return index * 10
+    })
+    .attr('cy', 1)
+    .attr('rx', 5)
+    .attr('ry', function(datum, index, _) {
+        return index
+    })
+
+    document.body.appendChild(metricContainer.node())
 
     let name = metricItem['name']
     let unit = metricItem['units']
@@ -17,16 +74,19 @@ function updateMetric(metricItem) {
     container.id = name
     document.body.appendChild(container)
 
-    var metric = { }
-    metric['name'] = name
-    metric['unit'] = unit
-    metric['data'] = [ ]
-    metric['total'] = 0
-    metric['totalsByDay'] = { }
-    metric['originalData'] = metricItem
+    // Compute the largest entry, for some sense of scale
+    let largest = 0;
+    for (const dataIndex in data) {
+        let dataEntry = data[dataIndex]
+        let quantity = Number.parseInt(dataEntry['qty'])
+        if (quantity > largest) {
+            largest = quantity;
+        }
+    }
 
-    // The days this metric was recorded, from oldest to newest
-    metric['days'] = [ ]
+    console.log(name + ': ' + largest);
+
+    console.log(metricItem);
 
     // Process data
     for (const dataIndex in data) {
@@ -51,23 +111,9 @@ function updateMetric(metricItem) {
             'date' : date,
             'qty' : quantity
         }
-        metric['data'].push(entry)
-        metric['total'] += quantity
-
         let dayFormatOptions = { day: 'numeric', month : 'numeric', year: 'numeric' }
         let dayTotalKey = date.toLocaleDateString(undefined, dayFormatOptions)
-        var totalForDay = metric['totalsByDay'][dayTotalKey] || 0
-        totalForDay += quantity
-        metric['totalsByDay'][dayTotalKey] = totalForDay
-        metric['days'].push(dayTotalKey)
     }
-
-    metric['days'] = metric['days'].filter(onlyUnique)
-
-    let dayCount = metric['days'].length
-    let latestDay = metric['days'][dayCount - 1]
-
-    console.log(metric)
 
     let summaryElement = document.createElement('div')
     summaryElement.className = 'summary'
@@ -75,13 +121,9 @@ function updateMetric(metricItem) {
 
     let summaryHeader = document.createElement('h1')
     container.appendChild(summaryHeader)
-    summaryHeader.innerHTML = metric['name']
 
     let summaryToday = document.createElement('h2')
     container.appendChild(summaryToday)
-    summaryToday.innerHTML = metric['totalsByDay'][latestDay] + ' ' + metric['unit']
-
-    return metric
 }
 
 function update(dataContents) {
@@ -89,8 +131,31 @@ function update(dataContents) {
     let metrics = data['metrics']
     let workouts = data['workouts']
 
+    // Compute bounds
+    var earliestDate = new Date()
+    var latestDate = new Date()
+    latestDate.setFullYear(1000)
     for (const itemIndex in metrics) {
-        updateMetric(metrics[itemIndex])
+        let item = metrics[itemIndex]['data']
+        for (const dataIndex in item) {
+            let dataEntry = item[dataIndex]
+            let dateString = dataEntry['date']
+            let date = dateFromHealthExportDateString(dateString)
+            if (date < earliestDate) {
+                earliestDate = date
+            }
+            if (date > latestDate)  {
+                latestDate = date
+            }
+        }
+    }
+
+    let dateRange = d3.scaleTime()
+        .domain([earliestDate, latestDate])
+        .nice()
+
+    for (const itemIndex in metrics) {
+        updateMetric(metrics[itemIndex], dateRange)
     }
 }
 

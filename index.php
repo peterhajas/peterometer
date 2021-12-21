@@ -6,6 +6,7 @@ if (strlen($input > 0)) {
 }
 else {
     echo('<head>');
+    echo('<script src="https://d3js.org/d3.v7.min.js"></script>');
     echo('<script type="module" src="script.js"></script>');
     echo('<link rel="stylesheet" href="style.css" />');
     echo('</head>');
