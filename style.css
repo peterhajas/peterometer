@@ -3,6 +3,23 @@
 /* - . for classes */
 /* - a b for all b inside a */
 
+.nutrition {
+    width: 200;
+    height: 400;
+}
+
+.fat {
+    fill: yellow;
+}
+
+.carbs {
+    fill: blue;
+}
+
+.protein {
+    fill: purple;
+}
+
 #data {
     display: none;
 }

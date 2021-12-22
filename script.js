@@ -122,12 +122,70 @@ function updateMetric(metricItem, dateRange) {
     document.body.appendChild(container)
 }
 
+function nutrition(dataByName) {
+    // Grab the macros and group by day
+    let fat = aggregateDataByDay(dataByName['total_fat'])
+    let carbs = aggregateDataByDay(dataByName['carbohydrates'])
+    let protein = aggregateDataByDay(dataByName['protein'])
+
+    // Grab the most recent of each day
+    let data = [
+        {
+            'name' : 'fat',
+            'data' : fat[fat.length-1]['sum'],
+        },
+        {
+            'name' : 'carbs',
+            'data' : carbs[carbs.length-1]['sum'],
+        },
+        {
+            'name' : 'protein',
+            'data' : protein[protein.length-1]['sum'],
+        }
+    ]
+    let names = [ 'fat', 'carbs', 'protein' ]
+    let container = d3.create('svg')
+    .attr('viewBox', [0, 0, 100, 400])
+    .classed('nutrition', true)
+
+    let valueRange = d3.scaleLinear()
+        .domain([0, d3.sum(d3.map(data, x => x['data']))])
+        .range([0, 400])
+
+    let node = container.selectAll('g')
+    .data(data)
+    .join('rect')
+    .attr('x', 0)
+    .attr('y', function(d,i,n) {
+        var accum = 0
+        for (var j = 0; j < i; j++) {
+            accum += valueRange(data[j]['data'])
+        }
+        return accum
+    })
+    .attr('width', 100)
+    .attr('height', function(d) {
+        console.log(d)
+        return valueRange(d['data'])
+    })
+    .attr('class', function(d) {
+        return d['name']
+    })
+    .call(g => g.append('text')
+        .attr('x', 0)
+        .attr('y', 0)
+        .text('test')
+    ) // doesn't work
+
+    return container.node()
+}
+
 function update(dataContents) {
     let data = dataContents['data']
     let metrics = data['metrics']
     let workouts = data['workouts']
 
-    // Compute bounds
+    // Compute date range
     var earliestDate = new Date()
     var latestDate = new Date()
     latestDate.setFullYear(1000)
@@ -145,14 +203,19 @@ function update(dataContents) {
             }
         }
     }
-
     let dateRange = d3.scaleTime()
         .domain([earliestDate, latestDate])
         .nice()
 
+    // Group data by name
+    var dataByName = { }
     for (const itemIndex in metrics) {
-        updateMetric(metrics[itemIndex], dateRange)
+        let metricItem = metrics[itemIndex]
+        let name = metricItem['name']
+        dataByName[name] = metricItem
     }
+
+    document.body.appendChild(nutrition(dataByName))
 }
 
 window.onload = function() {
