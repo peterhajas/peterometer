@@ -154,28 +154,33 @@ function nutrition(dataByName) {
 
     let node = container.selectAll('g')
     .data(data)
-    .join('rect')
-    .attr('x', 0)
-    .attr('y', function(d,i,n) {
+    .join('g')
+    .attr('transform', function(d,i) {
         var accum = 0
         for (var j = 0; j < i; j++) {
             accum += valueRange(data[j]['data'])
         }
-        return accum
+        return 'translate(0,' + accum + ')'
     })
+
+    node.append('rect')
+    .attr('x', 0)
     .attr('width', 100)
     .attr('height', function(d) {
-        console.log(d)
         return valueRange(d['data'])
     })
     .attr('class', function(d) {
         return d['name']
     })
-    .call(g => g.append('text')
-        .attr('x', 0)
-        .attr('y', 0)
-        .text('test')
-    ) // doesn't work
+
+    node.append('text')
+    .text(function(d) {
+        console.log(d)
+        return d['name'][0]
+    })
+    .attr('text-anchor', 'middle')
+    .attr('x', 50)
+    .attr('dy', 30)
 
     return container.node()
 }
