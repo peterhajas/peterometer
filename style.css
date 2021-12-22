@@ -3,30 +3,56 @@
 /* - . for classes */
 /* - a b for all b inside a */
 
+:root {
+    --primary-bg:  #012006ff;
+    --secondary-bg: #145288ff;
+    --highlight: #5c29c2ff;
+    --highlight-strong: #c82efbff;
+    --warn: #511b1bff;
+
+    --blue: #060070ff;
+    --yellow: #ffc04bff;
+    --orange: #ff4e18ff;
+    --violet: #d20085ff;
+    --green: #0eac00ff;
+}
+
+body {
+    background-color: var(--primary-bg);
+}
+
+.bar {
+    stroke-width: 2;
+    fill-opacity: 0.3;
+}
+
 .nutrition {
     width: 400;
     height: 400;
 }
 
 .calorie_day_container {
-    fill: clear;
     fill-opacity: 0;
 }
 
 .total_fat {
-    fill: yellow;
+    stroke: var(--yellow);
+    fill: var(--yellow);
 }
 
-.carbohydrateso {
-    fill: blue;
+.carbo {
+    stroke: var(--blue);
+    fill: var(--blue);
 }
 
 .protein {
-    fill: purple;
+    stroke: var(--violet);
+    fill: var(--violet);
 }
 
 .leftover_calories {
-    fill: orange;
+    stroke: var(--orange);
+    fill: var(--orange);
 }
 
 #data {

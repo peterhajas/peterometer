@@ -127,6 +127,8 @@ function nutrition(dataByName) {
     let width = 400
     let height = 400
 
+    let interMacroPadding = 10
+
     // Grab the macros and group by day
     let fat = aggregateDataByDay(dataByName['total_fat'])
     let carbs = aggregateDataByDay(dataByName['carbohydrates'])
@@ -138,7 +140,7 @@ function nutrition(dataByName) {
     let calorieMax = d3.max(calories, x => x['sum'])
     let calorieRange = d3.scaleLinear()
     .domain([0, calorieMax])
-    .range([0, height])
+    .range([0, height - 8 * interMacroPadding])
 
     let container = d3.create('svg')
     .attr('viewBox', [0, 0, width, height])
@@ -158,7 +160,8 @@ function nutrition(dataByName) {
         // y - center in available space
         let x = dayWidth * i
         let yInRange = calorieRange(d['sum'])
-        let y = (height - yInRange) / 2
+        // 3* because some of this height is consumed by padding
+        let y = (height - ((3 * interMacroPadding) + yInRange)) / 2
         return 'translate(' + x + ',' + y + ')'
     })
 
@@ -179,23 +182,23 @@ function nutrition(dataByName) {
         let fatCalories = fat[i]['sum'] * 9
         return calorieRange(fatCalories)
     })
+    .classed('bar', true)
     .classed('total_fat', true)
 
     // Next, carbs
     dayNodes.append('rect')
-    .attr('fill', 'blue') // CSS isn't working for this one for some reason...
     .attr('x', (dayWidth - dayDataWidth)/2)
     .attr('y', function(_, i) {
         let fatCalories = fat[i]['sum'] * 9
-        return calorieRange(fatCalories)
+        return calorieRange(fatCalories) + interMacroPadding
     })
     .attr('width', dayDataWidth)
     .attr('height', function(_, i) {
         let carbCalories = carbs[i]['sum'] * 4
         return calorieRange(carbCalories)
     })
-    .attr('class', 'carbohydrates')
-    .classed('carbohydrates', true)
+    .classed('bar', true)
+    .classed('carbo', true)
 
     // Then, protein
     dayNodes.append('rect')
@@ -203,13 +206,14 @@ function nutrition(dataByName) {
     .attr('y', function(_, i) {
         let fatCalories = fat[i]['sum'] * 9
         let carbCalories = carbs[i]['sum'] * 4
-        return calorieRange(fatCalories + carbCalories)
+        return calorieRange(fatCalories + carbCalories) + interMacroPadding * 2
     })
     .attr('width', dayDataWidth)
     .attr('height', function(_, i) {
         let proteinCalories = protein[i]['sum'] * 4
         return calorieRange(proteinCalories)
     })
+    .classed('bar', true)
     .classed('protein', true)
 
     // And... leftovers!
@@ -221,7 +225,7 @@ function nutrition(dataByName) {
         let fatCalories = fat[i]['sum'] * 9
         let carbCalories = carbs[i]['sum'] * 4
         let proteinCalories = protein[i]['sum'] * 4
-        return calorieRange(fatCalories + carbCalories + proteinCalories)
+        return calorieRange(fatCalories + carbCalories + proteinCalories) + interMacroPadding * 3
     })
     .attr('width', dayDataWidth)
     .attr('height', function(_, i) {
@@ -235,6 +239,7 @@ function nutrition(dataByName) {
         if (leftovers < 0) { return 0 }
         return calorieRange(leftovers)
     })
+    .classed('bar', true)
     .classed('leftover_calories', true)
 
     return container.node()
