@@ -83,45 +83,6 @@ function aggregateDataByDay(metricItem) {
     return out
 }
 
-function updateMetric(metricItem, dateRange) {
-    let name = metricItem['name']
-    let unit = metricItem['units']
-    let data = metricItem['data']
-
-    aggregateDataByDay(metricItem)
-
-    // Skip empty items
-    if (data == 0) {
-        return;
-    }
-
-    const metricContainer = d3.create('div')
-    .classed('metricContainer', true)
-
-    const dataEntries = metricContainer.append('svg')
-    .selectAll('svg')
-    .data(metricItem['data'])
-    .join('ellipse')
-    .attr('color', 'red')
-    .attr('cx', function(datum, index, _) {
-        let date = dateFromHealthExportDateString(datum['date'])
-        let fraction = dateRange(date)
-        return index * 10
-    })
-    .attr('cy', 1)
-    .attr('rx', 5)
-    .attr('ry', function(datum, index, _) {
-        return index
-    })
-
-    document.body.appendChild(metricContainer.node())
-
-    // Make a container for this item
-    let container = document.createElement('div')
-    container.id = name
-    document.body.appendChild(container)
-}
-
 function nutrition(dataByName) {
     // Some constants
     let width = 400
@@ -238,7 +199,6 @@ function nutrition(dataByName) {
         let carbCalories = carbs[i]['sum'] * 4
         let proteinCalories = protein[i]['sum'] * 4
         let leftovers = totalCalories - (fatCalories + carbCalories + proteinCalories)
-        console.log(leftovers)
         if (leftovers < 0) { return 0 }
         return calorieRange(leftovers)
     })
@@ -284,6 +244,113 @@ function nutrition(dataByName) {
     return container.node()
 }
 
+function heartAndSleep(dataByName) {
+    let width = 1000
+    let height = 300
+
+    let heartRate = dataByName['heart_rate'].data
+    let sleep = dataByName['sleep_analysis'].data
+
+    let heartRateCount = heartRate.length
+    let sleepCount = sleep.length
+
+    // Find our date bounds
+    let firstHeartRateDate = dateFromHealthExportDateString(heartRate[0]['date'])
+    let firstSleepDate = dateFromHealthExportDateString(sleep[0]['inBedStart'])
+    let firstDate = new Date(Math.min(firstHeartRateDate, firstSleepDate))
+
+    let lastHeartRateDate = dateFromHealthExportDateString(heartRate[heartRateCount-1]['date'])
+    let lastSleepDate = dateFromHealthExportDateString(sleep[sleepCount-1]['inBedEnd'])
+    let lastDate = new Date(Math.max(lastHeartRateDate, lastSleepDate))
+
+    let timeScale = d3.scaleTime()
+        .domain([firstDate, lastDate])
+        .range([0, width])
+
+    let containerPadding = 50
+
+    let container = d3.create('svg')
+        .attr('viewBox',
+            [-containerPadding,
+            -containerPadding,
+            width + 2 * containerPadding,
+            height + 2 * containerPadding])
+        .classed('heartAndSleep', true)
+
+    // each is an array of dictionaries
+    // dictionaries have 'start' and 'end' dates
+    var inBedData = new Array()
+    var asleepData = new Array()
+    for (var sleepIndex in sleep) {
+        let sleepItem = sleep[sleepIndex]
+        let inBedStart = dateFromHealthExportDateString(sleepItem['inBedStart'])
+        let inBedEnd = dateFromHealthExportDateString(sleepItem['inBedEnd'])
+        let sleepStart = dateFromHealthExportDateString(sleepItem['sleepStart'])
+        let sleepEnd = dateFromHealthExportDateString(sleepItem['sleepEnd'])
+
+        let inBed = {
+            'start' : inBedStart,
+            'end' : inBedEnd,
+        }
+        inBedData.push(inBed)
+        let asleep = {
+            'start' : sleepStart,
+            'end' : sleepEnd,
+        }
+        asleepData.push(asleep)
+    }
+
+    // Add in in-bed and asleep indicators
+    let inBedIndicators = container.selectAll('.inBed')
+        .data(inBedData)
+        .join('rect')
+        .attr('x', function(d) {
+            return timeScale(d['start'])
+        })
+        .attr('width', function(d) {
+            return timeScale(d['end']) - timeScale(d['start'])
+        })
+        .attr('height', height)
+        .classed('inBed', true)
+    let asleepIndicators = container.selectAll('.sleep')
+        .data(asleepData)
+        .join('rect')
+        .attr('x', function(d) {
+            return timeScale(d['start'])
+        })
+        .attr('width', function(d) {
+            return timeScale(d['end']) - timeScale(d['start'])
+        })
+        .attr('height', height)
+        .classed('sleep', true)
+
+    // Find heart rate minimum and maximum
+    var heartRateMin = 200
+    var heartRateMax = 0
+    heartRate.map(function(d) {
+        heartRateMin = Math.min(heartRateMin, d['Avg'])
+        heartRateMax = Math.max(heartRateMax, d['Avg'])
+    })
+    let heartRateRange = d3.scaleLog()
+    .domain([heartRateMax, heartRateMin])
+    .range([0, height])
+
+    // Add in heart rate readings
+    let heartRateIndicator = container.selectAll('.heart_rate')
+        .data(heartRate)
+        .join('circle')
+        .attr('cx', function(d) {
+            return timeScale(dateFromHealthExportDateString(d['date']))
+        })
+        .attr('cy', function(d) {
+            return heartRateRange(d['Avg'])
+        })
+        .attr('r', 2)
+        .classed('heart_rate', true)
+
+    return container.node()
+}
+
 function update(dataContents) {
     let data = dataContents['data']
     let metrics = data['metrics']
@@ -320,6 +387,7 @@ function update(dataContents) {
     }
 
     document.body.appendChild(nutrition(dataByName))
+    document.body.appendChild(heartAndSleep(dataByName))
 }
 
 window.onload = function() {

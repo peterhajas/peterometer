@@ -71,6 +71,20 @@ body {
     fill: var(--orange);
 }
 
+.inBed {
+    fill: var(--violet);
+    fill-opacity: 0.3;
+}
+
+.sleep {
+    fill: var(--blue);
+    fill-opacity: 0.5;
+}
+
+.heart_rate {
+    fill: red;
+}
+
 #data {
     display: none;
 }
