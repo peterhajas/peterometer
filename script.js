@@ -2,6 +2,7 @@ function onlyUnique(value, index, self) {
     return self.indexOf(value) === index;
 }
 
+/// Returns a date from a "Health Export" date string
 function dateFromHealthExportDateString(dateString) {
     let date = dateString.split(' ')[0]
     let year = date.split('-')[0]
@@ -27,6 +28,15 @@ function dateFromHealthExportDateString(dateString) {
     return outDate
 }
 
+/// Returns the date without hours, minutes, or seconds
+function dateStrippingTimeComponents(date) {
+    var out = date
+    out.setHours(0)
+    out.setMinutes(0)
+    out.setSeconds(0)
+    return out
+}
+
 function metricAggregatesDaily(name) {
     return name.includes('dietary')
     || name.includes('carbohydrates')
@@ -38,9 +48,50 @@ function metricAggregatesDaily(name) {
     || name.includes('energy')
 }
 
+/// Aggregates data by day for a metric item
+/// Returns an ordered array, from oldest to newest, of dictionaries
+/// The keys are:
+/// - data - a set of data items that occurred on this day
+/// - date - the date the data items occurred on
+/// - sum - a sum of the data for this day
+function aggregateDataByDay(metricItem) {
+    let data = metricItem['data']
+
+    var out = new Array()
+    var currentDateTime = 0
+    var currentItem = null
+
+    for (var datumIndex in data) {
+        let datum = data[datumIndex]
+        var datumDate = dateStrippingTimeComponents(dateFromHealthExportDateString(datum['date']))
+        if (currentDateTime != datumDate.getTime()) {
+            if (currentItem != null) {
+                out.push(currentItem)
+            }
+            currentDateTime = datumDate.getTime()
+            currentItem = { }
+            currentItem['date'] = datumDate
+            currentItem['data'] = new Array()
+            currentItem['sum'] = 0
+        }
+        else {
+            currentItem['data'].push(datum)
+            currentItem['sum'] = currentItem['sum'] + datum['qty']
+        }
+    }
+
+    return out
+}
+
 function updateMetric(metricItem, dateRange) {
+    let name = metricItem['name']
+    let unit = metricItem['units']
+    let data = metricItem['data']
+
+    aggregateDataByDay(metricItem)
+
     // Skip empty items
-    if (metricItem['data'].length == 0) {
+    if (data == 0) {
         return;
     }
 
@@ -65,65 +116,10 @@ function updateMetric(metricItem, dateRange) {
 
     document.body.appendChild(metricContainer.node())
 
-    let name = metricItem['name']
-    let unit = metricItem['units']
-    let data = metricItem['data']
-
     // Make a container for this item
     let container = document.createElement('div')
     container.id = name
     document.body.appendChild(container)
-
-    // Compute the largest entry, for some sense of scale
-    let largest = 0;
-    for (const dataIndex in data) {
-        let dataEntry = data[dataIndex]
-        let quantity = Number.parseInt(dataEntry['qty'])
-        if (quantity > largest) {
-            largest = quantity;
-        }
-    }
-
-    console.log(name + ': ' + largest);
-
-    console.log(metricItem);
-
-    // Process data
-    for (const dataIndex in data) {
-        let dataEntry = data[dataIndex]
-        let dateString = dataEntry['date']
-        let quantity = Number.parseInt(dataEntry['qty'])
-        let components = dateString.split(' ')
-        // The day, month, and year
-        var date = new Date(components[0])
-
-        // Populate hour, minute, and seconds
-        let hour = Number.parseInt(components[1].split(':')[0])
-        let min = Number.parseInt(components[1].split(':')[1])
-        let sec = Number.parseInt(components[1].split(':')[2])
-
-        date.setHours(hour)
-        date.setMinutes(min)
-        date.setSeconds(sec)
-        date.setDate(date.getDate() + 1)
-
-        let entry = {
-            'date' : date,
-            'qty' : quantity
-        }
-        let dayFormatOptions = { day: 'numeric', month : 'numeric', year: 'numeric' }
-        let dayTotalKey = date.toLocaleDateString(undefined, dayFormatOptions)
-    }
-
-    let summaryElement = document.createElement('div')
-    summaryElement.className = 'summary'
-    container.appendChild(summaryElement)
-
-    let summaryHeader = document.createElement('h1')
-    container.appendChild(summaryHeader)
-
-    let summaryToday = document.createElement('h2')
-    container.appendChild(summaryToday)
 }
 
 function update(dataContents) {
