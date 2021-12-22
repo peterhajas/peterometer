@@ -335,6 +335,9 @@ function heartAndSleep(dataByName) {
     .domain([heartRateMax, heartRateMin])
     .range([0, height])
 
+    let lastHeartRate = heartRate[heartRateCount-1]['Avg']
+    console.log(lastHeartRate)
+
     // Add in heart rate readings
     let heartRateIndicator = container.selectAll('.heart_rate')
         .data(heartRate)
@@ -345,7 +348,11 @@ function heartAndSleep(dataByName) {
         .attr('cy', function(d) {
             return heartRateRange(d['Avg'])
         })
-        .attr('r', 2)
+        .attr('r', 3)
+        .style('animation-delay', function(d,i) {
+            return i * lastHeartRate * 0.25 + 'ms';
+        })
+        .style('animation-duration', lastHeartRate * 25 + 'ms')
         .classed('heart_rate', true)
 
     return container.node()

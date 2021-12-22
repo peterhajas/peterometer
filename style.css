@@ -83,6 +83,19 @@ body {
 
 .heart_rate {
     fill: red;
+    animation-name: dot_pulse;
+    animation-direction: alternate;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+}
+
+@keyframes dot_pulse {
+    0% {
+        opacity: 1.0;
+    }
+    100% {
+        opacity: 0.5;
+    }
 }
 
 #data {
