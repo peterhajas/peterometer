@@ -123,64 +123,119 @@ function updateMetric(metricItem, dateRange) {
 }
 
 function nutrition(dataByName) {
+    // Some constants
+    let width = 400
+    let height = 400
+
     // Grab the macros and group by day
     let fat = aggregateDataByDay(dataByName['total_fat'])
     let carbs = aggregateDataByDay(dataByName['carbohydrates'])
     let protein = aggregateDataByDay(dataByName['protein'])
+    let calories = aggregateDataByDay(dataByName['dietary_energy'])
 
-    // Grab the most recent of each day
-    let data = [
-        {
-            'name' : 'fat',
-            'data' : fat[fat.length-1]['sum'] * 9,
-        },
-        {
-            'name' : 'carbs',
-            'data' : carbs[carbs.length-1]['sum'] * 4,
-        },
-        {
-            'name' : 'protein',
-            'data' : protein[protein.length-1]['sum'] * 4,
-        }
-    ]
-    let names = [ 'fat', 'carbs', 'protein' ]
+    let count = calories.length
+
+    let calorieMax = d3.max(calories, x => x['sum'])
+    let calorieRange = d3.scaleLinear()
+    .domain([0, calorieMax])
+    .range([0, height])
+
     let container = d3.create('svg')
-    .attr('viewBox', [0, 0, 100, 400])
+    .attr('viewBox', [0, 0, width, height])
     .classed('nutrition', true)
 
-    let valueRange = d3.scaleLinear()
-        .domain([0, d3.sum(d3.map(data, x => x['data']))])
-        .range([0, 400])
+    // Constants for our days
+    let dayWidth = width/count
+    let dayDataWidth = dayWidth * 0.8
 
-    let node = container.selectAll('g')
-    .data(data)
+    // The graph is a horizontal set of days
+    // Each day has child rectangles representing the macros for that day
+    let dayNodes = container.selectAll('g')
+    .data(calories)
     .join('g')
-    .attr('transform', function(d,i) {
-        var accum = 0
-        for (var j = 0; j < i; j++) {
-            accum += valueRange(data[j]['data'])
-        }
-        return 'translate(0,' + accum + ')'
+    .attr('transform', function(d, i) {
+        // x - index divided by width
+        // y - center in available space
+        let x = dayWidth * i
+        let yInRange = calorieRange(d['sum'])
+        let y = (height - yInRange) / 2
+        return 'translate(' + x + ',' + y + ')'
     })
 
-    node.append('rect')
-    .attr('x', 0)
-    .attr('width', 100)
+    // Add in a background rect for the days
+    dayNodes.append('rect')
+    .attr('width', (width / count))
     .attr('height', function(d) {
-        return valueRange(d['data'])
+        return calorieRange(d['sum'])
     })
-    .attr('class', function(d) {
-        return d['name']
-    })
+    .classed('calorie_day_container', true)
 
-    node.append('text')
-    .text(function(d) {
-        console.log(d)
-        return d['name'][0]
+    // Add in each macro
+    // First, fat
+    dayNodes.append('rect')
+    .attr('x', (dayWidth - dayDataWidth)/2)
+    .attr('width', dayDataWidth)
+    .attr('height', function(_, i) {
+        let fatCalories = fat[i]['sum'] * 9
+        return calorieRange(fatCalories)
     })
-    .attr('text-anchor', 'middle')
-    .attr('x', 50)
-    .attr('dy', 30)
+    .classed('total_fat', true)
+
+    // Next, carbs
+    dayNodes.append('rect')
+    .attr('fill', 'blue') // CSS isn't working for this one for some reason...
+    .attr('x', (dayWidth - dayDataWidth)/2)
+    .attr('y', function(_, i) {
+        let fatCalories = fat[i]['sum'] * 9
+        return calorieRange(fatCalories)
+    })
+    .attr('width', dayDataWidth)
+    .attr('height', function(_, i) {
+        let carbCalories = carbs[i]['sum'] * 4
+        return calorieRange(carbCalories)
+    })
+    .attr('class', 'carbohydrates')
+    .classed('carbohydrates', true)
+
+    // Then, protein
+    dayNodes.append('rect')
+    .attr('x', (dayWidth - dayDataWidth)/2)
+    .attr('y', function(_, i) {
+        let fatCalories = fat[i]['sum'] * 9
+        let carbCalories = carbs[i]['sum'] * 4
+        return calorieRange(fatCalories + carbCalories)
+    })
+    .attr('width', dayDataWidth)
+    .attr('height', function(_, i) {
+        let proteinCalories = protein[i]['sum'] * 4
+        return calorieRange(proteinCalories)
+    })
+    .classed('protein', true)
+
+    // And... leftovers!
+    // Sometimes, if we don't log lose-it stuff with good data, we will have 
+    // calories that are unaccounted for. This is the leftover section
+    dayNodes.append('rect')
+    .attr('x', (dayWidth - dayDataWidth)/2)
+    .attr('y', function(_, i) {
+        let fatCalories = fat[i]['sum'] * 9
+        let carbCalories = carbs[i]['sum'] * 4
+        let proteinCalories = protein[i]['sum'] * 4
+        return calorieRange(fatCalories + carbCalories + proteinCalories)
+    })
+    .attr('width', dayDataWidth)
+    .attr('height', function(_, i) {
+        let totalCalories = calories[i]['sum']
+
+        let fatCalories = fat[i]['sum'] * 9
+        let carbCalories = carbs[i]['sum'] * 4
+        let proteinCalories = protein[i]['sum'] * 4
+        let leftovers = totalCalories - (fatCalories + carbCalories + proteinCalories)
+        console.log(leftovers)
+        if (leftovers < 0) { return 0 }
+        return calorieRange(leftovers)
+    })
+    .classed('leftover_calories', true)
 
     return container.node()
 }

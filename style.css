@@ -4,20 +4,29 @@
 /* - a b for all b inside a */
 
 .nutrition {
-    width: 100;
+    width: 400;
     height: 400;
 }
 
-.fat {
+.calorie_day_container {
+    fill: clear;
+    fill-opacity: 0;
+}
+
+.total_fat {
     fill: yellow;
 }
 
-.carbs {
+.carbohydrateso {
     fill: blue;
 }
 
 .protein {
     fill: purple;
+}
+
+.leftover_calories {
+    fill: orange;
 }
 
 #data {
