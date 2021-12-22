@@ -108,6 +108,7 @@ function nutrition(dataByName) {
 
     let container = d3.create('svg')
     .attr('viewBox', [0, 0, width, height])
+    .classed('container', true)
     .classed('nutrition', true)
 
     // Constants for our days
@@ -270,6 +271,7 @@ function heartAndSleep(dataByName) {
     let containerPadding = 5
 
     let container = d3.create('svg')
+        .classed('container', true)
         .attr('viewBox',
             [-containerPadding,
             -containerPadding,

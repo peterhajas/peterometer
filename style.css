@@ -21,12 +21,15 @@
 
 body {
     background-color: var(--primary-bg);
+    margin: 0;
     font-family: monospace;
     text-transform: uppercase;
 }
 
 .container {
-    background-color: var(--seconadry-bg);
+    border-color: var(--secondary-bg);
+    border-width: 5px;
+    border-style: solid;
 }
 
 .text {
