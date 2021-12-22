@@ -246,7 +246,7 @@ function nutrition(dataByName) {
 
 function heartAndSleep(dataByName) {
     let width = 1000
-    let height = 300
+    let height = 100
 
     let heartRate = dataByName['heart_rate'].data
     let sleep = dataByName['sleep_analysis'].data
@@ -267,7 +267,7 @@ function heartAndSleep(dataByName) {
         .domain([firstDate, lastDate])
         .range([0, width])
 
-    let containerPadding = 50
+    let containerPadding = 5
 
     let container = d3.create('svg')
         .attr('viewBox',

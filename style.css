@@ -4,7 +4,8 @@
 /* - a b for all b inside a */
 
 :root {
-    --primary-bg:  #012006ff;
+    --primary-bg:  #000D2A;
+    --secondary-bg: #060040;
     --highlight: #5c29c2ff;
     --highlight-strong: #c82efbff;
     --warn: #511b1bff;
@@ -21,6 +22,11 @@
 body {
     background-color: var(--primary-bg);
     font-family: monospace;
+    text-transform: uppercase;
+}
+
+.container {
+    background-color: var(--seconadry-bg);
 }
 
 .text {
@@ -45,6 +51,11 @@ body {
 .nutrition {
     width: 400;
     height: 600;
+}
+
+.heartAndSleep {
+    width: 1000px;
+    height: 100px;
 }
 
 .calorie_day_container {
