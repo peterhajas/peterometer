@@ -164,7 +164,7 @@ function nutrition(dataByName) {
         let x = dayWidth * i
         let yInRange = calorieRange(d['sum'])
         // 3* because some of this height is consumed by padding
-        let y = (barHeight - yInRange) / 2
+        let y = ((barHeight - yInRange) / 2) + 5
         return 'translate(' + x + ',' + y + ')'
     })
 
