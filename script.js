@@ -125,9 +125,12 @@ function updateMetric(metricItem, dateRange) {
 function nutrition(dataByName) {
     // Some constants
     let width = 400
-    let height = 400
+    let height = 600
 
     let interMacroPadding = 10
+    let macroCount = 4
+    let barHeightTotal = 400
+    let barHeight = barHeightTotal - (macroCount * interMacroPadding)
 
     // Grab the macros and group by day
     let fat = aggregateDataByDay(dataByName['total_fat'])
@@ -140,7 +143,7 @@ function nutrition(dataByName) {
     let calorieMax = d3.max(calories, x => x['sum'])
     let calorieRange = d3.scaleLinear()
     .domain([0, calorieMax])
-    .range([0, height - 8 * interMacroPadding])
+    .range([0, barHeight])
 
     let container = d3.create('svg')
     .attr('viewBox', [0, 0, width, height])
@@ -161,7 +164,7 @@ function nutrition(dataByName) {
         let x = dayWidth * i
         let yInRange = calorieRange(d['sum'])
         // 3* because some of this height is consumed by padding
-        let y = (height - ((3 * interMacroPadding) + yInRange)) / 2
+        let y = (barHeight - yInRange) / 2
         return 'translate(' + x + ',' + y + ')'
     })
 
@@ -241,6 +244,42 @@ function nutrition(dataByName) {
     })
     .classed('bar', true)
     .classed('leftover_calories', true)
+
+    // Add in incicators for the calories
+    dayNodes.append('text')
+    .attr('x', dayWidth/2)
+    .attr('y', barHeightTotal)
+    .attr('dy', 30)
+    .attr('transform', function(d) { // this undoes the transform above
+        let yInRange = calorieRange(d['sum'])
+        let y = (barHeight - yInRange) / 2 * -1
+        return 'translate(0,' + y + ')'
+    })
+    .attr('text-anchor', 'middle')
+    .text(function(d) {
+        return Math.round(d['sum']) + 'kcal'
+    })
+    .classed('text', true)
+
+    // Add in indicators for the days
+    dayNodes.append('text')
+    .attr('x', dayWidth/2)
+    .attr('y', barHeightTotal)
+    .attr('dy', 60)
+    .attr('transform', function(d) { // this undoes the transform above
+        let yInRange = calorieRange(d['sum'])
+        let y = (barHeight - yInRange) / 2 * -1
+        return 'translate(0,' + y + ')'
+    })
+    .attr('text-anchor', 'middle')
+    .text(function(d) {
+        // the month and day
+        let date = d.date
+        let month = date.getMonth()+1;
+        let day = date.getDate()
+        return month+'/'+day;
+    })
+    .classed('text2', true)
 
     return container.node()
 }

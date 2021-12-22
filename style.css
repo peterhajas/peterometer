@@ -9,6 +9,8 @@
     --highlight: #5c29c2ff;
     --highlight-strong: #c82efbff;
     --warn: #511b1bff;
+    --primary-text: white;
+    --secondary-text: rgb(200,200,200);
 
     --blue: #060070ff;
     --yellow: #ffc04bff;
@@ -19,6 +21,15 @@
 
 body {
     background-color: var(--primary-bg);
+    font-family: monospace;
+}
+
+.text {
+    fill: var(--primary-text);
+}
+
+.text2 {
+    fill: var(--secondary-text);
 }
 
 .bar {
@@ -28,7 +39,7 @@ body {
 
 .nutrition {
     width: 400;
-    height: 400;
+    height: 600;
 }
 
 .calorie_day_container {
