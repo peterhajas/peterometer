@@ -132,15 +132,15 @@ function nutrition(dataByName) {
     let data = [
         {
             'name' : 'fat',
-            'data' : fat[fat.length-1]['sum'],
+            'data' : fat[fat.length-1]['sum'] * 9,
         },
         {
             'name' : 'carbs',
-            'data' : carbs[carbs.length-1]['sum'],
+            'data' : carbs[carbs.length-1]['sum'] * 4,
         },
         {
             'name' : 'protein',
-            'data' : protein[protein.length-1]['sum'],
+            'data' : protein[protein.length-1]['sum'] * 4,
         }
     ]
     let names = [ 'fat', 'carbs', 'protein' ]
