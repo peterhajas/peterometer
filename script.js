@@ -418,16 +418,22 @@ function moveExerciseStand(dataByName, dateRange, earliestDate, latestDate) {
 
         return out
     })
-    let emptyMove = container.selectAll('.active_energy_empty')
+
+    function addEmptyData(className, yIndex) {
+        let emptyClassName = className + '_empty'
+        return container.selectAll('.' + emptyClassName)
         .data(emptyHourData)
         .join('rect')
         .attr('x', function(d) {
             return dateRange(d)
         })
+        .attr('y', yIndex * dimension)
         .attr('width', dimension)
         .attr('height', dimension)
-        .classed('active_energy_empty', true)
+        .classed(emptyClassName, true)
+    }
 
+    addEmptyData('active_energy', 0)
     let moveTime = container.selectAll('.active_energy')
         .data(move)
         .join('rect')
@@ -439,16 +445,7 @@ function moveExerciseStand(dataByName, dateRange, earliestDate, latestDate) {
         .attr('height', dimension)
         .classed('active_energy', true)
 
-    let emptyExercise = container.selectAll('.apple_exercise_time_empty')
-        .data(emptyHourData)
-        .join('rect')
-        .attr('x', function(d) {
-            return dateRange(d)
-        })
-        .attr('y', dimension)
-        .attr('width', dimension)
-        .attr('height', dimension)
-        .classed('apple_exercise_time_empty', true)
+    addEmptyData('apple_exercise_time', 1)
 
     let exerciseTime = container.selectAll('.apple_exercise_time')
         .data(exercise)
@@ -462,16 +459,7 @@ function moveExerciseStand(dataByName, dateRange, earliestDate, latestDate) {
         .attr('height', dimension)
         .classed('apple_exercise_time', true)
 
-    let emptyStand = container.selectAll('.apple_stand_hour_empty')
-        .data(emptyHourData)
-        .join('rect')
-        .attr('x', function(d) {
-            return dateRange(d)
-        })
-        .attr('y', 2 * dimension)
-        .attr('width', dimension)
-        .attr('height', dimension)
-        .classed('apple_stand_hour_empty', true)
+    addEmptyData('apple_stand_hour', 2)
 
     let standHour = container.selectAll('.apple_stand_hour')
         .data(exercise)
