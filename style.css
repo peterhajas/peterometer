@@ -125,6 +125,18 @@ body {
     fill: red;
 }
 
+.active_energy {
+    fill: purple;
+}
+
+.apple_exercise_time {
+    fill: var(--green);
+}
+
+.apple_stand_hour {
+    fill: blue;
+}
+
 @keyframes dot_pulse {
     0% {
         opacity: 1.0;

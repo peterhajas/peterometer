@@ -386,6 +386,108 @@ function heartRateVariability(dataByName, dateRange) {
     return container.node()
 }
 
+function moveExerciseStand(dataByName, dateRange, earliestDate, latestDate) {
+    let width = 1000
+    let height = 80
+
+    let hourCount = Math.round(((latestDate - earliestDate) / 1000) / 3600)
+
+    let dimension = width / hourCount
+
+    let move = dataByName['active_energy']['data']
+    let exercise = dataByName['apple_exercise_time']['data']
+    let stand = dataByName['apple_stand_hour']['data']
+
+    function dateRoundedToHour(date) {
+        var out = new Date(date.getTime())
+        date.setMinutes(0)
+        date.setSeconds(0)
+        return out
+    }
+
+    let container = d3.create('svg')
+        .classed('container', true)
+        .attr('viewBox', [0, 0, width, height])
+
+    let emptyHourData = d3.map(d3.range(hourCount), function(h) {
+        var out = new Date(earliestDate.getTime())
+        var hours = out.getHours()
+        var newHours = hours + h
+        out.setHours(newHours)
+        out = dateRoundedToHour(out)
+
+        return out
+    })
+    let emptyMove = container.selectAll('.active_energy_empty')
+        .data(emptyHourData)
+        .join('rect')
+        .attr('x', function(d) {
+            return dateRange(d)
+        })
+        .attr('width', dimension)
+        .attr('height', dimension)
+        .classed('active_energy_empty', true)
+
+    let moveTime = container.selectAll('.active_energy')
+        .data(move)
+        .join('rect')
+        .attr('x', function(d) {
+            var date = dateRoundedToHour(dateFromHealthExportDateString(d['date']))
+            return dateRange(date)
+        })
+        .attr('width', dimension)
+        .attr('height', dimension)
+        .classed('active_energy', true)
+
+    let emptyExercise = container.selectAll('.apple_exercise_time_empty')
+        .data(emptyHourData)
+        .join('rect')
+        .attr('x', function(d) {
+            return dateRange(d)
+        })
+        .attr('y', dimension)
+        .attr('width', dimension)
+        .attr('height', dimension)
+        .classed('apple_exercise_time_empty', true)
+
+    let exerciseTime = container.selectAll('.apple_exercise_time')
+        .data(exercise)
+        .join('rect')
+        .attr('y', dimension)
+        .attr('x', function(d) {
+            var date = dateRoundedToHour(dateFromHealthExportDateString(d['date']))
+            return dateRange(date)
+        })
+        .attr('width', dimension)
+        .attr('height', dimension)
+        .classed('apple_exercise_time', true)
+
+    let emptyStand = container.selectAll('.apple_stand_hour_empty')
+        .data(emptyHourData)
+        .join('rect')
+        .attr('x', function(d) {
+            return dateRange(d)
+        })
+        .attr('y', 2 * dimension)
+        .attr('width', dimension)
+        .attr('height', dimension)
+        .classed('apple_stand_hour_empty', true)
+
+    let standHour = container.selectAll('.apple_stand_hour')
+        .data(exercise)
+        .join('rect')
+        .attr('x', function(d) {
+            var date = dateRoundedToHour(dateFromHealthExportDateString(d['date']))
+            return dateRange(date)
+        })
+        .attr('y', 2 * dimension)
+        .attr('width', dimension)
+        .attr('height', dimension)
+        .classed('apple_stand_hour', true)
+
+    return container.node()
+}
+
 function update(dataContents) {
     let data = dataContents['data']
     let metrics = data['metrics']
@@ -430,6 +532,7 @@ function update(dataContents) {
     let bodyContainer = document.getElementById('bodyContainer');
 
     intakeContainer.appendChild(nutrition(dataByName));
+    bodyContainer.appendChild(moveExerciseStand(dataByName, dateRange, earliestDate, latestDate));
     bodyContainer.appendChild(sleepHeartRate(dataByName, dateRange));
     bodyContainer.appendChild(heartRateVariability(dataByName, dateRange));
 }
