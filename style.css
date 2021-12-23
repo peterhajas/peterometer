@@ -24,6 +24,7 @@ body {
     margin: 0;
     font-family: monospace;
     text-transform: uppercase;
+    display: flex;
 }
 
 .container {
@@ -34,10 +35,12 @@ body {
 
 .text {
     fill: var(--primary-text);
+    font-size: 2.0em;
 }
 
 .text2 {
     fill: var(--secondary-text);
+    font-size: 1.5em;
 }
 
 .bar {
@@ -52,13 +55,13 @@ body {
 }
 
 .nutrition {
-    width: 400;
-    height: 600;
+    width: 30%;
+    height: 100%;
 }
 
 .heartAndSleep {
-    width: 1000px;
-    height: 100px;
+    width: 70%;
+    height: 30%;
 }
 
 .calorie_day_container {
@@ -91,8 +94,8 @@ body {
 }
 
 .sleep {
+    stroke: var(--blue);
     fill: var(--blue);
-    fill-opacity: 0.5;
 }
 
 .heart_rate {

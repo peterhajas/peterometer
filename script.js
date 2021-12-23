@@ -85,7 +85,7 @@ function aggregateDataByDay(metricItem) {
 
 function nutrition(dataByName) {
     // Some constants
-    let width = 400
+    let width = 600
     let height = 600
 
     let interMacroPadding = 10
@@ -218,7 +218,7 @@ function nutrition(dataByName) {
     })
     .attr('text-anchor', 'middle')
     .text(function(d) {
-        return Math.round(d['sum']) + 'kcal'
+        return Math.round(d['sum']) + 'c'
     })
     .classed('text', true)
 
@@ -276,7 +276,7 @@ function heartAndSleep(dataByName) {
             [-containerPadding,
             -containerPadding,
             width + 2 * containerPadding,
-            height + 2 * containerPadding])
+            height + 30 + 2 * containerPadding])
         .classed('heartAndSleep', true)
 
     // each is an array of dictionaries
@@ -303,28 +303,37 @@ function heartAndSleep(dataByName) {
     }
 
     // Add in in-bed and asleep indicators
-    let inBedIndicators = container.selectAll('.inBed')
-        .data(inBedData)
-        .join('rect')
-        .attr('x', function(d) {
-            return timeScale(d['start'])
-        })
-        .attr('width', function(d) {
-            return timeScale(d['end']) - timeScale(d['start'])
-        })
-        .attr('height', height)
-        .classed('inBed', true)
     let asleepIndicators = container.selectAll('.sleep')
         .data(asleepData)
-        .join('rect')
-        .attr('x', function(d) {
-            return timeScale(d['start'])
+        .join('g')
+        .attr('transform', function(d) {
+            return 'translate(' + timeScale(d['start']) + ',0)'
         })
+
+    let asleepBoxes = asleepIndicators.append('rect')
         .attr('width', function(d) {
             return timeScale(d['end']) - timeScale(d['start'])
         })
         .attr('height', height)
         .classed('sleep', true)
+        .classed('bar', true)
+
+    asleepIndicators.append('text')
+    .attr('x', function(d) {
+        let width = timeScale(d['end']) - timeScale(d['start'])
+        return width/2
+    })
+    .attr('y', height)
+    .attr('dy', 20)
+    .attr('text-anchor', 'middle')
+    .text(function(d) {
+        let durationMS = d.end - d.start
+        let durationS = durationMS / 1000
+        let durationH = durationS / 3600
+        return durationH.toFixed(1) + 'h'
+    })
+    .classed('text2', true)
+    .classed('sleep', true)
 
     // Find heart rate minimum and maximum
     var heartRateMin = 200
@@ -338,7 +347,6 @@ function heartAndSleep(dataByName) {
     .range([0, height])
 
     let lastHeartRate = heartRate[heartRateCount-1]['Avg']
-    console.log(lastHeartRate)
 
     // Add in heart rate readings
     let heartRateIndicator = container.selectAll('.heart_rate')
