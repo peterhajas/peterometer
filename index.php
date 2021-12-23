@@ -10,7 +10,9 @@ else {
     echo('<script type="module" src="script.js"></script>');
     echo('<link rel="stylesheet" href="style.css" />');
     echo('</head>');
-    echo('<body>');
+    echo('<body class="flexHorizontalContainer">');
+    echo('<div id="intakeContainer" class="flexVerticalContainer"></div>');
+    echo('<div id="bodyContainer" class="flexVerticalContainer"></div>');
     echo('<div id="data">');
     $output = file_get_contents('test.json');
     echo($output);

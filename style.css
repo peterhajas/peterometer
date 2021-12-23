@@ -24,13 +24,25 @@ body {
     margin: 0;
     font-family: monospace;
     text-transform: uppercase;
+}
+
+.flexHorizontalContainer {
     display: flex;
+    flex-direction: row;
+    align-items: stretch;
+}
+
+.flexVerticalContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
 }
 
 .container {
     border-color: var(--secondary-bg);
     border-width: 5px;
     border-style: solid;
+    margin: 10px;
 }
 
 .text {
@@ -54,14 +66,16 @@ body {
     fill-opacity: 1.0;
 }
 
-.nutrition {
-    width: 30%;
-    height: 100%;
+#intakeContainer {
+    flex-grow: 1;
 }
 
-.heartAndSleep {
-    width: 70%;
-    height: 30%;
+#bodyContainer {
+    flex-grow: 2.5;
+}
+
+.nutrition {
+    flex-grow: 2;
 }
 
 .calorie_day_container {

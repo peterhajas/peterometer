@@ -399,12 +399,20 @@ function update(dataContents) {
     var dataByName = { }
     for (const itemIndex in metrics) {
         let metricItem = metrics[itemIndex]
-        let name = metricItem['name']
-        dataByName[name] = metricItem
+        let data = metricItem['data']
+        if (data.length > 0) {
+            let name = metricItem['name']
+            dataByName[name] = metricItem
+        }
     }
 
-    document.body.appendChild(nutrition(dataByName))
-    document.body.appendChild(heartAndSleep(dataByName))
+    console.log(dataByName)
+
+    let intakeContainer = document.getElementById('intakeContainer');
+    let bodyContainer = document.getElementById('bodyContainer');
+
+    intakeContainer.appendChild(nutrition(dataByName));
+    bodyContainer.appendChild(heartAndSleep(dataByName));
 }
 
 window.onload = function() {
