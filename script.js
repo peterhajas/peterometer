@@ -245,7 +245,7 @@ function nutrition(dataByName) {
     return container.node()
 }
 
-function heartAndSleep(dataByName) {
+function sleepHeartRate(dataByName, dateRange) {
     let width = 1000
     let height = 100
 
@@ -254,19 +254,6 @@ function heartAndSleep(dataByName) {
 
     let heartRateCount = heartRate.length
     let sleepCount = sleep.length
-
-    // Find our date bounds
-    let firstHeartRateDate = dateFromHealthExportDateString(heartRate[0]['date'])
-    let firstSleepDate = dateFromHealthExportDateString(sleep[0]['inBedStart'])
-    let firstDate = new Date(Math.min(firstHeartRateDate, firstSleepDate))
-
-    let lastHeartRateDate = dateFromHealthExportDateString(heartRate[heartRateCount-1]['date'])
-    let lastSleepDate = dateFromHealthExportDateString(sleep[sleepCount-1]['inBedEnd'])
-    let lastDate = new Date(Math.max(lastHeartRateDate, lastSleepDate))
-
-    let timeScale = d3.scaleTime()
-        .domain([firstDate, lastDate])
-        .range([0, width])
 
     let containerPadding = 5
 
@@ -277,7 +264,7 @@ function heartAndSleep(dataByName) {
             -containerPadding,
             width + 2 * containerPadding,
             height + 30 + 2 * containerPadding])
-        .classed('heartAndSleep', true)
+        .classed('sleepHeartRate', true)
 
     // each is an array of dictionaries
     // dictionaries have 'start' and 'end' dates
@@ -307,12 +294,12 @@ function heartAndSleep(dataByName) {
         .data(asleepData)
         .join('g')
         .attr('transform', function(d) {
-            return 'translate(' + timeScale(d['start']) + ',0)'
+            return 'translate(' + dateRange(d['start']) + ',0)'
         })
 
     let asleepBoxes = asleepIndicators.append('rect')
         .attr('width', function(d) {
-            return timeScale(d['end']) - timeScale(d['start'])
+            return dateRange(d['end']) - dateRange(d['start'])
         })
         .attr('height', height)
         .classed('sleep', true)
@@ -320,7 +307,7 @@ function heartAndSleep(dataByName) {
 
     asleepIndicators.append('text')
     .attr('x', function(d) {
-        let width = timeScale(d['end']) - timeScale(d['start'])
+        let width = dateRange(d['end']) - dateRange(d['start'])
         return width/2
     })
     .attr('y', height)
@@ -353,7 +340,7 @@ function heartAndSleep(dataByName) {
         .data(heartRate)
         .join('circle')
         .attr('cx', function(d) {
-            return timeScale(dateFromHealthExportDateString(d['date']))
+            return dateRange(dateFromHealthExportDateString(d['date']))
         })
         .attr('cy', function(d) {
             return heartRateRange(d['Avg'])
@@ -393,7 +380,7 @@ function update(dataContents) {
     }
     let dateRange = d3.scaleTime()
         .domain([earliestDate, latestDate])
-        .nice()
+        .range([0, 1000])
 
     // Group data by name
     var dataByName = { }
@@ -412,7 +399,7 @@ function update(dataContents) {
     let bodyContainer = document.getElementById('bodyContainer');
 
     intakeContainer.appendChild(nutrition(dataByName));
-    bodyContainer.appendChild(heartAndSleep(dataByName));
+    bodyContainer.appendChild(sleepHeartRate(dataByName, dateRange));
 }
 
 window.onload = function() {
