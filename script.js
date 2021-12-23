@@ -255,15 +255,9 @@ function sleepHeartRate(dataByName, dateRange) {
     let heartRateCount = heartRate.length
     let sleepCount = sleep.length
 
-    let containerPadding = 5
-
     let container = d3.create('svg')
         .classed('container', true)
-        .attr('viewBox',
-            [-containerPadding,
-            -containerPadding,
-            width + 2 * containerPadding,
-            height + 30 + 2 * containerPadding])
+        .attr('viewBox', [0, 0, width, height + 30])
         .classed('sleepHeartRate', true)
 
     // each is an array of dictionaries
