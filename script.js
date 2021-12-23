@@ -349,6 +349,43 @@ function sleepHeartRate(dataByName, dateRange) {
     return container.node()
 }
 
+function heartRateVariability(dataByName, dateRange) {
+    let width = 1000
+    let height = 80
+    let heartRateVariability = dataByName['heart_rate_variability'].data
+
+    let container = d3.create('svg')
+        .classed('container', true)
+        .attr('viewBox', [0, 0, width, height])
+
+    // Find HRV range
+    let hrvMin = d3.min(heartRateVariability, function(d) { return d['qty'] })
+    let hrvMax = d3.max(heartRateVariability, function(d) { return d['qty'] })
+    let hrvRange = d3.scaleLinear()
+    .domain([hrvMin, hrvMax])
+    .range([0, height])
+
+    // Add in lines for the HRV
+    let hrvIndicator = container.selectAll('.heart_rate_variability')
+        .data(heartRateVariability)
+        .join('rect')
+        .attr('x', function(d) {
+            let date = dateFromHealthExportDateString(d['date'])
+            return dateRange(date)
+        })
+        .attr('width', 3)
+        .attr('y', function(d) {
+            return (height - hrvRange(d['qty']))/2
+        })
+        .attr('height', function(d) {
+            return hrvRange(d['qty'])
+        })
+        .classed('bar', true)
+        .classed('heart_rate_variability', true)
+
+    return container.node()
+}
+
 function update(dataContents) {
     let data = dataContents['data']
     let metrics = data['metrics']
@@ -394,6 +431,7 @@ function update(dataContents) {
 
     intakeContainer.appendChild(nutrition(dataByName));
     bodyContainer.appendChild(sleepHeartRate(dataByName, dateRange));
+    bodyContainer.appendChild(heartRateVariability(dataByName, dateRange));
 }
 
 window.onload = function() {

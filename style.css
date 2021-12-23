@@ -121,6 +121,10 @@ body {
     animation-timing-function: linear;
 }
 
+.heart_rate_variability {
+    fill: red;
+}
+
 @keyframes dot_pulse {
     0% {
         opacity: 1.0;
