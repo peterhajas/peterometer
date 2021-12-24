@@ -513,8 +513,8 @@ function update(dataContents) {
     let bodyContainer = document.getElementById('bodyContainer');
 
     intakeContainer.appendChild(nutrition(dataByName));
-    bodyContainer.appendChild(moveExerciseStand(dataByName, dateRange, earliestDate, latestDate));
     bodyContainer.appendChild(sleepHeartRate(dataByName, dateRange));
+    bodyContainer.appendChild(moveExerciseStand(dataByName, dateRange, earliestDate, latestDate));
     bodyContainer.appendChild(heartRateVariability(dataByName, dateRange));
 }
 
