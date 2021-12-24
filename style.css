@@ -97,6 +97,10 @@ body {
 }
 
 #glanceContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+
     flex-grow: 1;
 }
 
@@ -191,6 +195,10 @@ body {
 
     .container {
         margin: 5px;
+    }
+
+    #glanceContainer {
+        flex-direction: row;
     }
 }
 
