@@ -61,6 +61,10 @@ body {
     padding: 10px;
 }
 
+.containerTitle {
+    font-size: 1em;
+}
+
 .text {
     fill: var(--primary-text);
     font-size: 1.4em;
@@ -189,6 +193,18 @@ body {
 }
 
 @media (max-width: 1100px) {
+    .containerTitle {
+        font-size: 0.8em;
+    }
+}
+
+@media (max-width: 900px) {
+    .containerTitle {
+        font-size: 0.7em;
+    }
+}
+
+@media (max-width: 700px) {
     body {
         flex-direction: column-reverse;
     }
@@ -196,6 +212,10 @@ body {
     .container {
         flex-grow: 1;
         margin: 5px;
+    }
+
+    .containerTitle {
+        font-size: 1em;
     }
 
     #glanceContainer {

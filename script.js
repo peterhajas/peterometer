@@ -28,6 +28,7 @@ function svgContainer(titles) {
     .attr('class', function(d) {
         return d.className
     })
+    .classed('containerTitle', true)
     .style('padding', 2)
 
     container.append('svg')
@@ -130,7 +131,7 @@ function nutrition(dataByName) {
 
     let container = svgContainer([
         { 'text' : 'Fat', 'className' : 'total_fat' },
-        { 'text' : 'Carbs', 'className' : 'carbo' },
+        { 'text' : 'Carb', 'className' : 'carbo' },
         { 'text' : 'Protein', 'className' : 'protein' },
         { 'text' : 'Other', 'className' : 'leftover_calories' },
     ])
