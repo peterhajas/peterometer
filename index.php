@@ -1,7 +1,7 @@
 <?php
 $input = file_get_contents('php://input');
-if (strlen($input > 0)) {
-    file_put_contents('test.json', $input);
+if (strlen($input) > 0) {
+    $result = file_put_contents('test.json', $input);
     echo('OK');
 }
 else {
