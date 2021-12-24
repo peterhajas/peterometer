@@ -37,17 +37,6 @@ function dateStrippingTimeComponents(date) {
     return out
 }
 
-function metricAggregatesDaily(name) {
-    return name.includes('dietary')
-    || name.includes('carbohydrates')
-    || name.includes('fat')
-    || name.includes('fiber')
-    || name.includes('protein')
-    || name.includes('sodium')
-    || name.includes('apple')
-    || name.includes('energy')
-}
-
 /// Aggregates data by day for a metric item
 /// Returns an ordered array, from oldest to newest, of dictionaries
 /// The keys are:
@@ -469,6 +458,38 @@ function moveExerciseStand(dataByName, dateRange, earliestDate, latestDate) {
     return container.node()
 }
 
+function weight(dataByName) {
+    let dimension = 100
+
+    var weight = dataByName['weight_body_mass']
+    if (weight != null) {
+        weight = weight['data'][weight['data'].length-1]['qty']
+    }
+    else {
+        weight = '?'
+    }
+
+    let container = d3.create('svg')
+        .classed('container', true)
+        .attr('viewBox', [0, 0, dimension, dimension])
+    
+    let background = container.append('circle')
+    .attr('cx', dimension/2)
+    .attr('cy', dimension/2)
+    .attr('r', dimension/2)
+    .classed('glanceBackground', true)
+    .classed('weight_body_mass', true)
+
+    let text = container.append('text')
+    .attr('x', dimension/2)
+    .attr('y', dimension/2)
+    .attr('dy', 5)
+    .attr('text-anchor', 'middle')
+    .text(weight)
+
+    return container.node()
+}
+
 function update(dataContents) {
     let data = dataContents['data']
     let metrics = data['metrics']
@@ -509,13 +530,17 @@ function update(dataContents) {
 
     console.log(dataByName)
 
-    let intakeContainer = document.getElementById('intakeContainer');
-    let bodyContainer = document.getElementById('bodyContainer');
+    let intakeContainer = document.getElementById('intakeContainer')
+    let bodyContainer = document.getElementById('bodyContainer')
+    let glanceContainer = document.getElementById('glanceContainer')
 
-    intakeContainer.appendChild(nutrition(dataByName));
-    bodyContainer.appendChild(sleepHeartRate(dataByName, dateRange));
-    bodyContainer.appendChild(moveExerciseStand(dataByName, dateRange, earliestDate, latestDate));
-    bodyContainer.appendChild(heartRateVariability(dataByName, dateRange));
+    intakeContainer.appendChild(nutrition(dataByName))
+
+    bodyContainer.appendChild(sleepHeartRate(dataByName, dateRange))
+    bodyContainer.appendChild(moveExerciseStand(dataByName, dateRange, earliestDate, latestDate))
+    bodyContainer.appendChild(heartRateVariability(dataByName, dateRange))
+
+    glanceContainer.appendChild(weight(dataByName))
 }
 
 window.onload = function() {

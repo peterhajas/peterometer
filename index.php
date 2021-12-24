@@ -13,6 +13,7 @@ else {
     echo('<body class="flexHorizontalContainer">');
     echo('<div id="intakeContainer" class="flexVerticalContainer"></div>');
     echo('<div id="bodyContainer" class="flexVerticalContainer"></div>');
+    echo('<div id="glanceContainer" class="flexVerticalContainer"></div>');
     echo('<div id="data">');
     $output = file_get_contents('test.json');
     echo($output);

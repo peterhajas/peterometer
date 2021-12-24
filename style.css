@@ -67,6 +67,12 @@ body {
     font-size: 1.2em;
 }
 
+.glanceBackground {
+    stroke-width: 4;
+    stroke-opacity: 1.0;
+    fill-opacity: 0.45;
+}
+
 .bar {
     stroke-width: 2;
     stroke-opacity: 1.0;
@@ -79,11 +85,15 @@ body {
 }
 
 #intakeContainer {
-    flex-grow: 1;
+    flex-grow: 2;
 }
 
 #bodyContainer {
-    flex-grow: 2.5;
+    flex-grow: 5;
+}
+
+#glanceContainer {
+    flex-grow: 1;
 }
 
 .nutrition {
@@ -146,6 +156,11 @@ body {
 
 .apple_stand_hour {
     fill: rgb(8, 246, 210);
+}
+
+.weight_body_mass {
+    fill: var(--yellow);
+    stroke: var(--yellow);
 }
 
 @keyframes dot_pulse {
