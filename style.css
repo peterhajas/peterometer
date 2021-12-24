@@ -105,36 +105,43 @@ body {
 }
 
 .total_fat {
+    color: var(--yellow);
     stroke: var(--yellow);
     fill: var(--yellow);
 }
 
 .carbo {
+    color: var(--blue);
     stroke: var(--blue);
     fill: var(--blue);
 }
 
 .protein {
+    color: var(--violet);
     stroke: var(--violet);
     fill: var(--violet);
 }
 
 .leftover_calories {
+    color: var(--orange);
     stroke: var(--orange);
     fill: var(--orange);
 }
 
 .inBed {
+    color: var(--violet);
     fill: var(--violet);
     fill-opacity: 0.3;
 }
 
 .sleep {
+    color: var(--blue);
     stroke: var(--blue);
     fill: var(--blue);
 }
 
 .heart_rate {
+    color: var(--heart);
     fill: var(--heart);
     animation-name: dot_pulse;
     animation-direction: alternate;

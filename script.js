@@ -2,6 +2,38 @@ function onlyUnique(value, index, self) {
     return self.indexOf(value) === index;
 }
 
+/// Returns a d3 selection of a container div with an SVG inside of it
+/// This can have a title attached, represented by an array of dictionaries
+/// Keys are:
+/// - text: the text of this title entry
+/// - className: the class name to apply to this title entry
+/// No view box is applied to the svg
+
+function svgContainer(titles) {
+    let container = d3.create('div')
+    .classed('container', true)
+
+    let titleContainer = container.append('div')
+    .classed('titleContainer', true)
+    .style('width', 0)
+    .style('color', 'white')
+
+    titleContainer.selectAll('h1')
+    .data(titles)
+    .join('span')
+    .text(function(d) {
+        return d.text
+    })
+    .attr('class', function(d) {
+        return d.className
+    })
+    .style('padding', 2)
+
+    container.append('svg')
+
+    return container
+}
+
 /// Returns a date from a "Health Export" date string
 function dateFromHealthExportDateString(dateString) {
     let date = dateString.split(' ')[0]
@@ -74,8 +106,8 @@ function aggregateDataByDay(metricItem) {
 
 function nutrition(dataByName) {
     // Some constants
-    let width = 600
-    let height = 600
+    let width = 500
+    let height = 500
 
     let interMacroPadding = 10
     let macroCount = 4
@@ -95,10 +127,17 @@ function nutrition(dataByName) {
     .domain([0, calorieMax])
     .range([0, barHeight])
 
-    let container = d3.create('svg')
-    .attr('viewBox', [0, 0, width, height])
-    .classed('container', true)
-    .classed('nutrition', true)
+    let container = svgContainer([
+        { 'text' : 'Nutrition' },
+        { 'text' : 'Fat', 'className' : 'total_fat' },
+        { 'text' : 'Carbs', 'className' : 'carbo' },
+        { 'text' : 'Protein', 'className' : 'protein' },
+        { 'text' : 'Other', 'className' : 'leftover_calories' },
+    ])
+    let svg = container
+        .select('svg')
+        .attr('viewBox', [0, 0, width, height])
+        .classed('nutrition', true)
 
     // Constants for our days
     let dayWidth = width/count
@@ -106,7 +145,7 @@ function nutrition(dataByName) {
 
     // The graph is a horizontal set of days
     // Each day has child rectangles representing the macros for that day
-    let dayNodes = container.selectAll('g')
+    let dayNodes = svg.selectAll('g')
     .data(calories)
     .join('g')
     .attr('transform', function(d, i) {
