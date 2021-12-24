@@ -218,7 +218,7 @@ function nutrition(dataByName) {
     })
     .attr('text-anchor', 'middle')
     .text(function(d) {
-        return Math.round(d['sum']) + 'c'
+        return Math.round(d['sum'])
     })
     .classed('text', true)
 
@@ -311,7 +311,7 @@ function sleepHeartRate(dataByName, dateRange) {
         let durationMS = d.end - d.start
         let durationS = durationMS / 1000
         let durationH = durationS / 3600
-        return durationH.toFixed(1) + 'h'
+        return durationH.toFixed(1)
     })
     .classed('text2', true)
     .classed('sleep', true)
@@ -373,7 +373,7 @@ function heartRateVariability(dataByName, dateRange) {
             let date = dateFromHealthExportDateString(d['date'])
             return dateRange(date)
         })
-        .attr('width', 3)
+        .attr('width', 4)
         .attr('y', function(d) {
             return (height - hrvRange(d['qty']))/2
         })
@@ -392,11 +392,24 @@ function moveExerciseStand(dataByName, dateRange, earliestDate, latestDate) {
 
     let hourCount = Math.round(((latestDate - earliestDate) / 1000) / 3600)
 
-    let dimension = width / hourCount
+    let dimensionX = width / hourCount
+    let dimensionY = height / 3
 
     let move = dataByName['active_energy']['data']
     let exercise = dataByName['apple_exercise_time']['data']
-    let stand = dataByName['apple_stand_hour']['data']
+    let stand = dataByName['apple_stand_time']['data']
+
+    let moveScale = d3.scaleLog()
+    .domain([d3.min(move, x => x['qty']), d3.max(move, x => x['qty'])])
+    .range([0.4, 1.0])
+
+    let exerciseScale = d3.scalePow()
+    .domain([d3.min(exercise, x => x['qty']), d3.max(exercise, x => x['qty'])])
+    .range([0.4, 1.0])
+
+    let standScale = d3.scaleLog()
+    .domain([d3.min(stand, x => x['qty']), d3.max(stand, x => x['qty'])])
+    .range([0.4, 1.0])
 
     function dateRoundedToHour(date) {
         var out = new Date(date.getTime())
@@ -409,31 +422,6 @@ function moveExerciseStand(dataByName, dateRange, earliestDate, latestDate) {
         .classed('container', true)
         .attr('viewBox', [0, 0, width, height])
 
-    let emptyHourData = d3.map(d3.range(hourCount), function(h) {
-        var out = new Date(earliestDate.getTime())
-        var hours = out.getHours()
-        var newHours = hours + h
-        out.setHours(newHours)
-        out = dateRoundedToHour(out)
-
-        return out
-    })
-
-    function addEmptyData(className, yIndex) {
-        let emptyClassName = className + '_empty'
-        return container.selectAll('.' + emptyClassName)
-        .data(emptyHourData)
-        .join('rect')
-        .attr('x', function(d) {
-            return dateRange(d)
-        })
-        .attr('y', yIndex * dimension)
-        .attr('width', dimension)
-        .attr('height', dimension)
-        .classed(emptyClassName, true)
-    }
-
-    addEmptyData('active_energy', 0)
     let moveTime = container.selectAll('.active_energy')
         .data(move)
         .join('rect')
@@ -441,25 +429,27 @@ function moveExerciseStand(dataByName, dateRange, earliestDate, latestDate) {
             var date = dateRoundedToHour(dateFromHealthExportDateString(d['date']))
             return dateRange(date)
         })
-        .attr('width', dimension)
-        .attr('height', dimension)
+        .attr('width', dimensionX)
+        .attr('height', dimensionY)
+        .attr('fill-opacity', function(d) {
+            return moveScale(d['qty'])
+        })
         .classed('active_energy', true)
-
-    addEmptyData('apple_exercise_time', 1)
 
     let exerciseTime = container.selectAll('.apple_exercise_time')
         .data(exercise)
         .join('rect')
-        .attr('y', dimension)
         .attr('x', function(d) {
             var date = dateRoundedToHour(dateFromHealthExportDateString(d['date']))
             return dateRange(date)
         })
-        .attr('width', dimension)
-        .attr('height', dimension)
+        .attr('y', dimensionY)
+        .attr('width', dimensionX)
+        .attr('height', dimensionY)
+        .attr('fill-opacity', function(d) {
+            return exerciseScale(d['qty'])
+        })
         .classed('apple_exercise_time', true)
-
-    addEmptyData('apple_stand_hour', 2)
 
     let standHour = container.selectAll('.apple_stand_hour')
         .data(exercise)
@@ -468,9 +458,12 @@ function moveExerciseStand(dataByName, dateRange, earliestDate, latestDate) {
             var date = dateRoundedToHour(dateFromHealthExportDateString(d['date']))
             return dateRange(date)
         })
-        .attr('y', 2 * dimension)
-        .attr('width', dimension)
-        .attr('height', dimension)
+        .attr('y', 2 * dimensionY)
+        .attr('width', dimensionX)
+        .attr('height', dimensionY)
+        .attr('fill-opacity', function(d) {
+            return standScale(d['qty'])
+        })
         .classed('apple_stand_hour', true)
 
     return container.node()

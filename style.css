@@ -3,6 +3,15 @@
 /* - . for classes */
 /* - a b for all b inside a */
 
+/* latin */
+@font-face {
+    font-family: 'Orbitron';
+    font-style: normal;
+    font-weight: 400;
+    src: url(orbitron.woff) format('woff');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
 :root {
     --primary-bg:  #000D2A;
     --secondary-bg: #060040;
@@ -17,12 +26,14 @@
     --orange: #ff4e18ff;
     --violet: #d20085ff;
     --green: #0eac00ff;
+
+    --heart: rgb(251, 80, 56);
 }
 
 body {
     background-color: var(--primary-bg);
     margin: 0;
-    font-family: monospace;
+    font-family: Orbitron;
     text-transform: uppercase;
 }
 
@@ -48,12 +59,12 @@ body {
 
 .text {
     fill: var(--primary-text);
-    font-size: 2.0em;
+    font-size: 1.4em;
 }
 
 .text2 {
     fill: var(--secondary-text);
-    font-size: 1.5em;
+    font-size: 1.2em;
 }
 
 .bar {
@@ -114,7 +125,7 @@ body {
 }
 
 .heart_rate {
-    fill: red;
+    fill: var(--heart);
     animation-name: dot_pulse;
     animation-direction: alternate;
     animation-iteration-count: infinite;
@@ -122,19 +133,19 @@ body {
 }
 
 .heart_rate_variability {
-    fill: red;
+    fill: var(--heart);
 }
 
 .active_energy {
-    fill: purple;
+    fill: rgb(252, 48, 130);
 }
 
 .apple_exercise_time {
-    fill: var(--green);
+    fill: rgb(172, 251, 5);
 }
 
 .apple_stand_hour {
-    fill: blue;
+    fill: rgb(8, 246, 210);
 }
 
 @keyframes dot_pulse {
