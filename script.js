@@ -522,18 +522,21 @@ function weight(dataByName) {
         weight = '?'
     }
 
-    let container = d3.create('svg')
-        .classed('container', true)
+    let container = svgContainer([
+        { 'text' : 'Weight', 'className' : 'weight_body_mass' },
+    ])
+    let svg = container
+        .select('svg')
         .attr('viewBox', [0, 0, dimension, dimension])
     
-    let background = container.append('circle')
+    let background = svg.append('circle')
     .attr('cx', dimension/2)
     .attr('cy', dimension/2)
     .attr('r', dimension/2)
     .classed('glanceBackground', true)
     .classed('weight_body_mass', true)
 
-    let text = container.append('text')
+    let text = svg.append('text')
     .attr('x', dimension/2)
     .attr('y', dimension/2)
     .attr('dy', 5)

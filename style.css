@@ -166,6 +166,7 @@ body {
 }
 
 .weight_body_mass {
+    color: var(--yellow);
     fill: var(--yellow);
     stroke: var(--yellow);
 }
