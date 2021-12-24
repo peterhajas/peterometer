@@ -30,6 +30,10 @@
     --heart: rgb(251, 80, 56);
 }
 
+* {
+    flex-grow: 1;
+}
+
 body {
     background-color: var(--primary-bg);
     margin: 0;
@@ -94,10 +98,6 @@ body {
 
 #glanceContainer {
     flex-grow: 1;
-}
-
-.nutrition {
-    flex-grow: 2;
 }
 
 .calorie_day_container {
