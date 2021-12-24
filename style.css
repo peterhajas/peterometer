@@ -186,7 +186,7 @@ body {
 
 @media (max-width: 1100px) {
     body {
-        flex-direction: column;
+        flex-direction: column-reverse;
     }
 
     .container {
