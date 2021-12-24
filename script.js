@@ -16,6 +16,7 @@ function svgContainer(titles) {
     let titleContainer = container.append('div')
     .classed('titleContainer', true)
     .style('width', 0)
+    .style('padding-bottom', 10)
     .style('color', 'white')
 
     titleContainer.selectAll('h1')
@@ -128,7 +129,6 @@ function nutrition(dataByName) {
     .range([0, barHeight])
 
     let container = svgContainer([
-        { 'text' : 'Nutrition' },
         { 'text' : 'Fat', 'className' : 'total_fat' },
         { 'text' : 'Carbs', 'className' : 'carbo' },
         { 'text' : 'Protein', 'className' : 'protein' },
@@ -283,8 +283,13 @@ function sleepHeartRate(dataByName, dateRange) {
     let heartRateCount = heartRate.length
     let sleepCount = sleep.length
 
-    let container = d3.create('svg')
-        .classed('container', true)
+    let container = svgContainer([
+        { 'text' : 'Sleep' , 'className' : 'sleep' },
+        { 'text' : 'HeartRate' , 'className' : 'heart_rate' }
+    ])
+
+    let svg = container
+        .select('svg')
         .attr('viewBox', [0, 0, width, height + 30])
         .classed('sleepHeartRate', true)
 
@@ -311,8 +316,8 @@ function sleepHeartRate(dataByName, dateRange) {
         asleepData.push(asleep)
     }
 
-    // Add in in-bed and asleep indicators
-    let asleepIndicators = container.selectAll('.sleep')
+    // Add in asleep indicators
+    let asleepIndicators = svg.selectAll('.sleep')
         .data(asleepData)
         .join('g')
         .attr('transform', function(d) {
@@ -358,7 +363,7 @@ function sleepHeartRate(dataByName, dateRange) {
     let lastHeartRate = heartRate[heartRateCount-1]['Avg']
 
     // Add in heart rate readings
-    let heartRateIndicator = container.selectAll('.heart_rate')
+    let heartRateIndicator = svg.selectAll('.heart_rate')
         .data(heartRate)
         .join('circle')
         .attr('cx', function(d) {
@@ -382,8 +387,12 @@ function heartRateVariability(dataByName, dateRange) {
     let height = 80
     let heartRateVariability = dataByName['heart_rate_variability'].data
 
-    let container = d3.create('svg')
-        .classed('container', true)
+    let container = svgContainer([
+        { 'text' : 'HRV', 'className' : 'heart_rate_variability' },
+    ])
+
+    let svg = container
+        .select('svg')
         .attr('viewBox', [0, 0, width, height])
 
     // Find HRV range
@@ -394,7 +403,7 @@ function heartRateVariability(dataByName, dateRange) {
     .range([0, height])
 
     // Add in lines for the HRV
-    let hrvIndicator = container.selectAll('.heart_rate_variability')
+    let hrvIndicator = svg.selectAll('.heart_rate_variability')
         .data(heartRateVariability)
         .join('rect')
         .attr('x', function(d) {
@@ -446,11 +455,16 @@ function moveExerciseStand(dataByName, dateRange, earliestDate, latestDate) {
         return out
     }
 
-    let container = d3.create('svg')
-        .classed('container', true)
+    let container = svgContainer([
+        { 'text' : 'Move', 'className' : 'active_energy' },
+        { 'text' : 'Exercise', 'className' : 'apple_exercise_time' },
+        { 'text' : 'Stand', 'className' : 'apple_stand_time' },
+    ])
+    let svg = container
+        .select('svg')
         .attr('viewBox', [0, 0, width, height])
 
-    let moveTime = container.selectAll('.active_energy')
+    let moveTime = svg.selectAll('.active_energy')
         .data(move)
         .join('rect')
         .attr('x', function(d) {
@@ -464,7 +478,7 @@ function moveExerciseStand(dataByName, dateRange, earliestDate, latestDate) {
         })
         .classed('active_energy', true)
 
-    let exerciseTime = container.selectAll('.apple_exercise_time')
+    let exerciseTime = svg.selectAll('.apple_exercise_time')
         .data(exercise)
         .join('rect')
         .attr('x', function(d) {
@@ -479,7 +493,7 @@ function moveExerciseStand(dataByName, dateRange, earliestDate, latestDate) {
         })
         .classed('apple_exercise_time', true)
 
-    let standHour = container.selectAll('.apple_stand_hour')
+    let standHour = svg.selectAll('.apple_stand_time')
         .data(exercise)
         .join('rect')
         .attr('x', function(d) {
@@ -492,7 +506,7 @@ function moveExerciseStand(dataByName, dateRange, earliestDate, latestDate) {
         .attr('fill-opacity', function(d) {
             return standScale(d['qty'])
         })
-        .classed('apple_stand_hour', true)
+        .classed('apple_stand_time', true)
 
     return container.node()
 }

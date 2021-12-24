@@ -30,10 +30,6 @@
     --heart: rgb(251, 80, 56);
 }
 
-* {
-    flex-grow: 1;
-}
-
 body {
     background-color: var(--primary-bg);
     margin: 0;
@@ -150,18 +146,22 @@ body {
 }
 
 .heart_rate_variability {
+    color: var(--heart);
     fill: var(--heart);
 }
 
 .active_energy {
+    color: rgb(252, 48, 130);
     fill: rgb(252, 48, 130);
 }
 
 .apple_exercise_time {
+    color: rgb(172, 251, 5);
     fill: rgb(172, 251, 5);
 }
 
-.apple_stand_hour {
+.apple_stand_time {
+    color: rgb(8, 246, 210);
     fill: rgb(8, 246, 210);
 }
 
