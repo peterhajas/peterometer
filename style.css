@@ -54,6 +54,8 @@ body {
 }
 
 .container {
+    flex-grow: 1;
+
     border-color: var(--secondary-bg);
     border-width: 5px;
     border-style: solid;
