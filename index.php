@@ -10,7 +10,7 @@ else {
     echo('<script type="module" src="script.js"></script>');
     echo('<link rel="stylesheet" href="style.css" />');
     echo('</head>');
-    echo('<body class="flexHorizontalContainer">');
+    echo('<body>');
     echo('<div id="intakeContainer" class="flexVerticalContainer"></div>');
     echo('<div id="bodyContainer" class="flexVerticalContainer"></div>');
     echo('<div id="glanceContainer" class="flexVerticalContainer"></div>');

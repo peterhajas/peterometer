@@ -32,6 +32,10 @@
 
 body {
     background-color: var(--primary-bg);
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+
     margin: 0;
     font-family: Orbitron;
     text-transform: uppercase;
@@ -177,6 +181,16 @@ body {
     }
     100% {
         opacity: 0.5;
+    }
+}
+
+@media (max-width: 1100px) {
+    body {
+        flex-direction: column;
+    }
+
+    .container {
+        margin: 5px;
     }
 }
 
