@@ -106,6 +106,11 @@ function aggregateDataByDay(metricItem) {
     return out
 }
 
+function prettyUnit(unitName) {
+    var out = unitName.replace('count', '')
+    return out
+}
+
 function nutrition(dataByName) {
     // Some constants
     let width = 500
@@ -512,37 +517,37 @@ function moveExerciseStand(dataByName, dateRange, earliestDate, latestDate) {
     return container.node()
 }
 
-function weight(dataByName) {
+function glanceTextElement(dataByName, name, classKey) {
     let dimension = 100
 
-    var weight = dataByName['weight_body_mass']
-    if (weight != null) {
-        weight = weight['data'][weight['data'].length-1]['qty']
-    }
-    else {
-        weight = '?'
+    // Grab the item
+    let metric = dataByName[classKey];
+    let unit = prettyUnit(metric['units'])
+    let data = metric['data']
+
+    var value = '?'
+    if (data.length > 0) {
+        let lastElement = data[data.length - 1]
+        value = lastElement.Avg || lastElement.qty
+        value = Number.parseFloat(value).toPrecision(2)
     }
 
+    value = value + unit
+
     let container = svgContainer([
-        { 'text' : 'Weight', 'className' : 'weight_body_mass' },
+        { 'text' : name, 'className' : classKey },
     ])
     let svg = container
         .select('svg')
-        .attr('viewBox', [0, 0, dimension, dimension])
-    
-    let background = svg.append('circle')
-    .attr('cx', dimension/2)
-    .attr('cy', dimension/2)
-    .attr('r', dimension/2)
-    .classed('glanceBackground', true)
-    .classed('weight_body_mass', true)
+        .attr('viewBox', [0, 0, dimension, dimension/2])
 
     let text = svg.append('text')
     .attr('x', dimension/2)
-    .attr('y', dimension/2)
+    .attr('y', dimension/4)
     .attr('dy', 5)
     .attr('text-anchor', 'middle')
-    .text(weight)
+    .text(value)
+    .classed(classKey, true)
 
     return container.node()
 }
@@ -579,13 +584,9 @@ function update(dataContents) {
     for (const itemIndex in metrics) {
         let metricItem = metrics[itemIndex]
         let data = metricItem['data']
-        if (data.length > 0) {
-            let name = metricItem['name']
-            dataByName[name] = metricItem
-        }
+        let name = metricItem['name']
+        dataByName[name] = metricItem
     }
-
-    console.log(dataByName)
 
     let intakeContainer = document.getElementById('intakeContainer')
     let bodyContainer = document.getElementById('bodyContainer')
@@ -597,7 +598,11 @@ function update(dataContents) {
     bodyContainer.appendChild(moveExerciseStand(dataByName, dateRange, earliestDate, latestDate))
     bodyContainer.appendChild(heartRateVariability(dataByName, dateRange))
 
-    glanceContainer.appendChild(weight(dataByName))
+    glanceContainer.appendChild(glanceTextElement(dataByName, 'HeartRate', 'heart_rate'))
+    glanceContainer.appendChild(glanceTextElement(dataByName, 'Weight', 'weight_body_mass'))
+    glanceContainer.appendChild(glanceTextElement(dataByName, 'Walking Speed', 'walking_speed'))
+    glanceContainer.appendChild(glanceTextElement(dataByName, 'Blood O2', 'blood_oxygen_saturation'))
+    glanceContainer.appendChild(glanceTextElement(dataByName, 'Breaths', 'respiratory_rate'))
 }
 
 window.onload = function() {

@@ -41,6 +41,10 @@ body {
     text-transform: uppercase;
 }
 
+text {
+    fill: white;
+}
+
 .flexHorizontalContainer {
     display: flex;
     flex-direction: row;
