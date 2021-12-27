@@ -519,6 +519,12 @@ function moveExerciseStand(dataByName, dateRange, earliestDate, latestDate) {
 
 function glanceTextElement(dataByName, name, classKey) {
     let dimension = 100
+    let container = svgContainer([
+        { 'text' : name, 'className' : classKey },
+    ])
+    let svg = container
+        .select('svg')
+        .attr('viewBox', [0, 0, dimension, dimension/2])
 
     // Grab the item
     let metric = dataByName[classKey];
@@ -533,13 +539,6 @@ function glanceTextElement(dataByName, name, classKey) {
     }
 
     value = value + unit
-
-    let container = svgContainer([
-        { 'text' : name, 'className' : classKey },
-    ])
-    let svg = container
-        .select('svg')
-        .attr('viewBox', [0, 0, dimension, dimension/2])
 
     let text = svg.append('text')
     .attr('x', dimension/2)
