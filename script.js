@@ -640,8 +640,18 @@ function update(dataContents) {
     glanceContainer.appendChild(glanceTextElement(dataByName, 'Breaths', 'respiratory_rate'))
 }
 
+async function doLoad() {
+    let request = new Request('data.php')
+    fetch(request)
+    .then(response => {
+        return response.json()
+    })
+    .then(json => {
+        update(json)
+    })
+}
+
 window.onload = function() {
-    let dataElement = document.getElementById('data')
-    data = JSON.parse(dataElement.innerHTML)
-    update(data)
+    doLoad()
+
 }

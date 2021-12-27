@@ -17,10 +17,6 @@ else {
     echo('<div id="bodyContainer" class="flexVerticalContainer"></div>');
     echo('<div id="glanceContainer"></div>');
     echo('</div>');
-    echo('<div id="data">');
-    $output = file_get_contents('test.json');
-    echo($output);
-    echo('</div>');
     echo('</body>');
 }
 ?>
