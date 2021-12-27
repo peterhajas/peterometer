@@ -111,6 +111,38 @@ function prettyUnit(unitName) {
     return out
 }
 
+function topBar(latestDate) {
+    // Emit last updated date
+    let now = (new Date()).getTime()
+    let data = latestDate.getTime()
+
+    let deltaMS = now - data
+    let deltaS = deltaMS / 1000
+
+    let deltaMinutes = deltaS / 60
+    let deltaHours = deltaS / 3600
+    let deltaDays = deltaS / (3600 * 24)
+
+    var deltaTimeText = ""
+    if (deltaDays > 1) {
+        deltaTimeText = Math.round(deltaDays) + " days"
+    }
+    else if (deltaHours > 1) {
+        deltaTimeText = Math.round(deltaHours) + " hours"
+    }
+    else if (deltaMinutes > 1) {
+        deltaTimeText = Math.round(deltaMinutes) + " minutes"
+    }
+
+    deltaTimeText = "Updated " + deltaTimeText + " ago"
+
+    let titlebar = d3.create('div')
+    .append('h3')
+    .text(deltaTimeText)
+
+    return titlebar.node()
+}
+
 function nutrition(dataByName) {
     // Some constants
     let width = 500
@@ -574,6 +606,7 @@ function update(dataContents) {
             }
         }
     }
+
     let dateRange = d3.scaleTime()
         .domain([earliestDate, latestDate])
         .range([0, 1000])
@@ -587,9 +620,12 @@ function update(dataContents) {
         dataByName[name] = metricItem
     }
 
+    let topContainer = document.getElementById('topContainer')
     let intakeContainer = document.getElementById('intakeContainer')
     let bodyContainer = document.getElementById('bodyContainer')
     let glanceContainer = document.getElementById('glanceContainer')
+
+    topContainer.appendChild(topBar(latestDate))
 
     intakeContainer.appendChild(nutrition(dataByName))
 

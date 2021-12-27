@@ -32,8 +32,9 @@
 
 body {
     background-color: var(--primary-bg);
+    color: white;
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     align-items: stretch;
 
     margin: 0;

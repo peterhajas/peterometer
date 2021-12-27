@@ -11,9 +11,12 @@ else {
     echo('<link rel="stylesheet" href="style.css" />');
     echo('</head>');
     echo('<body>');
+    echo('<div id="topContainer" class="flexVerticalContainer"></div>');
+    echo('<div id="dataContainer" class="flexHorizontalContainer">');
     echo('<div id="intakeContainer" class="flexVerticalContainer"></div>');
     echo('<div id="bodyContainer" class="flexVerticalContainer"></div>');
     echo('<div id="glanceContainer"></div>');
+    echo('</div>');
     echo('<div id="data">');
     $output = file_get_contents('test.json');
     echo($output);
