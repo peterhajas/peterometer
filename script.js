@@ -84,8 +84,7 @@ function aggregateDataByDay(metricItem) {
     var currentDateTime = 0
     var currentItem = null
 
-    for (var datumIndex in data) {
-        let datum = data[datumIndex]
+    for (var datum of data) {
         var datumDate = dateStrippingTimeComponents(dateFromHealthExportDateString(datum['date']))
         if (currentDateTime != datumDate.getTime()) {
             if (currentItem != null) {
@@ -335,8 +334,7 @@ function sleepHeartRate(dataByName, dateRange) {
     // dictionaries have 'start' and 'end' dates
     var inBedData = new Array()
     var asleepData = new Array()
-    for (var sleepIndex in sleep) {
-        let sleepItem = sleep[sleepIndex]
+    for (var sleepItem of sleep) {
         let inBedStart = dateFromHealthExportDateString(sleepItem['inBedStart'])
         let inBedEnd = dateFromHealthExportDateString(sleepItem['inBedEnd'])
         let sleepStart = dateFromHealthExportDateString(sleepItem['sleepStart'])
@@ -592,10 +590,9 @@ function update(dataContents) {
     var earliestDate = new Date()
     var latestDate = new Date()
     latestDate.setFullYear(1000)
-    for (const itemIndex in metrics) {
-        let item = metrics[itemIndex]['data']
-        for (const dataIndex in item) {
-            let dataEntry = item[dataIndex]
+    for (const item of metrics) {
+        let itemData = item['data']
+        for (const dataEntry of itemData) {
             let dateString = dataEntry['date']
             let date = dateFromHealthExportDateString(dateString)
             if (date < earliestDate) {
@@ -613,8 +610,7 @@ function update(dataContents) {
 
     // Group data by name
     var dataByName = { }
-    for (const itemIndex in metrics) {
-        let metricItem = metrics[itemIndex]
+    for (const metricItem of metrics) {
         let data = metricItem['data']
         let name = metricItem['name']
         dataByName[name] = metricItem
