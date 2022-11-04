@@ -52,12 +52,10 @@ function dateFromHealthExportDateString(dateString) {
 
     var outDate = new Date(date)
 
+    outDate.setDate(outDate.getDate() + 1)
     outDate.setHours(Number.parseInt(hour))
     outDate.setMinutes(Number.parseInt(minute))
     outDate.setSeconds(Number.parseInt(second))
-    outDate.setDate(Number.parseInt(day))
-    outDate.setMonth(Number.parseInt(month)-1)
-    outDate.setFullYear(Number.parseInt(year))
 
     return outDate
 }
@@ -589,8 +587,12 @@ function update(dataContents) {
     // Compute date range
     var earliestDate = new Date()
     var latestDate = new Date()
+    let now = new Date()
     latestDate.setFullYear(1000)
     for (const item of metrics) {
+        if (item.name != 'active_energy') {
+            break
+        }
         let itemData = item['data']
         for (const dataEntry of itemData) {
             let dateString = dataEntry['date']
@@ -599,7 +601,9 @@ function update(dataContents) {
                 earliestDate = date
             }
             if (date > latestDate)  {
-                latestDate = date
+                if (latestDate.getTime() < now.getTime()) {
+                    latestDate = date
+                }
             }
         }
     }
