@@ -50,14 +50,14 @@ function dateFromHealthExportDateString(dateString) {
 
     let gmtOffset = dateString.split(' ')[2]
 
-    var outDate = new Date()
+    var outDate = new Date(date)
 
-    outDate.setDate(Number.parseInt(day))
-    outDate.setMonth(Number.parseInt(month)-1)
-    outDate.setFullYear(Number.parseInt(year))
     outDate.setHours(Number.parseInt(hour))
     outDate.setMinutes(Number.parseInt(minute))
     outDate.setSeconds(Number.parseInt(second))
+    outDate.setDate(Number.parseInt(day))
+    outDate.setMonth(Number.parseInt(month)-1)
+    outDate.setFullYear(Number.parseInt(year))
 
     return outDate
 }
