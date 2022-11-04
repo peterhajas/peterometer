@@ -1,4 +1,4 @@
 <?php
-$output = file_get_contents('test.json');
+$output = file_get_contents('data.json');
 echo($output);
 ?>
