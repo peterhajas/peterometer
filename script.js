@@ -563,7 +563,7 @@ function glanceTextElement(dataByName, name, classKey) {
     if (data.length > 0) {
         let lastElement = data[data.length - 1]
         value = lastElement.Avg || lastElement.qty
-        value = Number.parseFloat(value).toPrecision(2)
+        value = Math.round(Number.parseFloat(value))
     }
 
     value = value + unit
