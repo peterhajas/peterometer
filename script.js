@@ -114,16 +114,23 @@ function activityRings(move, exercise, stand) {
     let exerciseRadius = exercise.sum / exerciseGoal * Math.PI * 2
     let standRadius = stand.sum / standGoal * Math.PI * 2
 
-    function activityRing(arc, level, color, rotateFunc) {
+    function activityRing(arc, level, color, rotated) {
         let geo = new THREE.TorusGeometry(100 - (level * 30), 10, 80, 60, arc)
         let material = new THREE.MeshPhysicalMaterial({color: new THREE.Color(color)})
         let node = new THREE.Mesh(geo, material)
+
+        let rotate = new TWEEN.Tween(node.rotation)
+        .to(rotated, 5000 + (level * 500))
+        .repeat(Infinity)
+        .start()
+
         return node
     }
 
-    activity.add(activityRing(moveRadius, 0, specs.colors.active_energy, function() {}))
-    activity.add(activityRing(exerciseRadius, 1, specs.colors.apple_exercise_time, function() {}))
-    activity.add(activityRing(standRadius, 2, specs.colors.apple_stand_hour, function() {}))
+    let dest = Math.PI * 2
+    activity.add(activityRing(moveRadius, 0, specs.colors.active_energy, { x : dest, y: dest }))
+    activity.add(activityRing(exerciseRadius, 1, specs.colors.apple_exercise_time, { y : dest, z: dest }))
+    activity.add(activityRing(standRadius, 2, specs.colors.apple_stand_hour, { z : dest, x: dest }))
 
     return activity
 }
