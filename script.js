@@ -19,7 +19,7 @@ var state = { }
 
 let scene = new THREE.Scene()
 scene.background = new THREE.Color(specs.colors.background)
-let camera = new THREE.PerspectiveCamera(80, window.innerWidth / window.innerHeight, 0.1, 10000)
+let camera = new THREE.OrthographicCamera(0,0,0,0,0,10000)
 let container = new THREE.Group()
 scene.add(container)
 let renderer = new THREE.WebGLRenderer({
@@ -153,6 +153,10 @@ function activityRings(move, exercise, stand) {
 
 function layout() {
     camera.position.z = 1000 * window.innerHeight / window.innerWidth
+    camera.top = -window.innerHeight / 2
+    camera.bottom = window.innerHeight / 2
+    camera.left = -window.innerWidth / 2
+    camera.right = window.innerWidth / 2
     camera.aspect = window.innerWidth / window.innerHeight
     camera.updateProjectionMatrix()
     renderer.setSize(window.innerWidth, window.innerHeight)
