@@ -106,16 +106,20 @@ function prettyUnit(unitName) {
     return out
 }
 
-function outlinedNode(geo, color) {
-    let out = new THREE.Group()
-    let regularMaterial = new THREE.MeshPhysicalMaterial({color: new THREE.Color(color)})
+function linesNode(geo, color) {
     let linesMaterial = new THREE.LineBasicMaterial({color: new THREE.Color(color)})
     linesMaterial.transparent = true
     linesMaterial.linewidth = 4
-    regularMaterial.opacity = 0.2
     let lines = new THREE.LineSegments(geo, linesMaterial)
+    return lines
+}
+
+function outlinedNode(geo, color) {
+    let out = new THREE.Group()
+    let regularMaterial = new THREE.MeshPhysicalMaterial({color: new THREE.Color(color)})
+    regularMaterial.opacity = 0.2
     let regular = new THREE.Mesh(geo, regularMaterial)
-    out.add(lines)
+    out.add(linesNode(geo, color))
     out.add(regular)
     return out
 }
@@ -206,7 +210,6 @@ function update(dataContents) {
         let rings = activityRings(move[i], exercise[i], stand[i])
         rings.position.x = i * 300 +150
         rings.position.x -= 300 * (move.length/2)
-        console.log(rings.position.x)
         ringsContainer.add(rings)
     }
 
