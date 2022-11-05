@@ -108,7 +108,7 @@ function prettyUnit(unitName) {
 }
 
 // Returns a group representing activity rings
-function activityRings(index, move, exercise, stand) {
+function activityRings(move, exercise, stand) {
     let activity = new THREE.Group()
     let moveRadius = move.sum / moveGoal * Math.PI * 2
     let exerciseRadius = exercise.sum / exerciseGoal * Math.PI * 2
@@ -117,12 +117,14 @@ function activityRings(index, move, exercise, stand) {
     function activityRing(arc, level, color, rotated) {
         let geo = new THREE.TorusGeometry(100 - (level * 30), 10, 80, 60, arc)
         let material = new THREE.MeshPhysicalMaterial({color: new THREE.Color(color)})
+        material.transparent = true
         let node = new THREE.Mesh(geo, material)
 
         let rotate = new TWEEN.Tween(node.rotation)
-        .to(rotated, 5000 + (level * 500))
+        .to(rotated, 5000 + (Math.random() * 1000))
         .repeat(Infinity)
-        .delay(index * 200)
+        .delay(Math.random() * 1000)
+        .repeatDelay(0)
         .start()
 
         return node
@@ -153,7 +155,7 @@ function update(dataContents) {
     console.log(move.length)
 
     for (var i = 0; i < move.length; i++) {
-        let rings = activityRings(i, move[i], exercise[i], stand[i])
+        let rings = activityRings(move[i], exercise[i], stand[i])
         rings.position.x += (i - move.length/2) * 300
         container.add(rings)
     }
