@@ -7,7 +7,8 @@ if (strlen($input) > 0) {
 }
 else {
     echo('<head>');
-    echo('<script src="d3.v7.min.js"></script>');
+    echo('<script src="tween.js"></script>');
+    echo('<script src="three.js"></script>');
     echo('<script type="module" src="script.js"></script>');
     echo('<link rel="stylesheet" href="style.css" />');
     echo('</head>');
