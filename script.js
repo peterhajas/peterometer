@@ -112,9 +112,9 @@ function outlinedNode(geo, color) {
     // return out()
 }
 
-function cube() {
+function cube(color) {
     let geo = new THREE.BoxGeometry(100, 100, 100)
-    let mat = new THREE.MeshBasicMaterial({color: 0xff0000})
+    let mat = new THREE.MeshBasicMaterial({color: new THREE.Color(color)})
     return new THREE.Mesh(geo, mat)
 }
 
@@ -152,21 +152,32 @@ function activityRings(move, exercise, stand) {
 }
 
 function layout() {
-    camera.position.z = 1000 * window.innerHeight / window.innerWidth
-    camera.top = -window.innerHeight / 2
-    camera.bottom = window.innerHeight / 2
-    camera.left = -window.innerWidth / 2
-    camera.right = window.innerWidth / 2
-    camera.aspect = window.innerWidth / window.innerHeight
-    camera.updateProjectionMatrix()
-    renderer.setSize(window.innerWidth, window.innerHeight)
-    renderer.domElement.width = window.innerWidth
-    renderer.domElement.height = window.innerHeight
+    let width = window.innerWidth
+    let height = window.innerHeight
 
-    state.minX.position.x = -window.innerWidth/2
-    state.maxX.position.x = window.innerWidth/2
-    state.minY.position.y = -window.innerHeight/2
-    state.maxY.position.y = window.innerHeight/2
+    container.position.x = -width/2
+    container.position.y = -height/2
+    // container.rotation.x = Math.PI
+
+    // update camera and renderer
+    camera.position.z = 1000 * height / width
+    camera.top = -height / 2
+    camera.bottom = height / 2
+    camera.left = -width / 2
+    camera.right = width / 2
+    camera.aspect = width / height
+    camera.updateProjectionMatrix()
+    renderer.setSize(width, height)
+    renderer.domElement.width = width
+    renderer.domElement.height = height
+
+    state.upperRight.position.x = width
+    state.lowerLeft.position.y = height
+    state.lowerRight.position.x = width
+    state.lowerRight.position.y = height
+
+    state.ringsContainer.position.x = width/2
+    state.ringsContainer.position.y = height - 300/2
 }
 
 function update(dataContents) {
@@ -183,26 +194,33 @@ function update(dataContents) {
     let exercise = aggregateDataByDay(metricsByType.apple_exercise_time)
     let stand = aggregateDataByDay(metricsByType.apple_stand_hour)
 
+    let ringsContainer = new THREE.Group()
+    container.add(ringsContainer)
+
     for (var i = 0; i < move.length; i++) {
         let rings = activityRings(move[i], exercise[i], stand[i])
-        rings.position.x += (i - move.length/2) * 300
-        container.add(rings)
+        rings.position.x = i * 300 +150
+        rings.position.x -= 300 * (move.length/2)
+        console.log(rings.position.x)
+        ringsContainer.add(rings)
     }
 
-    let minX = cube()
-    let maxX = cube()
-    let minY = cube()
-    let maxY = cube()
+    state.ringsContainer = ringsContainer
 
-    container.add(minX)
-    container.add(maxX)
-    container.add(minY)
-    container.add(maxY)
+    let upperLeft = cube('red')
+    let upperRight = cube('green')
+    let lowerLeft = cube('blue')
+    let lowerRight = cube('yellow')
+
+    container.add(upperLeft)
+    container.add(upperRight)
+    container.add(lowerLeft)
+    container.add(lowerRight)
     
-    state.minX = minX
-    state.maxX = maxX
-    state.minY = minY
-    state.maxY = maxY
+    state.upperLeft = upperLeft
+    state.upperRight = upperRight
+    state.lowerLeft = lowerLeft
+    state.lowerRight = lowerRight
 
     layout()
 }
