@@ -107,9 +107,17 @@ function prettyUnit(unitName) {
 }
 
 function outlinedNode(geo, color) {
-    // let out = new THREE.Group()
-    // let regularMaterial = new THREE.
-    // return out()
+    let out = new THREE.Group()
+    let regularMaterial = new THREE.MeshPhysicalMaterial({color: new THREE.Color(color)})
+    let linesMaterial = new THREE.LineBasicMaterial({color: new THREE.Color(color)})
+    linesMaterial.transparent = true
+    linesMaterial.linewidth = 4
+    regularMaterial.opacity = 0.2
+    let lines = new THREE.LineSegments(geo, linesMaterial)
+    let regular = new THREE.Mesh(geo, regularMaterial)
+    out.add(lines)
+    out.add(regular)
+    return out
 }
 
 function cube(color) {
@@ -127,11 +135,8 @@ function activityRings(move, exercise, stand) {
 
     function activityRing(arc, level, color, rotated) {
         let clampedArc = Math.min(arc, Math.PI * 2)
-        let geo = new THREE.TorusGeometry(100 - (level * 30), 10, 80, 60, clampedArc)
-        let material = new THREE.MeshPhysicalMaterial({color: new THREE.Color(color)})
-        material.transparent = true
-        material.opacity = 0.5
-        let node = new THREE.Mesh(geo, material)
+        let geo = new THREE.TorusGeometry(100 - (level * 30), 10, 8, 16 * (arc / Math.PI*2), clampedArc)
+        let node = outlinedNode(geo, color)
 
         let rotate = new TWEEN.Tween(node.rotation)
         .to(rotated, 5000 + (Math.random() * 1000))
