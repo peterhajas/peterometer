@@ -108,7 +108,7 @@ function prettyUnit(unitName) {
 }
 
 // Returns a group representing activity rings
-function activityRings(move, exercise, stand) {
+function activityRings(index, move, exercise, stand) {
     let activity = new THREE.Group()
     let moveRadius = move.sum / moveGoal * Math.PI * 2
     let exerciseRadius = exercise.sum / exerciseGoal * Math.PI * 2
@@ -122,6 +122,7 @@ function activityRings(move, exercise, stand) {
         let rotate = new TWEEN.Tween(node.rotation)
         .to(rotated, 5000 + (level * 500))
         .repeat(Infinity)
+        .delay(index * 200)
         .start()
 
         return node
@@ -149,7 +150,13 @@ function update(dataContents) {
     let exercise = aggregateDataByDay(metricsByType.apple_exercise_time)
     let stand = aggregateDataByDay(metricsByType.apple_stand_hour)
 
-    container.add(activityRings(move[0], exercise[0], stand[0]))
+    console.log(move.length)
+
+    for (var i = 0; i < move.length; i++) {
+        let rings = activityRings(i, move[i], exercise[i], stand[i])
+        rings.position.x += (i - move.length/2) * 300
+        container.add(rings)
+    }
 }
 
 async function doLoad() {
