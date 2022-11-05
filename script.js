@@ -6,9 +6,7 @@ let moveGoal = 440
 let exerciseGoal = 30
 let standGoal = 12
 
-let specs = {
-
-}
+let specs = { }
 
 specs.colors = {
     "active_energy" : "rgb(252, 48, 130)",
@@ -17,10 +15,11 @@ specs.colors = {
     "background" : "#000d2a"
 }
 
+var state = { }
+
 let scene = new THREE.Scene()
 scene.background = new THREE.Color(specs.colors.background)
 let camera = new THREE.PerspectiveCamera(80, window.innerWidth / window.innerHeight, 0.1, 10000)
-camera.position.z = 1000
 let container = new THREE.Group()
 scene.add(container)
 let renderer = new THREE.WebGLRenderer({
@@ -107,6 +106,18 @@ function prettyUnit(unitName) {
     return out
 }
 
+function outlinedNode(geo, color) {
+    // let out = new THREE.Group()
+    // let regularMaterial = new THREE.
+    // return out()
+}
+
+function cube() {
+    let geo = new THREE.BoxGeometry(100, 100, 100)
+    let mat = new THREE.MeshBasicMaterial({color: 0xff0000})
+    return new THREE.Mesh(geo, mat)
+}
+
 // Returns a group representing activity rings
 function activityRings(move, exercise, stand) {
     let activity = new THREE.Group()
@@ -140,6 +151,20 @@ function activityRings(move, exercise, stand) {
     return activity
 }
 
+function layout() {
+    camera.position.z = 1000 * window.innerHeight / window.innerWidth
+    camera.aspect = window.innerWidth / window.innerHeight
+    camera.updateProjectionMatrix()
+    renderer.setSize(window.innerWidth, window.innerHeight)
+    renderer.domElement.width = window.innerWidth
+    renderer.domElement.height = window.innerHeight
+
+    state.minX.position.x = -window.innerWidth/2
+    state.maxX.position.x = window.innerWidth/2
+    state.minY.position.y = -window.innerHeight/2
+    state.maxY.position.y = window.innerHeight/2
+}
+
 function update(dataContents) {
     let data = dataContents['data']
     let metrics = data['metrics']
@@ -154,13 +179,28 @@ function update(dataContents) {
     let exercise = aggregateDataByDay(metricsByType.apple_exercise_time)
     let stand = aggregateDataByDay(metricsByType.apple_stand_hour)
 
-    console.log(move.length)
-
     for (var i = 0; i < move.length; i++) {
         let rings = activityRings(move[i], exercise[i], stand[i])
         rings.position.x += (i - move.length/2) * 300
         container.add(rings)
     }
+
+    let minX = cube()
+    let maxX = cube()
+    let minY = cube()
+    let maxY = cube()
+
+    container.add(minX)
+    container.add(maxX)
+    container.add(minY)
+    container.add(maxY)
+    
+    state.minX = minX
+    state.maxX = maxX
+    state.minY = minY
+    state.maxY = maxY
+
+    layout()
 }
 
 async function doLoad() {
@@ -184,3 +224,5 @@ window.onload = function() {
     doLoad()
     animate()
 }
+
+window.onresize = layout
