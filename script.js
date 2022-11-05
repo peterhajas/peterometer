@@ -110,14 +110,16 @@ function prettyUnit(unitName) {
 // Returns a group representing activity rings
 function activityRings(move, exercise, stand) {
     let activity = new THREE.Group()
-    let moveRadius = move.sum / moveGoal * Math.PI * 2
-    let exerciseRadius = exercise.sum / exerciseGoal * Math.PI * 2
-    let standRadius = stand.sum / standGoal * Math.PI * 2
+    let moveArc = move.sum / moveGoal * Math.PI * 2
+    let exerciseArc = exercise.sum / exerciseGoal * Math.PI * 2
+    let standArc = stand.sum / standGoal * Math.PI * 2
 
     function activityRing(arc, level, color, rotated) {
-        let geo = new THREE.TorusGeometry(100 - (level * 30), 10, 80, 60, arc)
+        let clampedArc = Math.min(arc, Math.PI * 2)
+        let geo = new THREE.TorusGeometry(100 - (level * 30), 10, 80, 60, clampedArc)
         let material = new THREE.MeshPhysicalMaterial({color: new THREE.Color(color)})
         material.transparent = true
+        material.opacity = 0.5
         let node = new THREE.Mesh(geo, material)
 
         let rotate = new TWEEN.Tween(node.rotation)
@@ -131,9 +133,9 @@ function activityRings(move, exercise, stand) {
     }
 
     let dest = Math.PI * 2
-    activity.add(activityRing(moveRadius, 0, specs.colors.active_energy, { x : dest, y: dest }))
-    activity.add(activityRing(exerciseRadius, 1, specs.colors.apple_exercise_time, { y : dest, z: dest }))
-    activity.add(activityRing(standRadius, 2, specs.colors.apple_stand_hour, { z : dest, x: dest }))
+    activity.add(activityRing(moveArc, 0, specs.colors.active_energy, { x : dest, y: dest }))
+    activity.add(activityRing(exerciseArc, 1, specs.colors.apple_exercise_time, { y : dest, z: dest }))
+    activity.add(activityRing(standArc, 2, specs.colors.apple_stand_hour, { z : dest, x: dest }))
 
     return activity
 }
