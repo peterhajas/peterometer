@@ -138,7 +138,6 @@ function prettyUnit(unitName) {
 
 function linesNode(geo, color) {
     let linesMaterial = new THREE.LineBasicMaterial({color: new THREE.Color(color)})
-    linesMaterial.transparent = true
     linesMaterial.linewidth = 4
     let lines = new THREE.LineSegments(geo, linesMaterial)
     return lines
@@ -146,9 +145,9 @@ function linesNode(geo, color) {
 
 function outlinedNode(geo, color) {
     let out = new THREE.Group()
-    let regularMaterial = new THREE.MeshPhysicalMaterial({color: new THREE.Color(color)})
+    let regularMaterial = new THREE.MeshPhysicalMaterial({color: new THREE.Color(color), side: THREE.DoubleSide})
     regularMaterial.transparent = true
-    regularMaterial.opacity = 0.2
+    regularMaterial.opacity = 0.8
     let regular = new THREE.Mesh(geo, regularMaterial)
     out.add(linesNode(geo, color))
     out.add(regular)
@@ -163,9 +162,9 @@ function cube(color) {
 
 // Returns a group representing activity rings
 function activityRings(move, exercise, stand) {
-    let activity = outlinedNode(new THREE.SphereGeometry(120, 24, 24), "rgb(100, 100, 100)")
+    let activity = linesNode(new THREE.SphereGeometry(120, 24, 24), "rgb(100, 100, 100)")
+    activity = new THREE.Group()
     activity.userData.hitTest = true
-    activity.rotation.x = Math.PI / 2
     let moveArc = move.sum / moveGoal * Math.PI * 2
     let exerciseArc = exercise.sum / exerciseGoal * Math.PI * 2
     let standArc = stand.sum / standGoal * Math.PI * 2
@@ -174,13 +173,7 @@ function activityRings(move, exercise, stand) {
         let clampedArc = Math.min(arc, Math.PI * 2)
         let geo = new THREE.TorusGeometry(100 - (level * 30), 10, 8, 16 * (arc / Math.PI*2), clampedArc)
         let node = outlinedNode(geo, color)
-
-        let rotate = new TWEEN.Tween(node.rotation)
-        .to(rotated, 5000 + (Math.random() * 1000))
-        .repeat(Infinity)
-        .delay(Math.random() * 1000)
-        .repeatDelay(0)
-        .start()
+        node.rotation.z = -Math.PI/2
 
         return node
     }
@@ -195,29 +188,25 @@ function activityRings(move, exercise, stand) {
 
 function waterIndicator(data) {
     let water = new THREE.Group()
-    let goal = outlinedNode(new THREE.CylinderGeometry(50, 50, waterGoal, 20), "rgb(200, 200, 200)")
+    let goal = linesNode(new THREE.CylinderGeometry(50, 50, waterGoal, 20), "rgb(200, 200, 200)")
     water.add(goal)
     let current = outlinedNode(new THREE.CylinderGeometry(40, 40, data.sum, 20), "rgb(53, 141, 220)")
     water.add(current)
 
-    let rotate = new TWEEN.Tween(water.rotation)
-    .to({
-        x: Math.PI * 2,
-        y: Math.PI * 4,
-        z: Math.PI * 6 
-    }, 8000)
-    .repeat(Infinity)
-    .delay(Math.random() * 1000)
-    .repeatDelay(0)
-    .start()
-
     return water
 }
 
-function nutritionIndicator(fat, carb, protein, kcal) {
+function nutritionIndicator(fat, carb, protein, kcal, cholesterol, sugar, fiber, saturated, sodium) {
+    // also needs:
+    // dietary_cholesterol
+    // dietary_sugar
+    // fiber
+    // saturated_fat
+    // sodium
+    
     let nutrition = new THREE.Group()
 
-    let goal = outlinedNode(new THREE.BoxGeometry(50, 200, 50), "rgb(200, 200, 200)")
+    let goal = linesNode(new THREE.BoxGeometry(85, 200, 85, 3, 3, 3), "rgb(200, 200, 200)")
     nutrition.add(goal)
 
     function kcalsToUnits(kcals) {
@@ -261,16 +250,13 @@ function nutritionIndicator(fat, carb, protein, kcal) {
     carbNode.position.y = fatNode.position.y + kcalsToUnits(fatCalories)/2 + kcalsToUnits(carbCalories)/2
     proteinNode.position.y = carbNode.position.y + kcalsToUnits(carbCalories)/2 + kcalsToUnits(proteinCalories)/2
 
-    let rotate = new TWEEN.Tween(nutrition.rotation)
-    .to({
-        x: Math.PI * 2,
-        y: Math.PI * 4,
-        z: Math.PI * 6 
-    }, 8000)
-    .repeat(Infinity)
-    .delay(Math.random() * 1000)
-    .repeatDelay(0)
-    .start()
+    let totalSodium = (sodium == null) ? 0 : sodium.sum
+    let sodiumNode = outlinedNode(new THREE.IcosahedronGeometry(totalSodium/300), "white")
+    sodiumNode.position.x = 80
+    let sodiumContainer = new THREE.Group()
+    sodiumContainer.add(sodiumNode)
+
+    nutrition.add(sodiumContainer)
 
     return nutrition
 }
@@ -336,6 +322,7 @@ function update(dataContents) {
     var offsetY = 0
     for (var day of daysSorted) {
         let dayData = metricsByDay[day]
+        console.log(dayData)
         let dayContainer = new THREE.Group()
         container.add(dayContainer)
         let rings = activityRings(dayData.active_energy, dayData.apple_exercise_time, dayData.apple_stand_hour)
@@ -345,7 +332,15 @@ function update(dataContents) {
         water.position.x = 300
         dayContainer.add(water)
 
-        let nutrition = nutritionIndicator(dayData.total_fat, dayData.carbohydrates, dayData.protein, dayData.dietary_energy)
+        let nutrition = nutritionIndicator(dayData.total_fat,
+            dayData.carbohydrates,
+            dayData.protein,
+            dayData.dietary_energy,
+            dayData.dietary_cholesterol,
+            dayData.dietary_sugar,
+            dayData.fiber,
+            dayData.saturated_fat,
+            dayData.sodium)
         nutrition.position.x = 500
         dayContainer.add(nutrition)
 
