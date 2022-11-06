@@ -213,8 +213,6 @@ function layout() {
 
     state.ringsContainer.position.x = width/2
     state.ringsContainer.position.y = height - 300/2
-
-    console.log(state.hitObjects)
 }
 
 function update(dataContents) {
