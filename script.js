@@ -199,6 +199,29 @@ function update(dataContents) {
         metricsByType[metric.name] = metric
     }
 
+    var metricsByDay = {}
+    for (var metricType of Object.keys(metricsByType)) {
+        let metric = metricsByType[metricType]
+        let aggregated = aggregateDataByDay(metric)
+        for (var day of aggregated) {
+            if (metricsByDay[day.date] == null) {
+                metricsByDay[day.date] = { }
+            }
+            metricsByDay[day.date][metricType] = day
+        }
+    }
+
+    let daysSorted = Object.keys(metricsByDay)
+    daysSorted.sort((a, b) => {
+        let aDate = new Date(a)
+        let bDate = new Date(b)
+        return aDate.getTime() > bDate.getTime()
+    })
+
+    for (var day of daysSorted) {
+        // add item per day
+    }
+
     let move = aggregateDataByDay(metricsByType.active_energy)
     let exercise = aggregateDataByDay(metricsByType.apple_exercise_time)
     let stand = aggregateDataByDay(metricsByType.apple_stand_hour)
