@@ -16,6 +16,9 @@ specs.colors = {
 }
 
 var state = { }
+state.hitObjects = [ ]
+state.raycaster = new THREE.Raycaster()
+state.pointer = new THREE.Vector2()
 
 let scene = new THREE.Scene()
 scene.background = new THREE.Color(specs.colors.background)
@@ -33,6 +36,27 @@ scene.add(light)
 
 renderer.setSize(window.innerWidth, window.innerHeight)
 document.body.appendChild(renderer.domElement)
+
+function onlyUnique(value, index, self) {
+  return self.indexOf(value) === index;
+}
+
+function allNodes() {
+    function nodesUnder(node) {
+        var under = new Array()
+        under.push(node)
+        for (var child of node.children) {
+            under.push(child)
+            for (var inChild of nodesUnder(child)) {
+                under.push(inChild)
+            }
+        }
+        return under
+    }
+
+    var unique = nodesUnder(container).filter((v, i, a) => a.indexOf(v) === i);
+    return unique
+}
 
 /// Returns a date from a "Health Export" date string
 function dateFromHealthExportDateString(dateString) {
@@ -132,7 +156,9 @@ function cube(color) {
 
 // Returns a group representing activity rings
 function activityRings(move, exercise, stand) {
-    let activity = new THREE.Group()
+    let activity = outlinedNode(new THREE.SphereGeometry(120, 24, 24), "rgb(100, 100, 100)")
+    activity.userData.hitTest = true
+    activity.rotation.x = Math.PI / 2
     let moveArc = move.sum / moveGoal * Math.PI * 2
     let exerciseArc = exercise.sum / exerciseGoal * Math.PI * 2
     let standArc = stand.sum / standGoal * Math.PI * 2
@@ -187,6 +213,8 @@ function layout() {
 
     state.ringsContainer.position.x = width/2
     state.ringsContainer.position.y = height - 300/2
+
+    console.log(state.hitObjects)
 }
 
 function update(dataContents) {
@@ -279,3 +307,24 @@ window.onload = function() {
 }
 
 window.onresize = layout
+window.addEventListener('pointermove', function(e) {
+    state.pointer.x = (e.clientX / window.innerWidth) * 2 - 1
+    state.pointer.y = - (e.clientY / window.innerHeight) * 2 + 1
+    state.raycaster.setFromCamera(state.pointer, camera)
+    var intersections = state.raycaster.intersectObjects(allNodes())
+    var hitObjects = new Array()
+    for (var intersection of intersections) {
+        var cursor = intersection.object
+        while (cursor != null) {
+            if (cursor.userData == null) { break }
+            if (cursor.userData.hitTest) {
+                hitObjects.push(cursor)
+                break
+            }
+            cursor = cursor.parent
+        }
+    }
+    state.hitObjects = hitObjects.filter(onlyUnique)
+    layout()
+})
+
