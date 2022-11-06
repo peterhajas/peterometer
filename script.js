@@ -188,7 +188,7 @@ function activityRings(move, exercise, stand) {
 
 function waterIndicator(data) {
     let water = new THREE.Group()
-    let goal = linesNode(new THREE.CylinderGeometry(50, 50, waterGoal, 20), "rgb(200, 200, 200)")
+    let goal = linesNode(new THREE.CylinderGeometry(50, 50, waterGoal, 4), "rgb(200, 200, 200)")
     water.add(goal)
     let current = outlinedNode(new THREE.CylinderGeometry(40, 40, data.sum, 20), "rgb(53, 141, 220)")
     water.add(current)
@@ -206,7 +206,7 @@ function nutritionIndicator(fat, carb, protein, kcal, cholesterol, sugar, fiber,
     
     let nutrition = new THREE.Group()
 
-    let goal = linesNode(new THREE.BoxGeometry(85, 200, 85, 3, 3, 3), "rgb(200, 200, 200)")
+    let goal = linesNode(new THREE.BoxGeometry(85, 200, 85, 2, 2, 2), "rgb(200, 200, 200)")
     nutrition.add(goal)
 
     function kcalsToUnits(kcals) {
