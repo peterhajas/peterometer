@@ -1,11 +1,12 @@
 // Constants
 let fatCaloriesPerGram = 9
-let carbsCaloriesPerGram = 4
+let carbCaloriesPerGram = 4
 let proteinCaloriesPerGram = 4
 let moveGoal = 440
 let exerciseGoal = 30
 let standGoal = 12
 let waterGoal = 100
+let calorieGoal = 2352
 
 let specs = { }
 
@@ -13,6 +14,10 @@ specs.colors = {
     "active_energy" : "rgb(252, 48, 130)",
     "apple_exercise_time" : "rgb(172, 251, 5)",
     "apple_stand_hour" : "rgb(8, 246, 210)",
+    "dietary_water" : "rgb(53, 141, 220)",
+    "total_fat" : "#ffc04b",
+    "carbohydrates" : "#145288",
+    "protein" : "#d20085",
     "background" : "#000d2a"
 }
 
@@ -142,6 +147,7 @@ function linesNode(geo, color) {
 function outlinedNode(geo, color) {
     let out = new THREE.Group()
     let regularMaterial = new THREE.MeshPhysicalMaterial({color: new THREE.Color(color)})
+    regularMaterial.transparent = true
     regularMaterial.opacity = 0.2
     let regular = new THREE.Mesh(geo, regularMaterial)
     out.add(linesNode(geo, color))
@@ -206,6 +212,67 @@ function waterIndicator(data) {
     .start()
 
     return water
+}
+
+function nutritionIndicator(fat, carb, protein, kcal) {
+    let nutrition = new THREE.Group()
+
+    let goal = outlinedNode(new THREE.BoxGeometry(50, 200, 50), "rgb(200, 200, 200)")
+    nutrition.add(goal)
+
+    function kcalsToUnits(kcals) {
+        return kcals * (200 / calorieGoal)
+    }
+
+    var calories = 0
+    if (kcal != null) {
+        calories = kcal.sum
+    }
+    let calFraction = calories / calorieGoal
+    let cal = outlinedNode(new THREE.BoxGeometry(45, calFraction * 200, 45), "rgb(100,0,0)")
+    nutrition.add(cal)
+
+    var fatGrams = 0
+    if (fat != null) {
+        fatGrams = fat.sum
+    }
+    let fatCalories = fatGrams * fatCaloriesPerGram
+    let fatNode = outlinedNode(new THREE.BoxGeometry(77, kcalsToUnits(fatCalories), 77, 3, 3, 3), specs.colors.total_fat)
+    nutrition.add(fatNode)
+
+    var carbGrams = 0
+    if (carb != null) {
+        carbGrams = carb.sum
+    }
+    let carbCalories = carbGrams * carbCaloriesPerGram
+    let carbNode = outlinedNode(new THREE.BoxGeometry(77, kcalsToUnits(carbCalories), 77, 3, 3, 3), specs.colors.carbohydrates)
+    nutrition.add(carbNode)
+    
+    var proteinGrams = 0
+    if (protein != null) {
+        proteinGrams = protein.sum
+    }
+    let proteinCalories = proteinGrams * proteinCaloriesPerGram
+    let proteinNode = outlinedNode(new THREE.BoxGeometry(77, kcalsToUnits(proteinCalories), 77, 3, 3, 3), specs.colors.protein)
+    nutrition.add(proteinNode)
+
+    let totalHeight = kcalsToUnits(fatCalories + carbCalories + proteinCalories)
+    fatNode.position.y -= ((totalHeight) - kcalsToUnits(fatCalories))/2
+    carbNode.position.y = fatNode.position.y + kcalsToUnits(fatCalories)/2 + kcalsToUnits(carbCalories)/2
+    proteinNode.position.y = carbNode.position.y + kcalsToUnits(carbCalories)/2 + kcalsToUnits(proteinCalories)/2
+
+    let rotate = new TWEEN.Tween(nutrition.rotation)
+    .to({
+        x: Math.PI * 2,
+        y: Math.PI * 4,
+        z: Math.PI * 6 
+    }, 8000)
+    .repeat(Infinity)
+    .delay(Math.random() * 1000)
+    .repeatDelay(0)
+    .start()
+
+    return nutrition
 }
 
 function layout() {
@@ -273,9 +340,14 @@ function update(dataContents) {
         container.add(dayContainer)
         let rings = activityRings(dayData.active_energy, dayData.apple_exercise_time, dayData.apple_stand_hour)
         dayContainer.add(rings)
+
         let water = waterIndicator(dayData.dietary_water)
         water.position.x = 300
         dayContainer.add(water)
+
+        let nutrition = nutritionIndicator(dayData.total_fat, dayData.carbohydrates, dayData.protein, dayData.dietary_energy)
+        nutrition.position.x = 500
+        dayContainer.add(nutrition)
 
         dayContainer.position.x = 150
         dayContainer.position.y = 150 + offsetY
