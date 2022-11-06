@@ -5,6 +5,7 @@ let proteinCaloriesPerGram = 4
 let moveGoal = 440
 let exerciseGoal = 30
 let standGoal = 12
+let waterGoal = 100
 
 let specs = { }
 
@@ -186,6 +187,27 @@ function activityRings(move, exercise, stand) {
     return activity
 }
 
+function waterIndicator(data) {
+    let water = new THREE.Group()
+    let goal = outlinedNode(new THREE.CylinderGeometry(50, 50, waterGoal), "rgb(100, 100, 100)")
+    water.add(goal)
+    let current = outlinedNode(new THREE.CylinderGeometry(40, 40, data.sum), "rgb(0, 0, 255)")
+    water.add(current)
+
+    let rotate = new TWEEN.Tween(water.rotation)
+    .to({
+        x: Math.PI * 2,
+        y: Math.PI * 4,
+        z: Math.PI * 6 
+    }, 8000)
+    .repeat(Infinity)
+    .delay(Math.random() * 1000)
+    .repeatDelay(0)
+    .start()
+
+    return water
+}
+
 function layout() {
     let width = window.innerWidth
     let height = window.innerHeight
@@ -244,24 +266,24 @@ function update(dataContents) {
         return aDate.getTime() > bDate.getTime()
     })
 
+    var offsetY = 0
     for (var day of daysSorted) {
-        // add item per day
-    }
+        let dayData = metricsByDay[day]
+        let dayContainer = new THREE.Group()
+        container.add(dayContainer)
+        let rings = activityRings(dayData.active_energy, dayData.apple_exercise_time, dayData.apple_stand_hour)
+        dayContainer.add(rings)
+        let water = waterIndicator(dayData.dietary_water)
+        water.position.x = 300
+        dayContainer.add(water)
 
-    let move = aggregateDataByDay(metricsByType.active_energy)
-    let exercise = aggregateDataByDay(metricsByType.apple_exercise_time)
-    let stand = aggregateDataByDay(metricsByType.apple_stand_hour)
+        dayContainer.position.x = 150
+        dayContainer.position.y = 150 + offsetY
+        offsetY += 300
+    }
 
     let ringsContainer = new THREE.Group()
     container.add(ringsContainer)
-
-    for (var i = 0; i < move.length; i++) {
-        let rings = activityRings(move[i], exercise[i], stand[i])
-        rings.position.x = i * 300 +150
-        rings.position.x -= 300 * (move.length/2)
-        ringsContainer.add(rings)
-    }
-
     state.ringsContainer = ringsContainer
 
     let upperLeft = cube('red')
