@@ -189,9 +189,9 @@ function activityRings(move, exercise, stand) {
 
 function waterIndicator(data) {
     let water = new THREE.Group()
-    let goal = outlinedNode(new THREE.CylinderGeometry(50, 50, waterGoal), "rgb(100, 100, 100)")
+    let goal = outlinedNode(new THREE.CylinderGeometry(50, 50, waterGoal, 20), "rgb(200, 200, 200)")
     water.add(goal)
-    let current = outlinedNode(new THREE.CylinderGeometry(40, 40, data.sum), "rgb(0, 0, 255)")
+    let current = outlinedNode(new THREE.CylinderGeometry(40, 40, data.sum, 20), "rgb(53, 141, 220)")
     water.add(current)
 
     let rotate = new TWEEN.Tween(water.rotation)
