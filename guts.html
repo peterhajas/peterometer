@@ -2,12 +2,19 @@
 <html>
     <head>
         <title>peterometer</title>
+        <script src="live.js"></script>
         <script src="tween.js"></script>
         <script src="three.js"></script>
         <script type="module" src="script.js"></script>
         <link rel="stylesheet" href="style.css" />
     </head>
     <body>
-
+        <div class="flexVerticalContainer" id="rootContainer">
+            <div class=flexHorizontalContainer" id="toolbar">
+                <button id="nextDayButton">Next</button>
+                <button id="currentDayButton">Cur</button>
+                <button id="previousDayButton">Prev</button>
+            </div>
+        </div>
     </body>
 </html>

@@ -8,19 +8,6 @@ let standGoal = 12
 let waterGoal = 100
 let calorieGoal = 2352
 
-let specs = { }
-
-specs.colors = {
-    "active_energy" : "rgb(252, 48, 130)",
-    "apple_exercise_time" : "rgb(172, 251, 5)",
-    "apple_stand_hour" : "rgb(8, 246, 210)",
-    "dietary_water" : "rgb(53, 141, 220)",
-    "total_fat" : "#ffc04b",
-    "carbohydrates" : "#145288",
-    "protein" : "#d20085",
-    "background" : "#000d2a"
-}
-
 var state = { }
 
 let scene = new THREE.Scene()
@@ -139,7 +126,7 @@ function prettyUnit(unitName) {
 }
 
 function linesNode(geo, color) {
-    let linesMaterial = new THREE.LineBasicMaterial({color: new THREE.Color(color)})
+    let linesMaterial = new THREE.LineBasicMaterial({color: color})
     linesMaterial.linewidth = 4
     let lines = new THREE.LineSegments(geo, linesMaterial)
     return lines
@@ -147,7 +134,7 @@ function linesNode(geo, color) {
 
 function outlinedNode(geo, color) {
     let out = new THREE.Group()
-    let regularMaterial = new THREE.MeshPhysicalMaterial({color: new THREE.Color(color), side: THREE.DoubleSide})
+    let regularMaterial = new THREE.MeshPhysicalMaterial({color: color, side: THREE.DoubleSide})
     regularMaterial.transparent = true
     regularMaterial.opacity = 0.8
     let regular = new THREE.Mesh(geo, regularMaterial)
@@ -158,13 +145,13 @@ function outlinedNode(geo, color) {
 
 function cube(color) {
     let geo = new THREE.BoxGeometry(100, 100, 100)
-    let mat = new THREE.MeshBasicMaterial({color: new THREE.Color(color)})
+    let mat = new THREE.MeshBasicMaterial({color: color})
     return new THREE.Mesh(geo, mat)
 }
 
 // Returns a group representing activity rings
 function activityRings(move, exercise, stand) {
-    let activity = linesNode(new THREE.SphereGeometry(120, 24, 24), "rgb(100, 100, 100)")
+    let activity = linesNode(new THREE.SphereGeometry(120, 24, 24), colorVariable("bg2"));
     activity = new THREE.Group()
     activity.userData.hitTest = true
     let moveArc = move.sum / moveGoal * Math.PI * 2
@@ -181,18 +168,18 @@ function activityRings(move, exercise, stand) {
     }
 
     let dest = Math.PI * 2
-    activity.add(activityRing(moveArc, 0, specs.colors.active_energy, { x : dest, y: dest }))
-    activity.add(activityRing(exerciseArc, 1, specs.colors.apple_exercise_time, { y : dest, z: dest }))
-    activity.add(activityRing(standArc, 2, specs.colors.apple_stand_hour, { z : dest, x: dest }))
+    activity.add(activityRing(moveArc, 0, colorVariable("tint1"), { x : dest, y: dest }))
+    activity.add(activityRing(exerciseArc, 1, colorVariable("tint2"), { y : dest, z: dest }))
+    activity.add(activityRing(standArc, 2, colorVariable("tint3"), { z : dest, x: dest }))
 
     return activity
 }
 
 function waterIndicator(data) {
     let water = new THREE.Group()
-    let goal = linesNode(new THREE.CylinderGeometry(50, 50, waterGoal, 4), "rgb(200, 200, 200)")
+    let goal = linesNode(new THREE.CylinderGeometry(50, 50, waterGoal, 4), colorVariable("bg2"))
     water.add(goal)
-    let current = outlinedNode(new THREE.CylinderGeometry(40, 40, data.sum, 20), "rgb(53, 141, 220)")
+    let current = outlinedNode(new THREE.CylinderGeometry(40, 40, data.sum, 20), colorVariable("tint1"))
     water.add(current)
 
     return water
@@ -208,7 +195,7 @@ function nutritionIndicator(fat, carb, protein, kcal, cholesterol, sugar, fiber,
     
     let nutrition = new THREE.Group()
 
-    let goal = linesNode(new THREE.BoxGeometry(85, 200, 85, 2, 2, 2), "rgb(200, 200, 200)")
+    let goal = linesNode(new THREE.BoxGeometry(85, 200, 85, 2, 2, 2), colorVariable("bg2"))
     nutrition.add(goal)
 
     function kcalsToUnits(kcals) {
@@ -220,7 +207,7 @@ function nutritionIndicator(fat, carb, protein, kcal, cholesterol, sugar, fiber,
         calories = kcal.sum
     }
     let calFraction = calories / calorieGoal
-    let cal = outlinedNode(new THREE.BoxGeometry(45, calFraction * 200, 45), "rgb(100,0,0)")
+    let cal = outlinedNode(new THREE.BoxGeometry(45, calFraction * 200, 45), colorVariable("bg3"))
     nutrition.add(cal)
 
     var fatGrams = 0
@@ -228,7 +215,7 @@ function nutritionIndicator(fat, carb, protein, kcal, cholesterol, sugar, fiber,
         fatGrams = fat.sum
     }
     let fatCalories = fatGrams * fatCaloriesPerGram
-    let fatNode = outlinedNode(new THREE.BoxGeometry(77, kcalsToUnits(fatCalories), 77, 3, 3, 3), specs.colors.total_fat)
+    let fatNode = outlinedNode(new THREE.BoxGeometry(77, kcalsToUnits(fatCalories), 77, 3, 3, 3), colorVariable("tint1"))
     nutrition.add(fatNode)
 
     var carbGrams = 0
@@ -236,7 +223,7 @@ function nutritionIndicator(fat, carb, protein, kcal, cholesterol, sugar, fiber,
         carbGrams = carb.sum
     }
     let carbCalories = carbGrams * carbCaloriesPerGram
-    let carbNode = outlinedNode(new THREE.BoxGeometry(77, kcalsToUnits(carbCalories), 77, 3, 3, 3), specs.colors.carbohydrates)
+    let carbNode = outlinedNode(new THREE.BoxGeometry(77, kcalsToUnits(carbCalories), 77, 3, 3, 3), colorVariable("tint2"))
     nutrition.add(carbNode)
     
     var proteinGrams = 0
@@ -244,7 +231,7 @@ function nutritionIndicator(fat, carb, protein, kcal, cholesterol, sugar, fiber,
         proteinGrams = protein.sum
     }
     let proteinCalories = proteinGrams * proteinCaloriesPerGram
-    let proteinNode = outlinedNode(new THREE.BoxGeometry(77, kcalsToUnits(proteinCalories), 77, 3, 3, 3), specs.colors.protein)
+    let proteinNode = outlinedNode(new THREE.BoxGeometry(77, kcalsToUnits(proteinCalories), 77, 3, 3, 3), colorVariable("tint3"))
     nutrition.add(proteinNode)
 
     let totalHeight = kcalsToUnits(fatCalories + carbCalories + proteinCalories)
@@ -253,7 +240,7 @@ function nutritionIndicator(fat, carb, protein, kcal, cholesterol, sugar, fiber,
     proteinNode.position.y = carbNode.position.y + kcalsToUnits(carbCalories)/2 + kcalsToUnits(proteinCalories)/2
 
     let totalSodium = (sodium == null) ? 0 : sodium.sum
-    let sodiumNode = outlinedNode(new THREE.IcosahedronGeometry(totalSodium/300), "white")
+    let sodiumNode = outlinedNode(new THREE.IcosahedronGeometry(totalSodium/300), colorVariable("tint1"))
     sodiumNode.position.x = 80
     let sodiumContainer = new THREE.Group()
     sodiumContainer.add(sodiumNode)
@@ -396,6 +383,7 @@ function setup() {
 }
 
 window.onload = function() {
+    setup()
     reload()
     animate()
 }

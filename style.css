@@ -23,9 +23,11 @@
 
     --bg1: #562c2c;
     --bg2: #f2542d;
+    --bg3: #f49a74;
     --text: #f5dfbb;
-    --tint1: #0e9594;
-    --tint2: #127475;
+    --tint1: #82baa8;
+    --tint2: #0e9594;
+    --tint3: #127475;
 }
 
 body {
