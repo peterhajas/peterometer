@@ -6,19 +6,7 @@ if (strlen($input) > 0) {
     echo('OK');
 }
 else {
-    echo('<head>');
-    echo('<script src="tween.js"></script>');
-    echo('<script src="three.js"></script>');
-    echo('<script type="module" src="script.js"></script>');
-    echo('<link rel="stylesheet" href="style.css" />');
-    echo('</head>');
-    echo('<body>');
-    echo('<div id="topContainer" class="flexVerticalContainer"></div>');
-    echo('<div id="dataContainer" class="flexHorizontalContainer">');
-    echo('<div id="intakeContainer" class="flexVerticalContainer"></div>');
-    echo('<div id="bodyContainer" class="flexVerticalContainer"></div>');
-    echo('<div id="glanceContainer"></div>');
-    echo('</div>');
-    echo('</body>');
+    $out = file_get_contents('guts.html');
+    echo($out);
 }
 ?>
