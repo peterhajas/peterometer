@@ -22,12 +22,9 @@ specs.colors = {
 }
 
 var state = { }
-state.hitObjects = [ ]
-state.raycaster = new THREE.Raycaster()
-state.pointer = new THREE.Vector2()
 
 let scene = new THREE.Scene()
-scene.background = new THREE.Color(specs.colors.background)
+scene.background = new THREE.Color(window.getComputedStyle(document.body).backgroundColor);
 let camera = new THREE.OrthographicCamera(0,0,0,0,0,10000)
 let container = new THREE.Group()
 scene.add(container)
@@ -41,10 +38,15 @@ light.position.set(0,0,1000)
 scene.add(light)
 
 renderer.setSize(window.innerWidth, window.innerHeight)
+renderer.domElement.className = "renderer"
 document.body.appendChild(renderer.domElement)
 
 function onlyUnique(value, index, self) {
   return self.indexOf(value) === index;
+}
+
+function colorVariable(name) {
+    return new THREE.Color(getComputedStyle(document.documentElement).getPropertyValue("--" + name))
 }
 
 function allNodes() {
@@ -322,7 +324,6 @@ function update(dataContents) {
     var offsetY = 0
     for (var day of daysSorted) {
         let dayData = metricsByDay[day]
-        console.log(dayData)
         let dayContainer = new THREE.Group()
         container.add(dayContainer)
         let rings = activityRings(dayData.active_energy, dayData.apple_exercise_time, dayData.apple_stand_hour)
@@ -371,7 +372,7 @@ function update(dataContents) {
     layout()
 }
 
-async function doLoad() {
+async function reload() {
     let request = new Request('data.php')
     fetch(request)
     .then(response => {
@@ -388,8 +389,14 @@ function animate() {
     renderer.render(scene, camera)
 }
 
+function setup() {
+    state.hitObjects = [ ]
+    state.raycaster = new THREE.Raycaster()
+    state.pointer = new THREE.Vector2()
+}
+
 window.onload = function() {
-    doLoad()
+    reload()
     animate()
 }
 

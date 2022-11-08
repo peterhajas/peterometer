@@ -3,13 +3,6 @@
 /* - . for classes */
 /* - a b for all b inside a */
 
-.demoContainer {
-    position: absolute;
-    top: 300px;
-    width: 200px;
-    height: 200px;
-}
-
 /* latin */
 @font-face {
     font-family: 'Orbitron';
@@ -28,18 +21,16 @@
     --primary-text: white;
     --secondary-text: rgb(200,200,200);
 
-    --blue: #145288ff;
-    --yellow: #ffc04bff;
-    --orange: #ff4e18ff;
-    --violet: #d20085ff;
-    --green: #0eac00ff;
-
-    --heart: rgb(251, 80, 56);
+    --bg1: #562c2c;
+    --bg2: #f2542d;
+    --text: #f5dfbb;
+    --tint1: #0e9594;
+    --tint2: #127475;
 }
 
 body {
-    background-color: var(--primary-bg);
-    color: white;
+    background-color: var(--bg1);
+    color: var(--text);
     display: flex;
     flex-direction: column;
     align-items: stretch;
@@ -47,10 +38,6 @@ body {
     margin: 0;
     font-family: Orbitron;
     text-transform: uppercase;
-}
-
-text {
-    fill: white;
 }
 
 .flexHorizontalContainer {
@@ -65,22 +52,36 @@ text {
     align-items: stretch;
 }
 
+.renderer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+}
+
+#toolbar {
+    height: 100px;
+}
+
+button {
+    background-color: rgba(0,0,0,0);
+    color: var(--text);
+    font-family: Orbitron;
+    text-transform: uppercase;
+    font-size: 1.5em;
+    border: solid;
+    border-color: var(--bg2);
+    border-width: 5px;
+}
+
+#toolbar > button {
+    height: 100%;
+    aspect-ratio: 1.0;
+}
+
 @media (max-width: 700px) {
     body {
         flex-direction: column-reverse;
-    }
-
-    .container {
-        flex-grow: 1;
-        margin: 5px;
-    }
-
-    .containerTitle {
-        font-size: 1em;
-    }
-
-    #glanceContainer {
-        flex-direction: row;
     }
 }
 
