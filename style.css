@@ -3,6 +3,13 @@
 /* - . for classes */
 /* - a b for all b inside a */
 
+.demoContainer {
+    position: absolute;
+    top: 300px;
+    width: 200px;
+    height: 200px;
+}
+
 /* latin */
 @font-face {
     font-family: 'Orbitron';
@@ -56,157 +63,6 @@ text {
     display: flex;
     flex-direction: column;
     align-items: stretch;
-}
-
-.container {
-    border-color: var(--secondary-bg);
-    border-width: 5px;
-    border-style: solid;
-    margin: 10px;
-    padding: 10px;
-}
-
-.containerTitle {
-    font-size: 1em;
-}
-
-.text {
-    fill: var(--primary-text);
-    font-size: 1.4em;
-}
-
-.text2 {
-    fill: var(--secondary-text);
-    font-size: 1.2em;
-}
-
-.glanceBackground {
-    stroke-width: 4;
-    stroke-opacity: 1.0;
-    fill-opacity: 0.45;
-}
-
-.bar {
-    stroke-width: 2;
-    stroke-opacity: 1.0;
-    fill-opacity: 0.3;
-    transition: 0.2s linear;
-}
-
-.bar:hover {
-    fill-opacity: 1.0;
-}
-
-#intakeContainer {
-    flex-grow: 2;
-}
-
-#bodyContainer {
-    flex-grow: 5;
-}
-
-#glanceContainer {
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-
-    flex-grow: 1;
-}
-
-.calorie_day_container {
-    fill-opacity: 0;
-}
-
-.total_fat {
-    color: var(--yellow);
-    stroke: var(--yellow);
-    fill: var(--yellow);
-}
-
-.carbo {
-    color: var(--blue);
-    stroke: var(--blue);
-    fill: var(--blue);
-}
-
-.protein {
-    color: var(--violet);
-    stroke: var(--violet);
-    fill: var(--violet);
-}
-
-.leftover_calories {
-    color: var(--orange);
-    stroke: var(--orange);
-    fill: var(--orange);
-}
-
-.inBed {
-    color: var(--violet);
-    fill: var(--violet);
-    fill-opacity: 0.3;
-}
-
-.sleep {
-    color: var(--blue);
-    stroke: var(--blue);
-    fill: var(--blue);
-}
-
-.heart_rate {
-    color: var(--heart);
-    fill: var(--heart);
-    animation-name: dot_pulse;
-    animation-direction: alternate;
-    animation-iteration-count: infinite;
-    animation-timing-function: linear;
-}
-
-.heart_rate_variability {
-    color: var(--heart);
-    fill: var(--heart);
-}
-
-.active_energy {
-    color: rgb(252, 48, 130);
-    fill: rgb(252, 48, 130);
-}
-
-.apple_exercise_time {
-    color: rgb(172, 251, 5);
-    fill: rgb(172, 251, 5);
-}
-
-.apple_stand_time {
-    color: rgb(8, 246, 210);
-    fill: rgb(8, 246, 210);
-}
-
-.weight_body_mass {
-    color: var(--yellow);
-    fill: var(--yellow);
-    stroke: var(--yellow);
-}
-
-@keyframes dot_pulse {
-    0% {
-        opacity: 1.0;
-    }
-    100% {
-        opacity: 0.5;
-    }
-}
-
-@media (max-width: 1100px) {
-    .containerTitle {
-        font-size: 0.8em;
-    }
-}
-
-@media (max-width: 900px) {
-    .containerTitle {
-        font-size: 0.7em;
-    }
 }
 
 @media (max-width: 700px) {
