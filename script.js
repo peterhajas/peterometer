@@ -256,7 +256,6 @@ function layout() {
 
     container.position.x = -width/2
     container.position.y = -height/2
-    // container.rotation.x = Math.PI
 
     // update camera and renderer
     camera.position.z = 1000 * height / width
@@ -274,9 +273,31 @@ function layout() {
     state.lowerLeft.position.y = height
     state.lowerRight.position.x = width
     state.lowerRight.position.y = height
+}
 
-    state.ringsContainer.position.x = width/2
-    state.ringsContainer.position.y = height - 300/2
+function currentDateChanged() {
+    console.log(state.currentDate)
+    let metricsBrowser = document.getElementById("metricsBrowser")
+    metricsBrowser.innerHTML = ""
+
+    let currentMetrics = state.metricsByDay[state.currentDate] 
+    let metricTypes = Object.keys(currentMetrics)
+
+    if (metricTypes.includes('active_energy') && metricTypes.includes('apple_exercise_time') && metricTypes.includes('apple_stand_hour')) {
+        let activity = document.createElement("li")
+        activity.innerHTML = "ACTIVITY"
+        metricsBrowser.appendChild(activity)
+    }
+
+    console.log(currentMetrics)
+}
+
+function changeCurrentDate(by) {
+    var index = Object.keys(state.metricsByDay).indexOf(state.currentDate)
+    index = index + by
+    index = index % Object.keys(state.metricsByDay).length
+    state.currentDate = Object.keys(state.metricsByDay)[index]
+    currentDateChanged()
 }
 
 function update(dataContents) {
@@ -308,38 +329,13 @@ function update(dataContents) {
         return aDate.getTime() > bDate.getTime()
     })
 
-    var offsetY = 0
+    state.metricsByDay = metricsByDay
+    state.currentDate = daysSorted[daysSorted.length-1]
+    currentDateChanged()
+
     for (var day of daysSorted) {
-        let dayData = metricsByDay[day]
-        let dayContainer = new THREE.Group()
-        container.add(dayContainer)
-        let rings = activityRings(dayData.active_energy, dayData.apple_exercise_time, dayData.apple_stand_hour)
-        dayContainer.add(rings)
-
-        let water = waterIndicator(dayData.dietary_water)
-        water.position.x = 300
-        dayContainer.add(water)
-
-        let nutrition = nutritionIndicator(dayData.total_fat,
-            dayData.carbohydrates,
-            dayData.protein,
-            dayData.dietary_energy,
-            dayData.dietary_cholesterol,
-            dayData.dietary_sugar,
-            dayData.fiber,
-            dayData.saturated_fat,
-            dayData.sodium)
-        nutrition.position.x = 500
-        dayContainer.add(nutrition)
-
-        dayContainer.position.x = 150
-        dayContainer.position.y = 150 + offsetY
-        offsetY += 300
+        
     }
-
-    let ringsContainer = new THREE.Group()
-    container.add(ringsContainer)
-    state.ringsContainer = ringsContainer
 
     let upperLeft = cube('red')
     let upperRight = cube('green')
@@ -380,6 +376,13 @@ function setup() {
     state.hitObjects = [ ]
     state.raycaster = new THREE.Raycaster()
     state.pointer = new THREE.Vector2()
+
+    document.getElementById("previousDayButton").onclick = function(e) {
+        changeCurrentDate(-1)
+    }
+    document.getElementById("nextDayButton").onclick = function(e) {
+        changeCurrentDate(1)
+    }
 }
 
 window.onload = function() {

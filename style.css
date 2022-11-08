@@ -73,6 +73,11 @@ body {
     border-right: 0;
 }
 
+#toolbar span {
+    display: inline-flex;
+    align-items: center;
+}
+
 button {
     background-color: rgba(0,0,0,0);
     color: var(--text);
@@ -97,6 +102,23 @@ button {
     width: fit-content;
     height: 100%;
     border-right: 5px solid var(--bg2);
+}
+
+ul, ol {
+    margin: 0px;
+    padding: 0px;
+    list-style-type: none;
+}
+
+li {
+    display: flex;
+    flex-direction: column;
+    min-height: 50px;
+    vertical-align: middle;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+    margin: 8px;
 }
 
 .label ,.label > h1, .label > h2 {
