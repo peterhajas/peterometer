@@ -276,9 +276,13 @@ function layout() {
 }
 
 function currentDateChanged() {
-    console.log(state.currentDate)
     let metricsBrowser = document.getElementById("metricsBrowser")
     metricsBrowser.innerHTML = ""
+
+    let dayIndicator = document.getElementById("currentDayIndicator")
+    let formatter = new Intl.DateTimeFormat('en-US', { dateStyle: 'full', timeStyle: 'short' })
+    let dateString = formatter.format(state.currentDate)
+    dayIndicator.innerHTML = dateString
 
     let currentMetrics = state.metricsByDay[state.currentDate] 
     let metricTypes = Object.keys(currentMetrics)
@@ -288,15 +292,13 @@ function currentDateChanged() {
         activity.innerHTML = "ACTIVITY"
         metricsBrowser.appendChild(activity)
     }
-
-    console.log(currentMetrics)
 }
 
 function changeCurrentDate(by) {
-    var index = Object.keys(state.metricsByDay).indexOf(state.currentDate)
+    var index = state.days.indexOf(state.currentDate)
     index = index + by
-    index = index % Object.keys(state.metricsByDay).length
-    state.currentDate = Object.keys(state.metricsByDay)[index]
+    index = index % state.days.length
+    state.currentDate = state.days[index]
     currentDateChanged()
 }
 
@@ -311,46 +313,28 @@ function update(dataContents) {
     }
 
     var metricsByDay = {}
+    var days = [ ]
     for (var metricType of Object.keys(metricsByType)) {
         let metric = metricsByType[metricType]
         let aggregated = aggregateDataByDay(metric)
         for (var day of aggregated) {
             if (metricsByDay[day.date] == null) {
                 metricsByDay[day.date] = { }
+                days.push(day.date)
             }
             metricsByDay[day.date][metricType] = day
         }
     }
 
-    let daysSorted = Object.keys(metricsByDay)
-    daysSorted.sort((a, b) => {
-        let aDate = new Date(a)
-        let bDate = new Date(b)
-        return aDate.getTime() > bDate.getTime()
+    days.sort((a, b) => {
+        return a.getTime() > b.getTime()
     })
 
+    state.days = days
+
     state.metricsByDay = metricsByDay
-    state.currentDate = daysSorted[daysSorted.length-1]
+    state.currentDate = days[days.length-1]
     currentDateChanged()
-
-    for (var day of daysSorted) {
-        
-    }
-
-    let upperLeft = cube('red')
-    let upperRight = cube('green')
-    let lowerLeft = cube('blue')
-    let lowerRight = cube('yellow')
-
-    container.add(upperLeft)
-    container.add(upperRight)
-    container.add(lowerLeft)
-    container.add(lowerRight)
-    
-    state.upperLeft = upperLeft
-    state.upperRight = upperRight
-    state.lowerLeft = lowerLeft
-    state.lowerRight = lowerRight
 
     layout()
 }
@@ -383,6 +367,22 @@ function setup() {
     document.getElementById("nextDayButton").onclick = function(e) {
         changeCurrentDate(1)
     }
+    
+    let upperLeft = cube('red')
+    let upperRight = cube('green')
+    let lowerLeft = cube('blue')
+    let lowerRight = cube('yellow')
+
+    container.add(upperLeft)
+    container.add(upperRight)
+    container.add(lowerLeft)
+    container.add(lowerRight)
+    
+    state.upperLeft = upperLeft
+    state.upperRight = upperRight
+    state.lowerLeft = lowerLeft
+    state.lowerRight = lowerRight
+
 }
 
 window.onload = function() {
