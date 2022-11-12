@@ -1,3 +1,5 @@
+import * as DataTypes from './data_types.js'
+
 // Constants
 let fatCaloriesPerGram = 9
 let carbCaloriesPerGram = 4
@@ -285,13 +287,8 @@ function currentDateChanged() {
     dayIndicator.innerHTML = dateString
 
     let currentMetrics = state.metricsByDay[state.currentDate] 
-    let metricTypes = Object.keys(currentMetrics)
 
-    if (metricTypes.includes('active_energy') && metricTypes.includes('apple_exercise_time') && metricTypes.includes('apple_stand_hour')) {
-        let activity = document.createElement("li")
-        activity.innerHTML = "ACTIVITY"
-        metricsBrowser.appendChild(activity)
-    }
+    DataTypes.populateMetricsBrowser(currentMetrics, metricsBrowser)
 }
 
 function changeCurrentDate(by) {
