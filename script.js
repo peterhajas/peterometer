@@ -1,4 +1,5 @@
 import * as DataTypes from './data_types.js'
+import * as ThreeJSMatching from './threejs_matching.js'
 
 // Constants
 let fatCaloriesPerGram = 9
@@ -129,32 +130,6 @@ function cube(color) {
     return new THREE.Mesh(geo, mat)
 }
 
-// Returns a group representing activity rings
-function activityRings(move, exercise, stand) {
-    let activity = linesNode(new THREE.SphereGeometry(120, 24, 24), colorVariable("bg2"));
-    activity = new THREE.Group()
-    activity.userData.hitTest = true
-    let moveArc = move.sum / moveGoal * Math.PI * 2
-    let exerciseArc = exercise.sum / exerciseGoal * Math.PI * 2
-    let standArc = stand.sum / standGoal * Math.PI * 2
-
-    function activityRing(arc, level, color, rotated) {
-        let clampedArc = Math.min(arc, Math.PI * 2)
-        let geo = new THREE.TorusGeometry(100 - (level * 30), 10, 8, 16 * (arc / Math.PI*2), clampedArc)
-        let node = outlinedNode(geo, color)
-        node.rotation.z = -Math.PI/2
-
-        return node
-    }
-
-    let dest = Math.PI * 2
-    activity.add(activityRing(moveArc, 0, colorVariable("tint1"), { x : dest, y: dest }))
-    activity.add(activityRing(exerciseArc, 1, colorVariable("tint2"), { y : dest, z: dest }))
-    activity.add(activityRing(standArc, 2, colorVariable("tint3"), { z : dest, x: dest }))
-
-    return activity
-}
-
 function waterIndicator(data) {
     let water = new THREE.Group()
     let goal = linesNode(new THREE.CylinderGeometry(50, 50, waterGoal, 4), colorVariable("bg2"))
@@ -266,7 +241,7 @@ function currentDateChanged() {
 
     let currentMetrics = state.metricsByDay[state.currentDate] 
 
-    DataTypes.updateForDay(currentMetrics, metricsBrowser, container)
+    DataTypes.updateForDay(currentMetrics, metricsBrowser)
 }
 
 function changeCurrentDate(by) {
@@ -326,7 +301,8 @@ async function reload() {
 }
 
 function animate() {
-    requestAnimationFrame( animate )
+    requestAnimationFrame(animate)
+    ThreeJSMatching.matchLayout(container)
     TWEEN.update()
     renderer.render(scene, camera)
 }
@@ -358,6 +334,7 @@ function setup() {
     state.lowerLeft = lowerLeft
     state.lowerRight = lowerRight
 
+    DataTypes.install(container)
 }
 
 window.onload = function() {
