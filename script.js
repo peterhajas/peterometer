@@ -308,10 +308,6 @@ function animate() {
 }
 
 function setup() {
-    state.hitObjects = [ ]
-    state.raycaster = new THREE.Raycaster()
-    state.pointer = new THREE.Vector2()
-
     document.getElementById("previousDayButton").onclick = function(e) {
         changeCurrentDate(-1)
     }
@@ -344,24 +340,4 @@ window.onload = function() {
 }
 
 window.onresize = layout
-window.addEventListener('pointermove', function(e) {
-    state.pointer.x = (e.clientX / window.innerWidth) * 2 - 1
-    state.pointer.y = - (e.clientY / window.innerHeight) * 2 + 1
-    state.raycaster.setFromCamera(state.pointer, camera)
-    var intersections = state.raycaster.intersectObjects(allNodes())
-    var hitObjects = new Array()
-    for (var intersection of intersections) {
-        var cursor = intersection.object
-        while (cursor != null) {
-            if (cursor.userData == null) { break }
-            if (cursor.userData.hitTest) {
-                hitObjects.push(cursor)
-                break
-            }
-            cursor = cursor.parent
-        }
-    }
-    state.hitObjects = hitObjects.filter(onlyUnique)
-    layout()
-})
 
