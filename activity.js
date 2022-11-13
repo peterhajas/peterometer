@@ -42,10 +42,6 @@ class Activity extends MetricNode.MetricNode {
         self.node.add(self.moveNode)
         self.node.add(self.exerciseNode)
         self.node.add(self.standNode)
-        let bounds = new THREE.Box3()
-        bounds.expandByObject(self.node)
-        let size = new THREE.Vector3()
-        console.log(bounds.getSize(size))
     }
 }
 

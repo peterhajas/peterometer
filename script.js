@@ -241,7 +241,16 @@ function currentDateChanged() {
 
     let currentMetrics = state.metricsByDay[state.currentDate] 
 
-    DataTypes.updateForDay(currentMetrics, metricsBrowser)
+    function onSelection(name) {
+        let focusIndicator = document.getElementById("focusIndicator")
+        if (focusIndicator.classList.contains(name)) {
+            focusIndicator.classList.remove(name) 
+        } else {
+            focusIndicator.className = name
+        }
+    }
+
+    DataTypes.updateForDay(currentMetrics, metricsBrowser, onSelection)
 }
 
 function changeCurrentDate(by) {

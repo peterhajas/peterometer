@@ -9,8 +9,11 @@ function matchLayout(container) {
         }
 
         let matchName = item.userData.matchName
-        let element = document.getElementsByClassName(matchName)[0]
-        if (element == null) { return }
+        let elements = document.getElementsByClassName(matchName)
+        if (elements.length == 0) { return }
+        var element = elements.namedItem("focusIndicator")
+        if (element == null) { element = elements[0] }
+
         var nearestFullParent = element
         while(nearestFullParent.getBoundingClientRect().width == 0) {
             nearestFullParent = nearestFullParent.parentNode

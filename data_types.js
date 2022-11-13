@@ -11,7 +11,7 @@ function install(container) {
     }
 }
 
-function updateForDay(data, metricsBrowser) {
+function updateForDay(data, metricsBrowser, onSelection) {
     let metricTypes = Object.keys(data)
     for (var metricHandler of metricHandlers) {
         if (metricHandler.matchesTypes(metricTypes)) {
@@ -22,6 +22,9 @@ function updateForDay(data, metricsBrowser) {
             element.appendChild(matchingNode)
             metricsBrowser.appendChild(element)
             metricHandler.update(data)
+            element.onclick = function(e) {
+                onSelection(metricHandler.name)
+            }
         }
     }
 }

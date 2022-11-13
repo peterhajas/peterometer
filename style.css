@@ -104,6 +104,12 @@ button {
     border-right: 5px solid var(--bg2);
 }
 
+#focusIndicator {
+    display: inline-block;
+    flex-grow: 5;
+    height: 100%;
+}
+
 ul, ol {
     margin: 0px;
     padding: 0px;
