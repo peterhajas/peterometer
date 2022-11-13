@@ -34,10 +34,6 @@ function onlyUnique(value, index, self) {
   return self.indexOf(value) === index;
 }
 
-function colorVariable(name) {
-    return new THREE.Color(getComputedStyle(document.documentElement).getPropertyValue("--" + name))
-}
-
 function allNodes() {
     function nodesUnder(node) {
         var under = new Array()
@@ -124,24 +120,6 @@ function aggregateDataByDay(metricItem) {
 
 function prettyUnit(unitName) {
     var out = unitName.replace('count', '')
-    return out
-}
-
-function linesNode(geo, color) {
-    let linesMaterial = new THREE.LineBasicMaterial({color: color})
-    linesMaterial.linewidth = 4
-    let lines = new THREE.LineSegments(geo, linesMaterial)
-    return lines
-}
-
-function outlinedNode(geo, color) {
-    let out = new THREE.Group()
-    let regularMaterial = new THREE.MeshPhysicalMaterial({color: color, side: THREE.DoubleSide})
-    regularMaterial.transparent = true
-    regularMaterial.opacity = 0.8
-    let regular = new THREE.Mesh(geo, regularMaterial)
-    out.add(linesNode(geo, color))
-    out.add(regular)
     return out
 }
 
@@ -288,7 +266,7 @@ function currentDateChanged() {
 
     let currentMetrics = state.metricsByDay[state.currentDate] 
 
-    DataTypes.populateMetricsBrowser(currentMetrics, metricsBrowser)
+    DataTypes.updateForDay(currentMetrics, metricsBrowser, container)
 }
 
 function changeCurrentDate(by) {

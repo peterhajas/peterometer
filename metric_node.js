@@ -3,10 +3,12 @@ class MetricNode {
     update(data) {
 
     }
-    makeSmall(tween) {
+
+    expand() {
 
     }
-    makeBig(tween) {
+
+    contract() {
 
     }
 }
