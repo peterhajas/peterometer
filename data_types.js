@@ -21,7 +21,6 @@ function updateForDay(data, metricsBrowser) {
             matchingNode.className = "browser " + metricHandler.name
             element.appendChild(matchingNode)
             metricsBrowser.appendChild(element)
-            metricHandler.node.position.set(100, 100, 100)
             metricHandler.update(data)
         }
     }
