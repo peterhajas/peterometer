@@ -23,7 +23,7 @@ function updateForDay(data, metricsBrowser, onSelection) {
             metricsBrowser.appendChild(element)
             metricHandler.update(data)
             element.onclick = function(e) {
-                onSelection(metricHandler.name)
+                onSelection(metricHandler)
             }
         }
     }

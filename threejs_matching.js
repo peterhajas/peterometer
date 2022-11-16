@@ -15,16 +15,22 @@ function matchLayout(container) {
         if (element == null) { element = elements[0] }
 
         var nearestFullParent = element
-        while(nearestFullParent.getBoundingClientRect().width == 0) {
-            nearestFullParent = nearestFullParent.parentNode
-        }
+        // while(nearestFullParent.getBoundingClientRect().width == 0) {
+        //     nearestFullParent = nearestFullParent.parentNode
+        // }
 
         if (nearestFullParent != currentMatched) {
             let rect = nearestFullParent.getBoundingClientRect()
             
-            let scaleX = (rect.width / 200)
-            let scaleY = (rect.height / 200)
-            let scale = Math.min(scaleX, scaleY)
+            var scaleX = (rect.width / 200)
+            if (scaleX == 0) { scaleX = 10 }
+            var scaleY = (rect.height / 200)
+            if (scaleY == 0) { scaleY = 10 }
+
+            var scale = Math.min(scaleX, scaleY)
+            scale = Math.max(0.1, scale)
+            
+            console.log(rect)
 
             let centerX = rect.left + rect.width / 2
             let centerY = rect.top + rect.height / 2

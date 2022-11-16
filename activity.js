@@ -43,6 +43,10 @@ class Activity extends MetricNode.MetricNode {
         self.node.add(self.exerciseNode)
         self.node.add(self.standNode)
     }
+
+    expandToPercent(percent) {
+        self.moveNode.position.set(percent * -100, 0, 0)
+    }
 }
 
 export { Activity }

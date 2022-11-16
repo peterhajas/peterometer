@@ -4,11 +4,7 @@ class MetricNode {
 
     }
 
-    expand() {
-
-    }
-
-    contract() {
+    expandToPercent(percent) {
 
     }
 }

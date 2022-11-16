@@ -241,9 +241,11 @@ function currentDateChanged() {
 
     let currentMetrics = state.metricsByDay[state.currentDate] 
 
-    function onSelection(name) {
+    function onSelection(metricHandler) {
         let focusIndicator = document.getElementById("focusIndicator")
-        if (focusIndicator.classList.contains(name)) {
+        let name = metricHandler.name
+        let focusedNow = focusIndicator.classList.contains(name)
+        if (focusedNow) {
             focusIndicator.classList.remove(name) 
         } else {
             focusIndicator.className = name
