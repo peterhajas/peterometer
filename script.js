@@ -10,6 +10,7 @@ let exerciseGoal = 30
 let standGoal = 12
 let waterGoal = 100
 let calorieGoal = 2352
+let birthday = new Date("October 27, 1989 14:30:00")
 
 var state = { }
 
@@ -27,13 +28,24 @@ let light = new THREE.DirectionalLight(0x404040, 5)
 light.position.set(0,0,1000)
 scene.add(light)
 
+let daysOfTheWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+
 renderer.setSize(window.innerWidth, window.innerHeight)
 renderer.domElement.className = "renderer"
 document.body.appendChild(renderer.domElement)
 
 function onlyUnique(value, index, self) {
-  return self.indexOf(value) === index;
+    return self.indexOf(value) === index;
 }
+
+function pad(number) {
+    if (number < 10) {
+        let out = "0" + Number(number).toString()
+        return out
+    }
+    return number
+}
+
 
 function allNodes() {
     function nodesUnder(node) {
@@ -91,6 +103,7 @@ function dateStrippingTimeComponents(date) {
 /// - data - a set of data items that occurred on this day
 /// - date - the date the data items occurred on
 /// - sum - a sum of the data for this day
+/// - average - an average of the data for this day
 function aggregateDataByDay(metricItem) {
     let data = metricItem['data']
 
@@ -102,6 +115,7 @@ function aggregateDataByDay(metricItem) {
         var datumDate = dateStrippingTimeComponents(dateFromHealthExportDateString(datum['date']))
         if (currentDateTime != datumDate.getTime()) {
             if (currentItem != null) {
+                currentItem.average = currentItem.sum / currentItem.data.length
                 out.push(currentItem)
             }
             currentDateTime = datumDate.getTime()
@@ -109,10 +123,15 @@ function aggregateDataByDay(metricItem) {
             currentItem['date'] = datumDate
             currentItem['data'] = new Array()
             currentItem['sum'] = 0
+            currentItem['average'] = 0
+            currentItem['min'] = 100000000
+            currentItem['max'] = -1 * currentItem['min']
         }
         else {
             currentItem['data'].push(datum)
             currentItem['sum'] = currentItem['sum'] + datum['qty']
+            currentItem['min'] = Math.min(currentItem.min, datum['qty'])
+            currentItem['max'] = Math.max(currentItem.max, datum['qty'])
         }
     }
 
@@ -230,37 +249,61 @@ function layout() {
     state.lowerRight.position.y = height
 }
 
-function currentDateChanged() {
-    let metricsBrowser = document.getElementById("metricsBrowser")
-    metricsBrowser.innerHTML = ""
+function applyDayData(data) {
+    // Heart rate
+    let heartRateContainer = document.getElementById("heartRateContainer")
+    let heartRateData = data.heart_rate
+    let heartRateVariabilityData = data.heart_rate_variability
+    console.log(heartRateData)
+}
 
-    let dayIndicator = document.getElementById("currentDayIndicator")
-    let formatter = new Intl.DateTimeFormat('en-US', { dateStyle: 'full', timeStyle: 'short' })
-    let dateString = formatter.format(state.currentDate)
-    dayIndicator.innerHTML = dateString
+function changeCurrentDate(day) {
+    state.currentDate = day
 
-    let currentMetrics = state.metricsByDay[state.currentDate] 
-
-    function onSelection(metricHandler) {
-        let focusIndicator = document.getElementById("focusIndicator")
-        let name = metricHandler.name
-        let focusedNow = focusIndicator.classList.contains(name)
-        if (focusedNow) {
-            focusIndicator.classList.remove(name) 
+    let dayEntries = document.getElementsByClassName("day")
+    for (var i = 0; i < dayEntries.length; i++) {
+        let dayEntry = dayEntries[i]
+        let dayEntryDate = new Date(dayEntry.dataset.date)
+        if (dayEntryDate.getTime() == state.currentDate.getTime()) {
+            dayEntry.classList.add("selected")
+            dayEntry.classList.remove("unselected")
         } else {
-            focusIndicator.className = name
+            dayEntry.classList.remove("selected")
+            dayEntry.classList.add("unselected")
         }
     }
 
-    DataTypes.updateForDay(currentMetrics, metricsBrowser, onSelection)
+    applyDayData(state.metricsByDay[day])
 }
 
-function changeCurrentDate(by) {
-    var index = state.days.indexOf(state.currentDate)
-    index = index + by
-    index = index % state.days.length
-    state.currentDate = state.days[index]
-    currentDateChanged()
+function datesChanged(days) {
+    state.days = days
+
+    let daysPicker = document.getElementById("daysPicker")
+    daysPicker.innerHTML = ""
+    for (var day of days) {
+        let date = pad(day.getDate())
+        let dayOfWeekNumber = day.getDay()
+        let dayOfWeek = daysOfTheWeek[dayOfWeekNumber].substring(0, 3)
+        let dayEntry = document.createElement("div")
+        dayEntry.className = "day"
+        let label = document.createElement("div")
+        label.className = "label"
+        label.innerHTML = dayOfWeek
+        let data = document.createElement("div")
+        data.className = "data"
+        data.innerHTML = date
+        dayEntry.appendChild(label)
+        dayEntry.appendChild(data)
+        dayEntry.dataset.date = day
+        daysPicker.appendChild(dayEntry)
+
+        let newDate = new Date(day)
+
+        dayEntry.onclick = function(e) {
+            changeCurrentDate(newDate)
+        }
+    }
 }
 
 function update(dataContents) {
@@ -291,13 +334,44 @@ function update(dataContents) {
         return a.getTime() > b.getTime()
     })
 
-    state.days = days
+    datesChanged(days)
 
     state.metricsByDay = metricsByDay
     state.currentDate = days[days.length-1]
-    currentDateChanged()
+    changeCurrentDate(state.currentDate);
 
     layout()
+}
+
+function updateBirthOffset() {
+    let nowSeconds = new Date().getTime()/1000
+    let birthdaySeconds = birthday.getTime()/1000
+
+    let difference = nowSeconds - birthdaySeconds
+    let differenceSeconds = nowSeconds - birthdaySeconds
+    let differenceMinutes = Math.floor(differenceSeconds / 60)
+    let differenceHours = Math.floor(differenceMinutes / 60)
+    let differenceDays = Math.floor(differenceHours / 24)
+    let differenceYears = Math.floor(differenceDays / 365)
+
+    var yearsDifference = differenceYears
+    var daysDifference = differenceDays - (yearsDifference*365)
+    var hoursDifference = differenceHours - (yearsDifference*365*24 + daysDifference*24)
+    var minutesDifference = differenceMinutes - (yearsDifference*365*24*60 + daysDifference*24*60 + hoursDifference*60)
+    var secondsDifference = Math.floor(differenceSeconds - (yearsDifference*365*24*60*60 + daysDifference*24*60*60 + hoursDifference*60*60 + minutesDifference*60))
+
+    yearsDifference = pad(yearsDifference)
+    daysDifference = pad(daysDifference)
+    hoursDifference = pad(hoursDifference)
+    minutesDifference = pad(minutesDifference)
+    secondsDifference = pad(secondsDifference)
+
+    let overall = yearsDifference
+        + ":" + daysDifference
+        + ":" + hoursDifference
+        + ":" + minutesDifference
+        + ":" + secondsDifference
+    document.getElementById("ageIndicator").innerHTML = overall
 }
 
 async function reload() {
@@ -309,6 +383,7 @@ async function reload() {
     .then(json => {
         update(json)
     })
+
 }
 
 function animate() {
@@ -316,16 +391,10 @@ function animate() {
     ThreeJSMatching.matchLayout(container)
     TWEEN.update()
     renderer.render(scene, camera)
+    updateBirthOffset()
 }
 
 function setup() {
-    document.getElementById("previousDayButton").onclick = function(e) {
-        changeCurrentDate(-1)
-    }
-    document.getElementById("nextDayButton").onclick = function(e) {
-        changeCurrentDate(1)
-    }
-    
     let upperLeft = cube('red')
     let upperRight = cube('green')
     let lowerLeft = cube('blue')
@@ -342,6 +411,7 @@ function setup() {
     state.lowerRight = lowerRight
 
     DataTypes.install(container)
+    updateBirthOffset()
 }
 
 window.onload = function() {
