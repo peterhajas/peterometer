@@ -146,12 +146,6 @@ function prettyUnit(unitName) {
     return out
 }
 
-function cube(color) {
-    let geo = new THREE.BoxGeometry(100, 100, 100)
-    let mat = new THREE.MeshBasicMaterial({color: color})
-    return new THREE.Mesh(geo, mat)
-}
-
 function waterIndicator(data) {
     let water = new THREE.Group()
     let goal = linesNode(new THREE.CylinderGeometry(50, 50, waterGoal, 4), colorVariable("bg2"))
@@ -245,11 +239,6 @@ function layout() {
     renderer.setSize(width, height)
     renderer.domElement.width = width
     renderer.domElement.height = height
-
-    state.upperRight.position.x = width
-    state.lowerLeft.position.y = height
-    state.lowerRight.position.x = width
-    state.lowerRight.position.y = height
 }
 
 function updateLabel(selector, newValue) {
@@ -624,21 +613,6 @@ function animate() {
 }
 
 function setup() {
-    let upperLeft = cube('red')
-    let upperRight = cube('green')
-    let lowerLeft = cube('blue')
-    let lowerRight = cube('yellow')
-
-    container.add(upperLeft)
-    container.add(upperRight)
-    container.add(lowerLeft)
-    container.add(lowerRight)
-    
-    state.upperLeft = upperLeft
-    state.upperRight = upperRight
-    state.lowerLeft = lowerLeft
-    state.lowerRight = lowerRight
-
     DataTypes.install(container)
     updateBirthOffset()
 }

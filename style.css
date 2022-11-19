@@ -113,7 +113,9 @@ hr {
 }
 
 #heartContainer {
-    flex: 0 0 200px;
+    display: flex;
+    flex-direction: column;
+    flex: 0 0 150px;
 }
 
 #trailingSidebar {
@@ -122,6 +124,12 @@ hr {
     flex: 0 0 300px;
     height: 100%;
     margin-left: auto;
+}
+
+.verticalStack {
+    align-items: end;
+    display: flex;
+    flex-direction: column;
 }
 
 .label {
@@ -152,10 +160,19 @@ hr {
     width: 3ch;
 }
 
+#heart_rate .label, #heart_rate_variability .label {
+    text-align: right;
+    width: 4ch;
+}
+
+#heart_rate_variability {
+    margin-top: auto;
+}
+
 #activityContainer {
     display: flex;
     flex-direction: row;
-    width: 50%;
+    width: 60%;
 }
 
 #activityContainer .graph {
