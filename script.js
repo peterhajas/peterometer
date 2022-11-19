@@ -267,6 +267,8 @@ function updateNode(node, destination) {
     let tween = new TWEEN.Tween(node)
     .to(destination, 200)
     .start()
+
+    return tween
 }
 
 function ensureNodeCount(parent, count, create) {
@@ -409,8 +411,79 @@ function updateHeartRate(data) {
     }
 }
 
+function updateActivity(data) {
+    let activityRadius = 60
+    let activityTube = 5
+    let activitySpacing = 20
+    function clamp(arc) {
+        let clampedArc = Math.max(0, Math.min(arc, Math.PI * 2))
+        return clampedArc
+    }
+
+    function activityRing(arc, level, color) {
+        let clampedArc = Math.max(0, Math.min(arc, Math.PI * 2))
+        let geo = new THREE.TorusGeometry(activityRadius - (level * activitySpacing), activityTube, 8, 16 * (arc / Math.PI*2), clampedArc)
+        let node = outlinedNode(geo, color)
+        node.rotation.z = -Math.PI/2
+        node.userData.arc = 0
+
+        return node
+    }
+
+    function updateRing(level, ring, arc) {
+        let clampedArc = Math.max(0, Math.min(arc, Math.PI * 2))
+        let geo = new THREE.TorusGeometry(activityRadius - (level * activitySpacing), activityTube, 8, 16 * (arc / Math.PI*2), clampedArc)
+        ring.userData.arc = clampedArc
+        ring.children[0].geometry = geo
+        ring.children[1].geometry = geo
+    }
+
+    function ringArc(ring) {
+        return ring.userData.arc
+    }
+
+    let moveArc = clamp((data.active_energy.sum / moveGoal) * Math.PI * 2)
+    let exerciseArc = clamp((data.apple_exercise_time.sum / exerciseGoal) * Math.PI * 2)
+    let standArc = clamp((data.apple_stand_hour.sum / standGoal) * Math.PI * 2)
+
+    let activityNode = state.activityNode
+    if (activityNode == null) {
+        activityNode = new THREE.Group()
+        activityNode.name = "activity"
+        activityNode.userData.matchSelector = "#activityContainer .graph"
+
+        let move = activityRing(1, 0, colorVariable("tint1"))
+        let exercise = activityRing(1, 1, colorVariable("tint2"))
+        let stand = activityRing(1, 2, colorVariable("tint3"))
+        activityNode.userData.move = move
+        activityNode.add(move)
+        activityNode.userData.exercise = exercise
+        activityNode.add(exercise)
+        activityNode.userData.stand = stand
+        activityNode.add(stand)
+
+        state.activityNode = activityNode
+        container.add(activityNode)
+    }
+
+    var activity = { move: ringArc(activityNode.userData.move), exercise: ringArc(activityNode.userData.exercise), stand: ringArc(activityNode.userData.stand) }
+    var activityTarget = { move: moveArc, exercise: exerciseArc, stand: standArc }
+
+    updateNode(activity, activityTarget)
+    .onUpdate(() => {
+        updateRing(0, activityNode.userData.move, activity.move)
+        updateRing(1, activityNode.userData.exercise, activity.exercise)
+        updateRing(2, activityNode.userData.stand, activity.stand)
+    })
+    
+    updateLabel("#activityContainer #active_energy .data", data.active_energy.sum)
+    updateLabel("#activityContainer #apple_exercise_time .data", data.apple_exercise_time.sum)
+    updateLabel("#activityContainer #apple_stand_hour .data", data.apple_stand_hour.sum)
+}
+
 function applyDayData(data) {
     updateHeartRate(data)
+    updateActivity(data)
 }
 
 function changeCurrentDate(day) {

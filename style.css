@@ -113,8 +113,7 @@ hr {
 }
 
 #heartContainer {
-    height: 100px;
-    flex: 0 0 100%;
+    flex: 0 0 200px;
 }
 
 #trailingSidebar {
@@ -134,6 +133,7 @@ hr {
 .data {
     font-weight: bold;
     font-size: 3em;
+    text-align: right;
 }
 
 .dataNode {
@@ -149,8 +149,21 @@ hr {
 }
 
 #heart_rate .data, #heart_rate_variability .data {
-    text-align: right;
     width: 3ch;
+}
+
+#activityContainer {
+    display: flex;
+    flex-direction: row;
+    width: 50%;
+}
+
+#activityContainer .graph {
+    aspect-ratio: 1;
+}
+
+#activityContainer .data {
+    width: 4ch;
 }
 
 .graph {

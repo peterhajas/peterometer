@@ -39,13 +39,11 @@ function matchLayout(container) {
             let matchSelector = item.userData.matchSelector
             let element = document.querySelector(matchSelector)
 
-            if (element != currentMatched) {
-                let rect = element.getBoundingClientRect()
-                let centerX = rect.left + rect.width / 2
-                let centerY = rect.top + rect.height / 2
-                item.position.set(centerX, centerY, 0)
-                item.userData.currentMatched = element
-            }
+            let rect = element.getBoundingClientRect()
+            let centerX = rect.left + rect.width / 2
+            let centerY = rect.top + rect.height / 2
+            item.position.set(centerX, centerY, 0)
+            item.userData.currentMatched = element
         }
 
         if (item.userData.unitX != null) {
