@@ -13,9 +13,9 @@
         <div id="root">
             <div id="leadingSidebar">
                 <h1>Online</h1>
-                <h2 class="label trailing">phajas</h2>
-                <div class="trailing">
-                    <span class="label">Age:</span>
+                <h2 class="label">phajas</h2>
+                <div class="dataNode">
+                    <span class="label">Age</span>
                     <span class="data" id="ageIndicator"></span>
                 </div>
                 <hr>
@@ -44,7 +44,26 @@
                     </div>
                 </div>
             </div>
-            <div id="centerArea"></div>
+            <div id="centerArea">
+                <div id="heartContainer">
+                    <div id="heart_rate">
+                        <div class="graph">
+                        </div>
+                        <div class="dataNode">
+                            <span class="label">HR</span>
+                            <span class="data">00</span>
+                        </div>
+                    </div>
+                    <div id="heart_rate_variability">
+                        <div class="graph">
+                        </div>
+                        <div class="dataNode">
+                            <span class="tint2 label">HRV</span>
+                            <span class="data">00</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div id="trailingSidebar"></div>
         </div>
     </body>

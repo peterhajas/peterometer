@@ -79,10 +79,15 @@ hr {
     padding: 16px;
 }
 
+#ageIndicator {
+    font-size: 2em;
+}
+
 #centerArea {
     display: flex;
     flex-flow: column;
     padding: 16px;
+    flex-basis: 100%;
 }
 
 #daysPicker {
@@ -107,6 +112,11 @@ hr {
     padding: 8px;
 }
 
+#heartContainer {
+    height: 100px;
+    flex: 0 0 100%;
+}
+
 #trailingSidebar {
     display: flex;
     flex-flow: column;
@@ -115,17 +125,37 @@ hr {
     margin-left: auto;
 }
 
-.label, .data {
-    font-size: 2em;
-}
-
 .label {
     font-weight: normal;
     color: var(--tint1);
+    font-size: 2em;
 }
 
 .data {
     font-weight: bold;
+    font-size: 3em;
+}
+
+.dataNode {
+    align-content: center;
+    align-items: center;
+    display: flex;
+    flex-flow: row;
+}
+
+#heart_rate, #heart_rate_variability {
+    flex-direction: row;
+    display: flex;
+}
+
+#heart_rate .data, #heart_rate_variability .data {
+    text-align: right;
+    width: 3ch;
+}
+
+.graph {
+    flex: 1;
+    flex-basis: auto;
 }
 
 .selected {
@@ -138,6 +168,23 @@ hr {
     animation-duration: 0.2s;
     animation-name: unselection;
     animation-fill-mode: forwards;
+}
+
+.tint1 {
+    color: var(--tint1);
+}
+
+.tint2 {
+    color: var(--tint2);
+}
+
+.tint3 {
+    color: var(--tint3);
+}
+
+#heartContainer .dataNode {
+    width: fit-content;
+    margin-left: auto;
 }
 
 @keyframes selection {

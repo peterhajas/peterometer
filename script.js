@@ -106,6 +106,7 @@ function dateStrippingTimeComponents(date) {
 /// - average - an average of the data for this day
 function aggregateDataByDay(metricItem) {
     let data = metricItem['data']
+    let unit = metricItem.units
 
     var out = new Array()
     var currentDateTime = 0
@@ -113,6 +114,7 @@ function aggregateDataByDay(metricItem) {
 
     for (var datum of data) {
         var datumDate = dateStrippingTimeComponents(dateFromHealthExportDateString(datum['date']))
+        datum.date = dateFromHealthExportDateString(datum.date)
         if (currentDateTime != datumDate.getTime()) {
             if (currentItem != null) {
                 currentItem.average = currentItem.sum / currentItem.data.length
@@ -126,6 +128,7 @@ function aggregateDataByDay(metricItem) {
             currentItem['average'] = 0
             currentItem['min'] = 100000000
             currentItem['max'] = -1 * currentItem['min']
+            currentItem['unit'] = unit
         }
         else {
             currentItem['data'].push(datum)
@@ -249,12 +252,165 @@ function layout() {
     state.lowerRight.position.y = height
 }
 
-function applyDayData(data) {
-    // Heart rate
-    let heartRateContainer = document.getElementById("heartRateContainer")
+function updateLabel(selector, newValue) {
+    let current = Number.parseFloat(document.querySelector(selector).innerHTML)
+    var target = {"target" : current }
+    let tween = new TWEEN.Tween(target)
+    .to({target: newValue}, 200)
+    .onUpdate(() => {
+        document.querySelector(selector).innerHTML = Number(target.target).toFixed(1)
+    })
+    .start()
+}
+
+function updateNode(node, destination) {
+    let tween = new TWEEN.Tween(node)
+    .to(destination, 200)
+    .start()
+}
+
+function ensureNodeCount(parent, count, create) {
+    let childDifference = count - parent.children.length
+
+    for(var i = 0; i < childDifference; i++) {
+        if (childDifference > 0) {
+            let newChild = create()
+            parent.add(newChild)
+        }
+        else {
+            parent.children[0].removeFromParent()
+        }
+    }
+}
+
+function fraction(interval, value) {
+    let diffFromMax = interval.max - value
+    let fraction = diffFromMax / (interval.max - interval.min)
+    return fraction
+}
+
+function bounds(data, accessor) {
+    var min = Infinity
+    var max = -Infinity
+    for (var item of data) {
+        let value = accessor(item)
+        if (value < min) { min = value }
+        if (value > max) { max = value }
+    }
+    return { min: min, max: max }
+}
+
+function combineBounds(a, b) {
+    return bounds([a.min, a.max, b.min, b.max], function(e) { return e })
+}
+
+function dateBounds(data, accessor) {
+    return bounds(data, function(e) {
+        return accessor(e).getTime()
+    })
+}
+
+function updateHeartRate(data) {
+    let heartContainer = document.getElementById("heartContainer")
     let heartRateData = data.heart_rate
     let heartRateVariabilityData = data.heart_rate_variability
-    console.log(heartRateData)
+
+    var heartRateBounds = {}
+    heartRateBounds.min = bounds(heartRateData.data, function(e) { return e.Min }).min
+    heartRateBounds.max = bounds(heartRateData.data, function(e) { return e.Max }).max
+
+    let heartRateVariabilityBounds = bounds(heartRateVariabilityData.data, function(e) { return e.qty })
+
+    let heartRateDateBounds = dateBounds(heartRateData.data, function(e) {
+        return e.date
+    })
+
+    let heartRateVariabilityDateBounds = dateBounds(heartRateVariabilityData.data, function(e) {
+        return e.date
+    })
+
+    let heartDateBounds = combineBounds(heartRateDateBounds, heartRateVariabilityDateBounds)
+
+    let lastHeartRate = heartRateData.data[heartRateData.data.length-1].Avg
+    updateLabel("#heart_rate .data", lastHeartRate)
+    
+    let lastHRV = heartRateVariabilityData.data[heartRateVariabilityData.data.length-1].qty
+    updateLabel("#heart_rate_variability .data", lastHRV)
+
+    var heartRateNode = state.heartRateNode
+    if (heartRateNode == null) {
+        heartRateNode = new THREE.Group()
+        heartRateNode.name = "heart_rate"
+        heartRateNode.userData.matchSelector = "#heart_rate .graph"
+        state.heartRateNode = heartRateNode
+        container.add(state.heartRateNode)
+    }
+
+    var heartRateVariabilityNode = state.heartRateVariabilityNode
+    if (heartRateVariabilityNode == null) {
+        heartRateVariabilityNode = new THREE.Group()
+        heartRateVariabilityNode.name = "heart_rate_variability"
+        heartRateVariabilityNode.userData.matchSelector = "#heart_rate_variability .graph"
+        state.heartRateVariabilityNode = heartRateVariabilityNode
+        container.add(state.heartRateVariabilityNode)
+    }
+
+    ensureNodeCount(heartRateNode, heartRateData.data.length, function() {
+        let newChild = new THREE.Group()
+        let sphereRadius = 5
+        let sphereWidthSegments = 6
+        let sphereHeightSegments = sphereWidthSegments
+        newChild.name = "heartRate" + i
+        let top = outlinedNode(new THREE.SphereGeometry(sphereRadius, sphereWidthSegments, sphereHeightSegments), colorVariable("tint1"))
+        top.name = "top"
+        top.userData.unitY = 0
+        let avg = outlinedNode(new THREE.SphereGeometry(sphereRadius, sphereWidthSegments, sphereHeightSegments), colorVariable("tint1"))
+        avg.name = "avg"
+        avg.userData.unitY = 0
+        let bot = outlinedNode(new THREE.SphereGeometry(sphereRadius, sphereWidthSegments, sphereHeightSegments), colorVariable("tint1"))
+        bot.name = "bot"
+        bot.userData.unitY = 0
+        newChild.add(top)
+        newChild.add(avg)
+        newChild.add(bot)
+        newChild.userData.top = top
+        newChild.userData.avg = avg
+        newChild.userData.bot = bot
+        return newChild
+    })
+
+    for(var i = 0; i < heartRateData.data.length; i++) {
+        let heartRateEntry = heartRateData.data[i]
+        let node = heartRateNode.children[i]
+        node.userData.unitX = fraction(heartDateBounds, heartRateEntry.date.getTime())
+        updateNode(node.userData.avg.userData, { unitY : fraction(heartRateBounds, heartRateEntry.Avg) })
+        updateNode(node.userData.top.userData, { unitY : fraction(heartRateBounds, heartRateEntry.Max) })
+        updateNode(node.userData.bot.userData, { unitY : fraction(heartRateBounds, heartRateEntry.Min) })
+    }
+
+    ensureNodeCount(heartRateVariabilityNode, heartRateVariabilityData.data.length, function() {
+        let newChild = new THREE.Group()
+        let sphereRadius = 8
+        let sphereWidthSegments = 6
+        let sphereHeightSegments = sphereWidthSegments
+        let node = outlinedNode(new THREE.SphereGeometry(sphereRadius, sphereWidthSegments, sphereHeightSegments), colorVariable("tint2"))
+        node.name = "hrv"
+        newChild.add(node)
+        newChild.userData.unitX = 0
+        newChild.userData.unitY = 0
+        return newChild
+    })
+
+    for(var i = 0; i < heartRateVariabilityData.data.length; i++) {
+        let entry = heartRateVariabilityData.data[i]
+        let node = heartRateVariabilityNode.children[i]
+        updateNode(node.userData, { unitX : fraction(heartDateBounds, entry.date.getTime()) })
+        updateNode(node.userData, { unitY : fraction(heartRateVariabilityBounds, entry.qty) })
+    }
+}
+
+function applyDayData(data) {
+    updateHeartRate(data)
 }
 
 function changeCurrentDate(day) {
