@@ -31,19 +31,26 @@ function matchLayout(container) {
         if (item.userData == null) { return }
 
         if (item.userData.matchSelector != null) {
-            var currentMatched = null
-            if (item.userData.currentMatched != null) {
-                currentMatched = item.userData.currentMatched
-            }
-
             let matchSelector = item.userData.matchSelector
             let element = document.querySelector(matchSelector)
 
             let rect = element.getBoundingClientRect()
             let centerX = rect.left + rect.width / 2
             let centerY = rect.top + rect.height / 2
+            item.scale.set(1, 1, 1)
             item.position.set(centerX, centerY, 0)
-            item.userData.currentMatched = element
+
+            let boundingBox = new THREE.Box3()
+            boundingBox.expandByObject(item)
+            var boundingSize = new THREE.Vector3()
+            boundingBox.getSize(boundingSize)
+            var scaleX = rect.width / boundingSize.x
+            var scaleY = rect.width / boundingSize.y
+
+            if (scaleX < 1.0 || scaleY < 1.0) {
+                let scale = Math.min(scaleX, scaleY)
+                item.scale.set(scale, scale, scale)
+            }
         }
 
         if (item.userData.unitX != null) {
