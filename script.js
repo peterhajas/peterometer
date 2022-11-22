@@ -222,8 +222,8 @@ function nutritionIndicator(fat, carb, protein, kcal, cholesterol, sugar, fiber,
 }
 
 function layout() {
-    let width = window.innerWidth
-    let height = window.innerHeight
+    let width = document.documentElement.scrollWidth
+    let height = document.documentElement.scrollHeight
 
     container.position.x = -width/2
     container.position.y = -height/2

@@ -35,8 +35,8 @@ function matchLayout(container) {
             let element = document.querySelector(matchSelector)
 
             let rect = element.getBoundingClientRect()
-            let centerX = rect.left + rect.width / 2
-            let centerY = rect.top + rect.height / 2
+            let centerX = rect.left + window.scrollX + rect.width / 2
+            let centerY = rect.top + window.scrollY + rect.height / 2
             item.scale.set(1, 1, 1)
             item.position.set(centerX, centerY, 0)
 
