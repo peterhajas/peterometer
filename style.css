@@ -159,10 +159,6 @@ hr {
     width: 4ch;
 }
 
-#heart_rate_variability {
-    margin-top: auto;
-}
-
 #activityContainer {
     max-width: 450px;
     display: flex;
