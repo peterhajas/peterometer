@@ -518,36 +518,40 @@ function updateMacronutrition(data) {
         innerContainer.rotation.set(0, 0, Math.PI * 1.5)
         macronutrientNode.add(innerContainer)
 
-        let goal = linesNode(new THREE.CylinderGeometry(50, 50, calorieGoal, 4), colorVariable("bg2"))
+        let goalRadius = 200
+        let macroRadius = 160
+        let littleRadius = 100
+
+        let goal = linesNode(new THREE.CylinderGeometry(goalRadius, goalRadius, calorieGoal, 4), colorVariable("bg2"))
         innerContainer.add(goal)
         macronutrientNode.userData.goal = goal
 
-        let fat = outlinedNode(new THREE.CylinderGeometry(40, 40, 0, 20), colorVariable("tint1"))
+        let fat = outlinedNode(new THREE.CylinderGeometry(macroRadius, macroRadius, 0, 20), colorVariable("tint1"))
         innerContainer.add(fat)
         macronutrientNode.userData.fat = fat
 
-        let saturatedFat = outlinedNode(new THREE.CylinderGeometry(30, 30, 0, 20), colorVariable("tint1"))
+        let saturatedFat = outlinedNode(new THREE.CylinderGeometry(littleRadius, littleRadius, 0, 20), colorVariable("tint1"))
         innerContainer.add(saturatedFat)
         macronutrientNode.userData.saturatedFat = saturatedFat
 
-        let carb = outlinedNode(new THREE.CylinderGeometry(40, 40, 0, 20), colorVariable("tint2"))
+        let carb = outlinedNode(new THREE.CylinderGeometry(macroRadius, macroRadius, 0, 20), colorVariable("tint2"))
         innerContainer.add(carb)
         macronutrientNode.userData.carb = carb
 
-        let sugar = outlinedNode(new THREE.CylinderGeometry(30, 30, 0, 20), colorVariable("tint2"))
+        let sugar = outlinedNode(new THREE.CylinderGeometry(littleRadius, littleRadius, 0, 20), colorVariable("tint2"))
         innerContainer.add(sugar)
         macronutrientNode.userData.sugar = sugar
 
-        let protein = outlinedNode(new THREE.CylinderGeometry(40, 40, 0, 20), colorVariable("tint3"))
+        let protein = outlinedNode(new THREE.CylinderGeometry(macroRadius, macroRadius, 0, 20), colorVariable("tint3"))
         innerContainer.add(protein)
         macronutrientNode.userData.protein = protein
 
-        let other = outlinedNode(new THREE.CylinderGeometry(40, 40, 0, 20), colorVariable("tint1"))
+        let other = outlinedNode(new THREE.CylinderGeometry(macroRadius, macroRadius, 0, 20), colorVariable("tint1"))
         innerContainer.add(other)
         macronutrientNode.userData.other = other
         other.visible = false
         
-        let calories = outlinedNode(new THREE.CylinderGeometry(40, 40, 0, 20), colorVariable("tint1"))
+        let calories = outlinedNode(new THREE.CylinderGeometry(macroRadius, macroRadius, 0, 20), colorVariable("tint1"))
         innerContainer.add(calories)
         macronutrientNode.userData.calories = calories
         calories.visible = false
