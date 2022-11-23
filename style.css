@@ -129,6 +129,7 @@ hr {
     color: var(--tint1);
     font-size: 2em;
     display: block;
+    width: 3ch;
     text-align: left;
 }
 
@@ -159,10 +160,6 @@ hr {
 #heart_rate, #heart_rate_variability {
     flex-direction: row;
     display: flex;
-}
-
-#heartContainer .label {
-    width: 3ch;
 }
 
 #heartContainer .data {
@@ -197,10 +194,6 @@ hr {
     width: 75px;
 }
 
-#hydrationContainer .label {
-    width: 3ch;
-}
-
 #hydrationContainer .data {
     width: 4ch;
 }
@@ -209,20 +202,16 @@ hr {
     flex-grow: 1;
 }
 
-#macronutrientContainer .label {
-    width: 3ch;
-}
-
 #macronutrientContainer .data {
     width: 5ch;
 }
 
-#micronutrientContainer .label {
-    width: 3ch;
-}
-
 #micronutrientContainer .data {
     width: 5ch;
+}
+
+#respiratoryContainer .data {
+    width: 4ch;
 }
 
 .graph {

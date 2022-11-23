@@ -229,6 +229,10 @@ function layout() {
 }
 
 function updateLabel(selector, newValue) {
+    if (newValue == null || isNaN(newValue)) {
+        document.querySelector(selector).innerHTML = "?"
+        return
+    }
     let current = Number.parseFloat(document.querySelector(selector).innerHTML)
     var target = {"target" : current }
     let tween = new TWEEN.Tween(target)
@@ -624,6 +628,14 @@ function updateMicronutrition(data) {
     updateLabel("#fiber .data", data.fiber.sum)
 }
 
+function updateRespiration(data) {
+    let blood_oxygen_saturation = data.blood_oxygen_saturation.average
+    let respiratory_rate = data.respiratory_rate.average
+
+    updateLabel("#blood_oxygen_saturation .data", data.blood_oxygen_saturation.average)
+    updateLabel("#respiratory_rate .data", data.respiratory_rate.average)
+}
+
 function updateMobility(data) {
     // flights_climbed
     // stair_speed_up
@@ -643,6 +655,7 @@ function applyDayData(data) {
     updateHydration(data)
     updateMacronutrition(data)
     updateMicronutrition(data)
+    updateRespiration(data)
     updateMobility(data)
 }
 
