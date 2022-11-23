@@ -118,14 +118,6 @@ hr {
     flex: 0 0 150px;
 }
 
-#trailingSidebar {
-    display: flex;
-    flex-flow: column;
-    flex: 0 0 300px;
-    height: 100%;
-    margin-left: auto;
-}
-
 .verticalStack {
     align-items: end;
     display: flex;
