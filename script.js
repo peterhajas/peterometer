@@ -2,9 +2,6 @@ import * as DataTypes from './data_types.js'
 import * as ThreeJSMatching from './threejs_matching.js'
 
 // Constants
-let fatCaloriesPerGram = 9
-let carbCaloriesPerGram = 4
-let proteinCaloriesPerGram = 4
 let moveGoal = 440
 let exerciseGoal = 30
 let standGoal = 12
@@ -491,22 +488,136 @@ function updateHydration(data) {
     updateLabel("#hydrationContainer .data", data.dietary_water.sum)
 }
 
-function updateNutrition(data) {
-    let calories = data.dietary_energy
+function updateMacronutrition(data) {
+    let fatCaloriesPerGram = 9
+    let carbCaloriesPerGram = 4
+    let proteinCaloriesPerGram = 4
+    let calorieGoal = 2352
 
-    let fat = data.total_fat.sum
-    let carb = data.carbohydrates.sum
-    let protein = data.protein.sum
+    let calories = data.dietary_energy.sum
 
-    let cholesterol = data.dietary_cholesterol
-    let sugar = data.dietary_sugar
-    let sodium = data.sodium
-    let fiber = data.fiber
-    let saturatedFat = data.saturated_fat
+    var fat = data.total_fat.sum * fatCaloriesPerGram
+    let saturatedFat = data.saturated_fat.sum * fatCaloriesPerGram
+    fat -= saturatedFat
+
+    var carb = data.carbohydrates.sum * carbCaloriesPerGram
+    let sugar = data.dietary_sugar.sum * carbCaloriesPerGram
+    carb -= sugar
+
+    let protein = data.protein.sum * proteinCaloriesPerGram
+
+    let other = calories - (fat + carb + protein)
+
+    let macronutrientNode = state.macronutrientNode
+    if (macronutrientNode == null) {
+        macronutrientNode = new THREE.Group()
+        macronutrientNode.name = "macronutrient"
+        macronutrientNode.userData.matchSelector = "#macronutrientContainer .graph"
+
+        let innerContainer = new THREE.Group()
+        innerContainer.rotation.set(0, 0, Math.PI * 1.5)
+        macronutrientNode.add(innerContainer)
+        // innerContainer.scale.set(1, 100 / calorieGoal, 1)
+
+        let goal = linesNode(new THREE.CylinderGeometry(50, 50, calorieGoal, 4), colorVariable("bg2"))
+        innerContainer.add(goal)
+        macronutrientNode.userData.goal = goal
+
+        let fat = outlinedNode(new THREE.CylinderGeometry(40, 40, 0, 20), colorVariable("tint1"))
+        innerContainer.add(fat)
+        macronutrientNode.userData.fat = fat
+
+        let saturatedFat = outlinedNode(new THREE.CylinderGeometry(30, 30, 0, 20), colorVariable("tint1"))
+        innerContainer.add(saturatedFat)
+        macronutrientNode.userData.saturatedFat = saturatedFat
+
+        let carb = outlinedNode(new THREE.CylinderGeometry(40, 40, 0, 20), colorVariable("tint2"))
+        innerContainer.add(carb)
+        macronutrientNode.userData.carb = carb
+
+        let sugar = outlinedNode(new THREE.CylinderGeometry(30, 30, 0, 20), colorVariable("tint2"))
+        innerContainer.add(sugar)
+        macronutrientNode.userData.sugar = sugar
+
+        let protein = outlinedNode(new THREE.CylinderGeometry(40, 40, 0, 20), colorVariable("tint3"))
+        innerContainer.add(protein)
+        macronutrientNode.userData.protein = protein
+
+        let other = outlinedNode(new THREE.CylinderGeometry(40, 40, 0, 20), colorVariable("tint1"))
+        innerContainer.add(other)
+        macronutrientNode.userData.other = other
+        other.visible = false
+        
+        let calories = outlinedNode(new THREE.CylinderGeometry(40, 40, 0, 20), colorVariable("tint1"))
+        innerContainer.add(calories)
+        macronutrientNode.userData.calories = calories
+        calories.visible = false
+
+        state.macronutrientNode = macronutrientNode
+        container.add(macronutrientNode)
+    }
+
+    function getHeight(name) {
+        return macronutrientNode.userData[name].children[0].geometry.parameters.height
+    }
+
+    function setHeight(name, height) {
+        let param =  macronutrientNode.userData[name].children[0].geometry.parameters
+        let geo = new THREE.CylinderGeometry(param.radiusTop, param.radiusBottom, height, param.radialSegments, param.heightSegments, param.openEnded, param.thetaStart, param.thetaLength)
+        macronutrientNode.userData[name].children[0].geometry = geo
+        macronutrientNode.userData[name].children[1].geometry = geo
+    }
+
+    var nutrition = {
+        "fat" : getHeight("fat"),
+        "saturatedFat" : getHeight("saturatedFat"),
+        "carb" : getHeight("carb"),
+        "sugar" : getHeight("sugar"),
+        "protein" : getHeight("protein"),
+        "other" : getHeight("other"),
+        "calories" : getHeight("calories"),
+    }
+    var target = {
+        "fat" : fat,
+        "saturatedFat" : saturatedFat,
+        "carb" : carb,
+        "sugar" : sugar,
+        "protein" : protein,
+        "other" : other,
+        "calories" : calories
+    }
+
+    updateNode(nutrition, target)
+    .onUpdate(() => {
+        setHeight("fat", nutrition.fat)
+        setHeight("saturatedFat", nutrition.saturatedFat)
+        setHeight("carb", nutrition.carb)
+        setHeight("sugar", nutrition.sugar)
+        setHeight("protein", nutrition.protein)
+        setHeight("other", nutrition.other)
+        setHeight("calories", nutrition.calories)
+
+        macronutrientNode.userData.fat.position.y = -1 * (nutrition.calories - nutrition.fat)/2
+        macronutrientNode.userData.saturatedFat.position.y = macronutrientNode.userData.fat.position.y + (nutrition.fat + nutrition.saturatedFat)/2
+        macronutrientNode.userData.carb.position.y = macronutrientNode.userData.saturatedFat.position.y + (nutrition.saturatedFat + nutrition.carb)/2
+        macronutrientNode.userData.sugar.position.y = macronutrientNode.userData.carb.position.y + (nutrition.carb + nutrition.sugar)/2
+        macronutrientNode.userData.protein.position.y = macronutrientNode.userData.sugar.position.y + (nutrition.sugar + nutrition.protein)/2
+    })
+
+    updateLabel("#total_fat .data", fat + saturatedFat)
+    updateLabel("#saturated_fat .data", saturatedFat)
+    updateLabel("#carbohydrates .data", carb + sugar)
+    updateLabel("#dietary_sugar .data", sugar)
+    updateLabel("#protein .data", protein)
+}
+
+function updateMicronutrition(data) {
+    let cholesterol = data.dietary_cholesterol // ?
+    let sodium = data.sodium // mineral
+    let fiber = data.fiber // partially inedible / not digested
 }
 
 function updateMobility(data) {
-    console.log(data)
     // flights_climbed
     // stair_speed_up
     // stair_speed_down
@@ -523,7 +634,8 @@ function applyDayData(data) {
     updateHeartRate(data)
     updateActivity(data)
     updateHydration(data)
-    updateNutrition(data)
+    updateMacronutrition(data)
+    updateMicronutrition(data)
     updateMobility(data)
 }
 

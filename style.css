@@ -148,7 +148,6 @@ hr {
 .metricView {
     padding: 8px;
     margin: 8px;
-    height: 200px;
     flex-direction: row;
     display: flex;
 }
@@ -200,6 +199,18 @@ hr {
 
 #hydrationContainer .data {
     width: 4ch;
+}
+
+#macronutrientContainer {
+    flex-grow: 1;
+}
+
+#macronutrientContainer .label {
+    width: 3ch;
+}
+
+#macronutrientContainer .data {
+    width: 5ch;
 }
 
 .graph {
