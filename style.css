@@ -32,6 +32,7 @@
 }
 
 body {
+    font-variant-numeric: tabular-nums;
     background-color: var(--bg1);
     color: var(--text);
     padding: 0;
