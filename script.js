@@ -615,9 +615,13 @@ function updateMacronutrition(data) {
 }
 
 function updateMicronutrition(data) {
-    let cholesterol = data.dietary_cholesterol // ?
+    let dietary_cholesterol = data.dietary_cholesterol // ?
     let sodium = data.sodium // mineral
     let fiber = data.fiber // partially inedible / not digested
+
+    updateLabel("#dietary_cholesterol .data", data.dietary_cholesterol.sum)
+    updateLabel("#sodium .data", data.sodium.sum)
+    updateLabel("#fiber .data", data.fiber.sum)
 }
 
 function updateMobility(data) {

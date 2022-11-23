@@ -217,6 +217,14 @@ hr {
     width: 5ch;
 }
 
+#micronutrientContainer .label {
+    width: 3ch;
+}
+
+#micronutrientContainer .data {
+    width: 5ch;
+}
+
 .graph {
     flex: 1;
     flex-basis: auto;
