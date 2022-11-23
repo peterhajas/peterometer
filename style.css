@@ -60,11 +60,6 @@ hr {
     height: 2px;
 }
 
-.trailing {
-    float: right;
-    text-align: right;
-}
-
 #root {
     display: flex;
     flex-flow: row;
@@ -129,6 +124,8 @@ hr {
     font-weight: normal;
     color: var(--tint1);
     font-size: 2em;
+    display: block;
+    text-align: left;
 }
 
 .data {
@@ -141,7 +138,12 @@ hr {
     align-content: center;
     align-items: center;
     display: flex;
-    flex-flow: row;
+    flex-flow: row-reverse;
+}
+
+.metricView {
+    flex-direction: row;
+    display: flex;
 }
 
 #heart_rate, #heart_rate_variability {
@@ -149,12 +151,11 @@ hr {
     display: flex;
 }
 
-#heart_rate .data, #heart_rate_variability .data {
+#heartContainer .label {
     width: 3ch;
 }
 
-#heart_rate .label, #heart_rate_variability .label {
-    text-align: right;
+#heartContainer .data {
     width: 4ch;
 }
 
@@ -163,6 +164,7 @@ hr {
 }
 
 #activityContainer {
+    max-width: 450px;
     display: flex;
     flex-direction: row;
     width: 60%;
@@ -172,8 +174,12 @@ hr {
     aspect-ratio: 1;
 }
 
-#activityContainer .data {
+#activityContainer .label {
     width: 4ch;
+}
+
+#activityContainer .data {
+    width: 5ch;
 }
 
 .graph {
@@ -204,11 +210,6 @@ hr {
 
 .tint3 {
     color: var(--tint3);
-}
-
-#heartContainer .dataNode {
-    width: fit-content;
-    margin-left: auto;
 }
 
 @keyframes selection {
