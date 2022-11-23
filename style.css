@@ -242,6 +242,18 @@ hr {
     color: var(--tint3);
 }
 
+.bg1 {
+    color: var(--bg1);
+}
+
+.bg2 {
+    color: var(--bg2);
+}
+
+.bg3 {
+    color: var(--bg3);
+}
+
 @keyframes selection {
     from {
         background-color: none;

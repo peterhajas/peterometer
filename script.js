@@ -143,71 +143,6 @@ function prettyUnit(unitName) {
     return out
 }
 
-function nutritionIndicator(fat, carb, protein, kcal, cholesterol, sugar, fiber, saturated, sodium) {
-    // also needs:
-    // dietary_cholesterol
-    // dietary_sugar
-    // fiber
-    // saturated_fat
-    // sodium
-    
-    let nutrition = new THREE.Group()
-
-    let goal = linesNode(new THREE.BoxGeometry(85, 200, 85, 2, 2, 2), colorVariable("bg2"))
-    nutrition.add(goal)
-
-    function kcalsToUnits(kcals) {
-        return kcals * (200 / calorieGoal)
-    }
-
-    var calories = 0
-    if (kcal != null) {
-        calories = kcal.sum
-    }
-    let calFraction = calories / calorieGoal
-    let cal = outlinedNode(new THREE.BoxGeometry(45, calFraction * 200, 45), colorVariable("bg3"))
-    nutrition.add(cal)
-
-    var fatGrams = 0
-    if (fat != null) {
-        fatGrams = fat.sum
-    }
-    let fatCalories = fatGrams * fatCaloriesPerGram
-    let fatNode = outlinedNode(new THREE.BoxGeometry(77, kcalsToUnits(fatCalories), 77, 3, 3, 3), colorVariable("tint1"))
-    nutrition.add(fatNode)
-
-    var carbGrams = 0
-    if (carb != null) {
-        carbGrams = carb.sum
-    }
-    let carbCalories = carbGrams * carbCaloriesPerGram
-    let carbNode = outlinedNode(new THREE.BoxGeometry(77, kcalsToUnits(carbCalories), 77, 3, 3, 3), colorVariable("tint2"))
-    nutrition.add(carbNode)
-    
-    var proteinGrams = 0
-    if (protein != null) {
-        proteinGrams = protein.sum
-    }
-    let proteinCalories = proteinGrams * proteinCaloriesPerGram
-    let proteinNode = outlinedNode(new THREE.BoxGeometry(77, kcalsToUnits(proteinCalories), 77, 3, 3, 3), colorVariable("tint3"))
-    nutrition.add(proteinNode)
-
-    let totalHeight = kcalsToUnits(fatCalories + carbCalories + proteinCalories)
-    fatNode.position.y -= ((totalHeight) - kcalsToUnits(fatCalories))/2
-    carbNode.position.y = fatNode.position.y + kcalsToUnits(fatCalories)/2 + kcalsToUnits(carbCalories)/2
-    proteinNode.position.y = carbNode.position.y + kcalsToUnits(carbCalories)/2 + kcalsToUnits(proteinCalories)/2
-
-    let totalSodium = (sodium == null) ? 0 : sodium.sum
-    let sodiumNode = outlinedNode(new THREE.IcosahedronGeometry(totalSodium/300), colorVariable("tint1"))
-    sodiumNode.position.x = 80
-    let sodiumContainer = new THREE.Group()
-    sodiumContainer.add(sodiumNode)
-
-    nutrition.add(sodiumContainer)
-
-    return nutrition
-}
-
 function layout() {
     let width = document.documentElement.scrollWidth
     let height = document.documentElement.scrollHeight
@@ -611,6 +546,7 @@ function updateMacronutrition(data) {
         macronutrientNode.userData.protein.position.y = macronutrientNode.userData.sugar.position.y + (nutrition.sugar + nutrition.protein)/2
     })
 
+    updateLabel("#dietary_energy .data", data.dietary_energy.sum)
     updateLabel("#total_fat .data", data.total_fat.sum)
     updateLabel("#saturated_fat .data", data.saturated_fat.sum)
     updateLabel("#carbohydrates .data", data.carbohydrates.sum)
