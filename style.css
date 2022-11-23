@@ -145,6 +145,10 @@ hr {
     flex-flow: row-reverse;
 }
 
+.little .data {
+    font-size: 2em;
+}
+
 .metricView {
     padding: 8px;
     margin: 8px;

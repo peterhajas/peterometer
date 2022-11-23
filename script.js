@@ -517,7 +517,6 @@ function updateMacronutrition(data) {
         let innerContainer = new THREE.Group()
         innerContainer.rotation.set(0, 0, Math.PI * 1.5)
         macronutrientNode.add(innerContainer)
-        // innerContainer.scale.set(1, 100 / calorieGoal, 1)
 
         let goal = linesNode(new THREE.CylinderGeometry(50, 50, calorieGoal, 4), colorVariable("bg2"))
         innerContainer.add(goal)
@@ -604,11 +603,11 @@ function updateMacronutrition(data) {
         macronutrientNode.userData.protein.position.y = macronutrientNode.userData.sugar.position.y + (nutrition.sugar + nutrition.protein)/2
     })
 
-    updateLabel("#total_fat .data", fat + saturatedFat)
-    updateLabel("#saturated_fat .data", saturatedFat)
-    updateLabel("#carbohydrates .data", carb + sugar)
-    updateLabel("#dietary_sugar .data", sugar)
-    updateLabel("#protein .data", protein)
+    updateLabel("#total_fat .data", data.total_fat.sum)
+    updateLabel("#saturated_fat .data", data.saturated_fat.sum)
+    updateLabel("#carbohydrates .data", data.carbohydrates.sum)
+    updateLabel("#dietary_sugar .data", data.dietary_sugar.sum)
+    updateLabel("#protein .data", data.protein.sum)
 }
 
 function updateMicronutrition(data) {
