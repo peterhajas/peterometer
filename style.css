@@ -95,11 +95,14 @@ hr {
     flex-direction: row;
 }
 
-.day {
-    text-align: right;
+.day, .metricView {
     border-width: 1px;
     border: solid;
     border-color: var(--bg2);
+}
+
+.day {
+    text-align: right;
     display: inline;
     flex-basis: 0;
     flex 1;
@@ -143,6 +146,8 @@ hr {
 }
 
 .metricView {
+    padding: 8px;
+    margin: 8px;
     height: 200px;
     flex-direction: row;
     display: flex;
