@@ -491,10 +491,40 @@ function updateHydration(data) {
     updateLabel("#hydrationContainer .data", data.dietary_water.sum)
 }
 
+function updateNutrition(data) {
+    let calories = data.dietary_energy
+
+    let fat = data.total_fat.sum
+    let carb = data.carbohydrates.sum
+    let protein = data.protein.sum
+
+    let cholesterol = data.dietary_cholesterol
+    let sugar = data.dietary_sugar
+    let sodium = data.sodium
+    let fiber = data.fiber
+    let saturatedFat = data.saturated_fat
+}
+
+function updateMobility(data) {
+    console.log(data)
+    // flights_climbed
+    // stair_speed_up
+    // stair_speed_down
+    // step_count
+    // walking_asymmetric_percentage
+    // walking_double_support_percentage
+    // walking_heart_rate_average
+    // walking_running_distance
+    // walking_speed
+    // walking_step_length
+}
+
 function applyDayData(data) {
     updateHeartRate(data)
     updateActivity(data)
     updateHydration(data)
+    updateNutrition(data)
+    updateMobility(data)
 }
 
 function changeCurrentDate(day) {
