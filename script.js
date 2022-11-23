@@ -637,6 +637,7 @@ function updateRespiration(data) {
 }
 
 function updateMobility(data) {
+    console.log(data)
     // flights_climbed
     // stair_speed_up
     // stair_speed_down

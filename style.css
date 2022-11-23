@@ -116,6 +116,7 @@ hr {
     flex-grow: 2;
     display: flex;
     flex-direction: column;
+    flex-basis: 500px;
 }
 
 .verticalStack {
@@ -150,10 +151,19 @@ hr {
     font-size: 2em;
 }
 
+.graph {
+    flex: 1;
+    flex-basis: 100px;
+    min-width: 100px;
+    min-height: 100px;
+    margin: 10px;
+}
+
 .metricView {
     padding: 8px;
     margin: 8px;
     flex-direction: row;
+    flex-grow: 1;
     display: flex;
 }
 
@@ -167,11 +177,9 @@ hr {
 }
 
 #activityContainer {
-    flex-grow: 1;
-    max-width: 450px;
+    flex-basis: 300px;
     display: flex;
     flex-direction: row;
-    width: 60%;
 }
 
 #activityContainer .graph {
@@ -186,10 +194,6 @@ hr {
     width: 5ch;
 }
 
-#hydrationContainer {
-    flex-grow: 1;
-}
-
 #hydrationContainer .graph {
     width: 75px;
 }
@@ -199,7 +203,7 @@ hr {
 }
 
 #macronutrientContainer {
-    flex-grow: 1;
+    flex-basis: 900px;
 }
 
 #macronutrientContainer .data {
@@ -212,12 +216,6 @@ hr {
 
 #respiratoryContainer .data {
     width: 4ch;
-}
-
-.graph {
-    flex: 1;
-    flex-basis: auto;
-    margin: 10px;
 }
 
 .selected {
