@@ -146,16 +146,6 @@ function prettyUnit(unitName) {
     return out
 }
 
-function waterIndicator(data) {
-    let water = new THREE.Group()
-    let goal = linesNode(new THREE.CylinderGeometry(50, 50, waterGoal, 4), colorVariable("bg2"))
-    water.add(goal)
-    let current = outlinedNode(new THREE.CylinderGeometry(40, 40, data.sum, 20), colorVariable("tint1"))
-    water.add(current)
-
-    return water
-}
-
 function nutritionIndicator(fat, carb, protein, kcal, cholesterol, sugar, fiber, saturated, sodium) {
     // also needs:
     // dietary_cholesterol
@@ -470,9 +460,41 @@ function updateActivity(data) {
     updateLabel("#activityContainer #apple_stand_hour .data", data.apple_stand_hour.sum)
 }
 
+function updateHydration(data) {
+    let hydrationNode = state.hydrationNode
+    if (hydrationNode == null) {
+        hydrationNode = new THREE.Group()
+        hydrationNode.name = "hydration"
+        hydrationNode.userData.matchSelector = "#hydrationContainer .graph"
+
+        let goal = linesNode(new THREE.CylinderGeometry(50, 50, waterGoal, 4), colorVariable("bg2"))
+        hydrationNode.add(goal)
+        hydrationNode.userData.goal = goal
+        let current = outlinedNode(new THREE.CylinderGeometry(40, 40, 0, 20), colorVariable("tint1"))
+        hydrationNode.add(current)
+        hydrationNode.userData.current = current
+
+        state.hydrationNode = hydrationNode
+        container.add(hydrationNode)
+    }
+
+    var hydration = { level : hydrationNode.userData.current.children[0].geometry.parameters.height }
+    var target = { level : data.dietary_water.sum }
+
+    updateNode(hydration, target)
+    .onUpdate(() => {
+        let geo = new THREE.CylinderGeometry(40, 40, hydration.level, 20)
+        hydrationNode.userData.current.children[0].geometry = geo
+        hydrationNode.userData.current.children[1].geometry = geo
+    })
+
+    updateLabel("#hydrationContainer .data", data.dietary_water.sum)
+}
+
 function applyDayData(data) {
     updateHeartRate(data)
     updateActivity(data)
+    updateHydration(data)
 }
 
 function changeCurrentDate(day) {

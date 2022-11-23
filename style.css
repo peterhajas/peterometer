@@ -186,6 +186,22 @@ hr {
     width: 5ch;
 }
 
+#hydrationContainer {
+    flex-grow: 1;
+}
+
+#hydrationContainer .graph {
+    width: 75px;
+}
+
+#hydrationContainer .label {
+    width: 3ch;
+}
+
+#hydrationContainer .data {
+    width: 4ch;
+}
+
 .graph {
     flex: 1;
     flex-basis: auto;
