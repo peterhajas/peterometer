@@ -227,6 +227,20 @@ function dateBounds(data, accessor) {
     })
 }
 
+function updateCylinderHeight(container, userDataKey, height) {
+    let item = container.userData[userDataKey]
+    if (item.userData != null && item.userData.isOutlinedNode) {
+        let param =  item.children[1].geometry.parameters
+        let geo = new THREE.CylinderGeometry(param.radiusTop, param.radiusBottom, height, param.radialSegments, param.heightSegments, param.openEnded, param.thetaStart, param.thetaLength)
+        item.children[0].geometry = geo
+        item.children[1].geometry = geo
+    } else {
+        let param =  item.geometry.parameters
+        let geo = new THREE.CylinderGeometry(param.radiusTop, param.radiusBottom, height, param.radialSegments, param.heightSegments, param.openEnded, param.thetaStart, param.thetaLength)
+        item.geometry = geo
+    }
+}
+
 function updateHeartRate(data) {
     let heartContainer = document.getElementById("heartContainer")
     let heartRateData = data.heart_rate
@@ -565,15 +579,70 @@ function updateMicronutrition(data) {
 }
 
 function updateRespiration(data) {
-    let blood_oxygen_saturation = data.blood_oxygen_saturation.average
-    let respiratory_rate = data.respiratory_rate.average
-
     updateLabel("#blood_oxygen_saturation .data", data.blood_oxygen_saturation.average)
     updateLabel("#respiratory_rate .data", data.respiratory_rate.average)
 }
 
+function updateSleep(data) {
+    let sleepNode = state.sleepNode
+
+    if (sleepNode == null) {
+        let sleepGoal = 8
+        sleepNode = new THREE.Group()
+        sleepNode.name = "sleep_analysis"
+        sleepNode.userData.matchSelector = "#sleep_analysis .graph"
+
+        let goalRadius = 20
+        let inBedRadius = 15
+        let asleepRadius = 17
+
+        let goal = linesNode(new THREE.CylinderGeometry(goalRadius, goalRadius, sleepGoal, 4), colorVariable("bg2"))
+        sleepNode.userData.goal = goal
+        sleepNode.add(goal)
+
+        let inBed = outlinedNode(new THREE.CylinderGeometry(inBedRadius, inBedRadius, 0, 4), colorVariable("tint1"))
+        inBed.userData.value = 0
+        sleepNode.userData.inBed = inBed
+        sleepNode.add(inBed)
+        let asleep = outlinedNode(new THREE.CylinderGeometry(asleepRadius, asleepRadius, 0, 4), colorVariable("tint2"))
+        asleep.userData.value = 0
+        sleepNode.userData.asleep = asleep
+        sleepNode.add(asleep)
+
+        let overallScale = 2
+        let verticalScale = 5 * overallScale
+        goal.scale.set(overallScale, verticalScale, overallScale)
+        inBed.scale.set(overallScale, verticalScale, overallScale)
+        asleep.scale.set(overallScale, verticalScale, overallScale)
+
+        state.sleepNode = sleepNode
+        container.add(sleepNode)
+    }
+
+    var sleep = {
+        "inBed" : sleepNode.userData.inBed.userData.value,
+        "asleep" : sleepNode.userData.asleep.userData.value,
+    }
+    var target = {
+        "inBed" : data.sleep_analysis.inBed,
+        "asleep" : data.sleep_analysis.asleep,
+    }
+
+    updateNode(sleep, target)
+    .onUpdate(() => {
+        console.log(sleep)
+        sleepNode.userData["inBed"].userData.value = sleep.inBed
+        sleepNode.userData["asleep"].userData.value = sleep.asleep
+        updateCylinderHeight(sleepNode, "inBed", sleep.inBed)
+        updateCylinderHeight(sleepNode, "asleep", sleep.asleep)
+    })
+
+    updateLabel("#sleep_analysis_in_bed .data", data.sleep_analysis.inBed)
+    updateLabel("#sleep_analysis_asleep .data", data.sleep_analysis.asleep)
+}
+
 function updateMobility(data) {
-    console.log(data)
+    // console.log(data)
     // flights_climbed
     // stair_speed_up
     // stair_speed_down
@@ -593,6 +662,7 @@ function applyDayData(data) {
     updateMacronutrition(data)
     updateMicronutrition(data)
     updateRespiration(data)
+    updateSleep(data)
     updateMobility(data)
 }
 
@@ -666,6 +736,16 @@ function update(dataContents) {
                 days.push(day.date)
             }
             metricsByDay[day.date][metricType] = day
+        }
+    }
+
+    for (var sleep of metricsByType["sleep_analysis"].data) {
+        let wakeDate = dateFromHealthExportDateString(sleep.inBedEnd)
+        let wakeDay = dateStrippingTimeComponents(wakeDate)
+        var dayData = metricsByDay[wakeDay]
+        if (dayData != null) {
+            dayData.sleep_analysis = sleep
+            metricsByDay[wakeDay] = dayData
         }
     }
 

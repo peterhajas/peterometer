@@ -15,6 +15,7 @@ function linesNode(geo, color) {
 
 function outlinedNode(geo, color) {
     let out = new THREE.Group()
+    out.userData.isOutlinedNode = true
     let regularMaterial = new THREE.MeshPhysicalMaterial({color: color, side: THREE.DoubleSide})
     regularMaterial.transparent = true
     regularMaterial.opacity = 0.8
