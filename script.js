@@ -455,7 +455,9 @@ function updateMacronutrition(data) {
 
     var carb = data.carbohydrates.sum * carbCaloriesPerGram
     let sugar = data.dietary_sugar.sum * carbCaloriesPerGram
+    let fiber = data.fiber.sum * carbCaloriesPerGram
     carb -= sugar
+    carb -= fiber
 
     let protein = data.protein.sum * proteinCaloriesPerGram
 
@@ -474,6 +476,7 @@ function updateMacronutrition(data) {
         let goalRadius = 200
         let macroRadius = 160
         let littleRadius = 100
+        let littlerRadius = 80
 
         let goal = linesNode(new THREE.CylinderGeometry(goalRadius, goalRadius, calorieGoal, 4), colorVariable("bg2"))
         innerContainer.add(goal)
@@ -494,6 +497,10 @@ function updateMacronutrition(data) {
         let sugar = outlinedNode(new THREE.CylinderGeometry(littleRadius, littleRadius, 0, 20), colorVariable("tint2"))
         innerContainer.add(sugar)
         macronutrientNode.userData.sugar = sugar
+
+        let fiber = outlinedNode(new THREE.CylinderGeometry(littlerRadius, littlerRadius, 0, 20), colorVariable("tint2"))
+        innerContainer.add(fiber)
+        macronutrientNode.userData.fiber = fiber
 
         let protein = outlinedNode(new THREE.CylinderGeometry(macroRadius, macroRadius, 0, 20), colorVariable("tint3"))
         innerContainer.add(protein)
@@ -529,6 +536,7 @@ function updateMacronutrition(data) {
         "saturatedFat" : getHeight("saturatedFat"),
         "carb" : getHeight("carb"),
         "sugar" : getHeight("sugar"),
+        "fiber" : getHeight("fiber"),
         "protein" : getHeight("protein"),
         "other" : getHeight("other"),
         "calories" : getHeight("calories"),
@@ -538,6 +546,7 @@ function updateMacronutrition(data) {
         "saturatedFat" : saturatedFat,
         "carb" : carb,
         "sugar" : sugar,
+        "fiber" : fiber,
         "protein" : protein,
         "other" : other,
         "calories" : calories
@@ -549,6 +558,7 @@ function updateMacronutrition(data) {
         setHeight("saturatedFat", nutrition.saturatedFat)
         setHeight("carb", nutrition.carb)
         setHeight("sugar", nutrition.sugar)
+        setHeight("fiber", nutrition.fiber)
         setHeight("protein", nutrition.protein)
         setHeight("other", nutrition.other)
         setHeight("calories", nutrition.calories)
@@ -557,7 +567,8 @@ function updateMacronutrition(data) {
         macronutrientNode.userData.saturatedFat.position.y = macronutrientNode.userData.fat.position.y + (nutrition.fat + nutrition.saturatedFat)/2
         macronutrientNode.userData.carb.position.y = macronutrientNode.userData.saturatedFat.position.y + (nutrition.saturatedFat + nutrition.carb)/2
         macronutrientNode.userData.sugar.position.y = macronutrientNode.userData.carb.position.y + (nutrition.carb + nutrition.sugar)/2
-        macronutrientNode.userData.protein.position.y = macronutrientNode.userData.sugar.position.y + (nutrition.sugar + nutrition.protein)/2
+        macronutrientNode.userData.fiber.position.y = macronutrientNode.userData.sugar.position.y + (nutrition.sugar + nutrition.fiber)/2
+        macronutrientNode.userData.protein.position.y = macronutrientNode.userData.fiber.position.y + (nutrition.fiber + nutrition.protein)/2
     })
 
     updateLabel("#dietary_energy .data", data.dietary_energy.sum)
@@ -565,17 +576,16 @@ function updateMacronutrition(data) {
     updateLabel("#saturated_fat .data", data.saturated_fat.sum)
     updateLabel("#carbohydrates .data", data.carbohydrates.sum)
     updateLabel("#dietary_sugar .data", data.dietary_sugar.sum)
+    updateLabel("#fiber .data", data.fiber.sum)
     updateLabel("#protein .data", data.protein.sum)
 }
 
 function updateMicronutrition(data) {
     let dietary_cholesterol = data.dietary_cholesterol // ?
     let sodium = data.sodium // mineral
-    let fiber = data.fiber // partially inedible / not digested
 
     updateLabel("#dietary_cholesterol .data", data.dietary_cholesterol.sum)
     updateLabel("#sodium .data", data.sodium.sum)
-    updateLabel("#fiber .data", data.fiber.sum)
 }
 
 function updateRespiration(data) {
