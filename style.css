@@ -123,6 +123,9 @@ hr {
     align-items: end;
     display: flex;
     flex-direction: column;
+    margin-left: auto;
+    margin-top: auto;
+    margin-bottom: auto;
 }
 
 .label {
@@ -212,6 +215,10 @@ hr {
 
 #micronutrientContainer .data {
     width: 5ch;
+}
+
+#micronutrientContainer {
+    flex-basis: 200px;
 }
 
 #respiratoryContainer .data {
