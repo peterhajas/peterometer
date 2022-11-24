@@ -30,8 +30,7 @@
     --tint2: #0e9594;
     --tint3: #127475;
 
-    --sidebarWidth: 360px;
-    --sidebarWidthWithPadding: 392px;
+    --sidebarWidth: 420px;
 }
 
 body {
@@ -49,6 +48,8 @@ body {
     position: absolute;
     top: 0;
     left: 0;
+    right: 0;
+    bottom: 0;
     z-index: -1;
 }
 
@@ -69,32 +70,31 @@ hr {
     flex: 0 0 100%;
     width: 100vw;
     height: 100vh;
+    overflow: hidden;
 }
 
 #leadingSidebar {
     background-color: var(--bg1);
-    position: fixed;
-    left: 0;
-    top: 0;
-    bottom: 0;
     width: var(--sidebarWidth);
+    max-width: var(--sidebarWidth);
     display: flex;
     flex-flow: column;
-    padding: 16px;
+    padding: 8px;
+    overflow: scroll;
 }
 
 #centerArea {
+    flex-grow: 1;
     display: flex;
     flex-basis: 100%;
     flex-flow: row;
     flex-wrap: wrap;
-    padding: 16px;
-    margin-left: var(--sidebarWidthWithPadding);
+    padding: 8px;
+    overflow: scroll;
 }
 
 #daysPicker {
     margin-top: auto;
-    margin-right: auto;
     flex-wrap: wrap;
     display: flex;
     flex-direction: row;
@@ -110,10 +110,10 @@ hr {
     text-align: right;
     display: inline;
     flex 1;
-    flex-basis: 90px;
+    flex-basis: 85px;
     aspect-ratio: 1/1;
     margin: 4px;
-    padding: 8px;
+    padding: 4px;
 }
 
 #heartContainer {
@@ -183,6 +183,7 @@ hr {
 }
 
 .ageIndicator .data {
+    width: 11ch;
     font-size: 2rem;
 }
 
@@ -333,7 +334,6 @@ hr {
 
     #centerArea {
         margin-left: 0px;
-        overflow: scroll;
     }
 }
 
