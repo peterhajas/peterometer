@@ -29,6 +29,9 @@
     --tint1: #82baa8;
     --tint2: #0e9594;
     --tint3: #127475;
+
+    --sidebarWidth: 360px;
+    --sidebarWidthWithPadding: 392px;
 }
 
 body {
@@ -69,14 +72,15 @@ hr {
 }
 
 #leadingSidebar {
+    background-color: var(--bg1);
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: var(--sidebarWidth);
     display: flex;
     flex-flow: column;
-    flex: 0 0 400px;
     padding: 16px;
-}
-
-#ageIndicator {
-    font-size: 2em;
 }
 
 #centerArea {
@@ -85,6 +89,7 @@ hr {
     flex-flow: row;
     flex-wrap: wrap;
     padding: 16px;
+    margin-left: var(--sidebarWidthWithPadding);
 }
 
 #daysPicker {
@@ -104,17 +109,15 @@ hr {
 .day {
     text-align: right;
     display: inline;
-    flex-basis: 0;
     flex 1;
+    flex-basis: 90px;
     aspect-ratio: 1/1;
-    min-width: 100px;
     margin: 4px;
     padding: 8px;
 }
 
 #heartContainer {
     flex-grow: 2;
-    display: flex;
     flex-direction: column;
     flex-basis: 500px;
 }
@@ -166,8 +169,21 @@ hr {
     padding: 8px;
     margin: 8px;
     flex-direction: row;
-    flex-grow: 1;
+    flex-grow: 2;
     display: flex;
+}
+
+.justData {
+    flex-grow: 1;
+}
+
+.ageIndicator {
+    align-items: end;
+    flex-flow: column;
+}
+
+.ageIndicator .data {
+    font-size: 2rem;
 }
 
 #heart_rate, #heart_rate_variability {
@@ -181,8 +197,6 @@ hr {
 
 #activityContainer {
     flex-basis: 300px;
-    display: flex;
-    flex-direction: row;
 }
 
 #activityContainer .graph {
@@ -279,6 +293,47 @@ hr {
     }
 }
 
+@media (max-width: 1000px) {
+    .metricView {
+        flex-direction: column;
+    }
+
+    .dataNode {
+        align-content: center;
+        align-items: center;
+        display: flex;
+        flex-direction: column;
+        flex-flow: column;
+        align-content: end;
+        align-items: end;
+    }
+
+    .label {
+        text-align: right;
+    }
+}
+
 @media (max-width: 700px) {
+    #root {
+        flex-flow: column-reverse;
+    }
+
+    #heart_rate, #heart_rate_variability {
+        flex-direction: column;
+    }
+
+    #leadingSidebar {
+        position: unset;
+        left: unset;
+        right: unset;
+        top: unset;
+        bottom: unset;
+        width: 100%;
+    }
+
+    #centerArea {
+        margin-left: 0px;
+        overflow: scroll;
+    }
 }
 
