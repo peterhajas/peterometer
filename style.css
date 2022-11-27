@@ -117,10 +117,13 @@ hr {
     padding: 4px;
 }
 
-#heartContainer {
+#heartContainer .metricView {
     flex-grow: 2;
-    flex-direction: column;
     flex-basis: 500px;
+}
+
+#heartContainer .dataDisplay {
+    flex-direction: column;
 }
 
 .verticalStack {
@@ -168,11 +171,21 @@ hr {
 }
 
 .metricView {
+    flex-direction: column;
+    flex-grow: 2;
+}
+
+.dataDisplay {
     padding: 8px;
     margin: 8px;
     flex-direction: row;
-    flex-grow: 2;
+    flex-basis: max-content;
     display: flex;
+}
+
+.metricView h2 {
+    display: inline;
+    margin-bottom: 10px;
 }
 
 .justData {
@@ -297,7 +310,7 @@ hr {
 }
 
 @media (max-width: 1000px) {
-    .metricView {
+    .dataDisplay {
         flex-direction: column;
     }
 
