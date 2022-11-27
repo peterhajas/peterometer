@@ -370,7 +370,6 @@ function updateActivity(data) {
         let clampedArc = Math.max(0, Math.min(arc, Math.PI * 2))
         let geo = new THREE.TorusGeometry(activityRadius - (level * activitySpacing), activityTube, 8, 16 * (arc / Math.PI*2), clampedArc)
         let node = outlinedNode(geo, color)
-        node.rotation.z = -Math.PI/2
         node.userData.arc = 0
 
         return node
@@ -397,6 +396,7 @@ function updateActivity(data) {
         activityNode = new THREE.Group()
         activityNode.name = "activity"
         activityNode.userData.matchSelector = "#activityContainer .graph"
+        activityNode.rotation.z = -Math.PI/2
 
         let move = activityRing(1, 0, colorVariable("tint1"))
         let exercise = activityRing(1, 1, colorVariable("tint2"))
@@ -411,9 +411,9 @@ function updateActivity(data) {
         state.activityNode = activityNode
         container.add(activityNode)
 
-        pulseTween(move.rotation, { x: Math.PI  * 2}, 6000)
-        pulseTween(exercise.rotation, { y: Math.PI * 2 }, 6000)
-        pulseTween(stand.rotation, { z: Math.PI * 2 }, 6000)
+        pulseTween(move.rotation, { x: Math.PI * 4, y: Math.PI * 2}, 12000)
+        pulseTween(exercise.rotation, { y: Math.PI * 4, z: Math.PI * 2 }, 12000)
+        pulseTween(stand.rotation, { z: Math.PI * 4, x: Math.PI * 2 }, 12000)
     }
 
     var activity = { move: ringArc(activityNode.userData.move), exercise: ringArc(activityNode.userData.exercise), stand: ringArc(activityNode.userData.stand) }
