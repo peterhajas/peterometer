@@ -361,5 +361,24 @@ hr {
     #centerArea {
         margin-left: 0px;
     }
+
+    .verticalStack {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        margin-right: auto;
+    }
+
+    .label {
+        text-align: center;
+    }
+
+    .data {
+        text-align: center;
+    }
+
+    .dataNode {
+        align-items: center;
+    }
 }
 
