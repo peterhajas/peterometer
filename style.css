@@ -38,10 +38,11 @@ body {
     background-color: var(--bg1);
     color: var(--text);
     padding: 0;
-    margin: 0;
+    margin: auto;
     height: 100%;
     font-family: Orbitron;
     text-transform: uppercase;
+    overflow: hidden;
 }
 
 .renderer {
@@ -143,6 +144,7 @@ hr {
 .data {
     font-weight: bold;
     font-size: 3em;
+    width: 3ch;
     text-align: right;
 }
 
