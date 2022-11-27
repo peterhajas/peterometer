@@ -405,13 +405,21 @@ function updateActivity(data) {
     var activity = { move: ringArc(activityNode.userData.move), exercise: ringArc(activityNode.userData.exercise), stand: ringArc(activityNode.userData.stand) }
     var activityTarget = { move: moveArc, exercise: exerciseArc, stand: standArc }
 
-    updateNode(activity, activityTarget)
+    updateNode(activity, { move : moveArc })
     .onUpdate(() => {
         updateRing(0, activityNode.userData.move, activity.move)
+    })
+
+    updateNode(activity, { exercise : exerciseArc })
+    .onUpdate(() => {
         updateRing(1, activityNode.userData.exercise, activity.exercise)
+    })
+
+    updateNode(activity, { stand : standArc })
+    .onUpdate(() => {
         updateRing(2, activityNode.userData.stand, activity.stand)
     })
-    
+
     updateLabel("#activityContainer #active_energy .data", data.active_energy.sum)
     updateLabel("#activityContainer #apple_exercise_time .data", data.apple_exercise_time.sum)
     updateLabel("#activityContainer #apple_stand_hour .data", data.apple_stand_hour.sum)
