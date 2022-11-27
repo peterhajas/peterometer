@@ -142,6 +142,50 @@ function prettyUnit(unitName) {
     return out
 }
 
+function showTooltip(e, metricKind) {
+    let node = document.getElementById(metricKind)
+    let tooltipElement = document.getElementById("tooltip")
+    if (node != null) {
+        let unit = node.dataset.unit
+        let value = document.querySelector("#" + metricKind + " .data").innerHTML
+
+        let tooltip = metricKind + ": " + value + " " + unit
+        tooltipElement.innerHTML = tooltip
+        let tooltipRect = tooltipElement.getBoundingClientRect()
+
+        let padding = 5
+
+        var left = padding + e.clientX
+        var top = padding + e.clientY
+
+        let eventX = e.clientX
+        let eventY = e.clientY
+        let width = document.documentElement.scrollWidth
+        let height = document.documentElement.scrollHeight
+
+        if (eventX > width / 2) {
+            left -= tooltipRect.width + padding * 2
+        }
+        if (eventY > height / 2) {
+            top -= tooltipRect.height + padding * 2
+        }
+
+        let horizontal = Number(1 + left).toString() + "px"
+        let vertical = Number(1 + top).toString() + "px"
+
+        tooltipElement.style.left = horizontal
+        tooltipElement.style.top = vertical
+
+        console.log("SHOW " + value + " " + unit)
+    }
+    else {
+        document.getElementById("tooltip").innerHTML = ""
+        tooltipElement.style.left = "-1000px"
+        tooltipElement.style.top = "-1000px"
+        console.log("SHOW " + metricKind)
+    }
+}
+
 function layout() {
     let width = document.documentElement.scrollWidth
     let height = document.documentElement.scrollHeight
@@ -712,7 +756,17 @@ function updateTooltips(data) {
 
         let dataNode = document.querySelector(selector)
         if (dataNode != null) {
+            let dataTypeCopy = dataType
             dataNode.dataset.unit = unit
+            dataNode.onpointerenter = function(e) {
+                showTooltip(e, dataTypeCopy)
+            }
+            dataNode.onpointermove = function(e) {
+                showTooltip(e, dataTypeCopy)
+            }
+            dataNode.onpointerleave = function(e) {
+                showTooltip(e, null)
+            }
         }
     }
 }
@@ -879,6 +933,7 @@ function animate() {
 
 function setup() {
     updateBirthOffset()
+    showTooltip(null, null)
 }
 
 window.onload = function() {

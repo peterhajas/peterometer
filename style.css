@@ -296,6 +296,15 @@ hr {
     color: var(--bg3);
 }
 
+#tooltip {
+    position: fixed;
+    font-size: 2em;
+    top: 100px;
+    background: var(--bg3);
+    color: var(--tint3);
+    padding: 8px;
+}
+
 @keyframes selection {
     from {
         background-color: none;
