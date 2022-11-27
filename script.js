@@ -752,12 +752,21 @@ function updateMobility(data) {
 }
 
 function updateTooltips(data) {
-    for (var dataType of Object.keys(data)) {
+    var dataTypes = Object.keys(data)
+    dataTypes.push("sleep_analysis_in_bed")
+    dataTypes.push("sleep_analysis_asleep")
+    let sleepIndex = dataTypes.indexOf("sleep_analysis")
+    if (sleepIndex != -1) {
+        dataTypes.splice(sleepIndex, 1)
+    }
+    for (var dataType of dataTypes) {
         let selector = "#" + dataType
-        let unit = data[dataType].unit
-
         let dataNode = document.querySelector(selector)
         if (dataNode != null) {
+            var unit = dataNode.dataset.unit
+            if (unit == null) {
+                unit = data[dataType].unit
+            }
             let dataTypeCopy = dataType
             dataNode.dataset.unit = unit
             dataNode.onpointerenter = function(e) {
