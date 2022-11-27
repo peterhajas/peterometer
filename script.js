@@ -681,7 +681,6 @@ function updateSleep(data) {
 
     updateNode(sleep, target)
     .onUpdate(() => {
-        console.log(sleep)
         sleepNode.userData["inBed"].userData.value = sleep.inBed
         sleepNode.userData["asleep"].userData.value = sleep.asleep
         updateCylinderHeight(sleepNode, "inBed", sleep.inBed)
@@ -706,6 +705,18 @@ function updateMobility(data) {
     // walking_step_length
 }
 
+function updateTooltips(data) {
+    for (var dataType of Object.keys(data)) {
+        let selector = "#" + dataType
+        let unit = data[dataType].unit
+
+        let dataNode = document.querySelector(selector)
+        if (dataNode != null) {
+            dataNode.dataset.unit = unit
+        }
+    }
+}
+
 function applyDayData(data) {
     updateHeartRate(data)
     updateActivity(data)
@@ -715,6 +726,8 @@ function applyDayData(data) {
     updateRespiration(data)
     updateSleep(data)
     updateMobility(data)
+
+    updateTooltips(data)
 }
 
 function changeCurrentDate(day) {
