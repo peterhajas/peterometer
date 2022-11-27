@@ -76,6 +76,7 @@ hr {
 
 #leadingSidebar {
     background-color: var(--bg1);
+    min-width: var(--sidebarWidth);
     width: var(--sidebarWidth);
     max-width: var(--sidebarWidth);
     display: flex;
@@ -102,9 +103,11 @@ hr {
 }
 
 .day, .metricView {
-    border-width: 1px;
-    border: solid;
-    border-color: var(--bg2);
+    outline-width: 1px;
+    outline: solid;
+    outline-color: var(--bg2);
+    margin: 4px;
+    padding: 4px;
 }
 
 .day {
@@ -113,11 +116,9 @@ hr {
     flex 1;
     flex-basis: 85px;
     aspect-ratio: 1/1;
-    margin: 4px;
-    padding: 4px;
 }
 
-#heartContainer .metricView {
+#heartContainer {
     flex-grow: 2;
     flex-basis: 500px;
 }
@@ -193,6 +194,7 @@ hr {
 }
 
 .ageIndicator {
+    max-width: 100%;
     align-items: end;
     flex-flow: column;
 }
@@ -329,7 +331,7 @@ hr {
     }
 }
 
-@media (max-width: 700px) {
+@media (max-width: 800px) {
     #root {
         flex-flow: column-reverse;
     }
@@ -345,6 +347,11 @@ hr {
         top: unset;
         bottom: unset;
         width: 100%;
+        min-width: 100%;
+        max-width: 100%;
+        padding-left: 0px;
+        padding-right: 0px;
+        flex-grow: 3;
     }
 
     #centerArea {
