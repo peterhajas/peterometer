@@ -164,16 +164,23 @@ function layout() {
 }
 
 function updateLabel(selector, newValue) {
+    var showUnknown = false
     if (newValue == null || isNaN(newValue)) {
-        document.querySelector(selector).innerHTML = "?"
-        return
+        showUnknown = true
+        newValue = 0
     }
     let current = Number.parseFloat(document.querySelector(selector).innerHTML)
+    if (showUnknown && document.querySelector(selector).innerHTML == "?") { return }
     var target = {"target" : current }
     let tween = new TWEEN.Tween(target)
     .to({target: newValue}, 200)
     .onUpdate(() => {
         document.querySelector(selector).innerHTML = Number(target.target).toFixed(1)
+    })
+    .onComplete(() => {
+        if (showUnknown) {
+            document.querySelector(selector).innerHTML = "?"
+        }
     })
     .start()
 }
