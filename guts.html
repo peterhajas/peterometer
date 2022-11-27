@@ -34,7 +34,7 @@
                 <div class="metricView" id="heartContainer">
                     <h2>Cardiac</h2>
                     <div class="dataDisplay">
-                        <div data-name="Heart Rate" id="heart_rate">
+                        <div id="heart_rate">
                             <div class="graph">
                             </div>
                             <div class="dataNode">
@@ -42,7 +42,7 @@
                                 <span class="data">00</span>
                             </div>
                         </div>
-                        <div data-name="Heart Rate Variability" id="heart_rate_variability">
+                        <div id="heart_rate_variability">
                             <div class="graph">
                             </div>
                             <div class="dataNode">
@@ -57,15 +57,15 @@
                     <div class="dataDisplay">
                         <div class="graph"></div>
                         <div class="verticalStack">
-                            <div id="active_energy" class="dataNode">
+                            <div data-name="Move" id="active_energy" class="dataNode">
                                 <span class="tint1 label">MOVE</span>
                                 <span class="data">00</span>
                             </div>
-                            <div id="apple_exercise_time" class="dataNode">
+                            <div data-name="Exercise" id="apple_exercise_time" class="dataNode">
                                 <span class="tint2 label">EXER</span>
                                 <span class="data">00</span>
                             </div>
-                            <div id="apple_stand_hour" class="dataNode">
+                            <div data-name="Stand Hour" id="apple_stand_hour" class="dataNode">
                                 <span class="tint3 label">STND</span>
                                 <span class="data">00</span>
                             </div>
@@ -91,7 +91,7 @@
                     <h2>Hydration</h2>
                     <div class="dataDisplay">
                         <div class="graph"></div>
-                        <div id="dietary_water" class="dataNode">
+                        <div data-name="Water" id="dietary_water" class="dataNode">
                             <span class="tint1 label">H20</span>
                             <span class="data">00</span>
                         </div>
@@ -153,11 +153,11 @@
                     <div class="dataDisplay">
                         <div class="graph"></div>
                         <div class="verticalStack">
-                            <div id="sleep_analysis_in_bed" class="dataNode">
+                            <div data-name="In Bed" data-unit="Hours" id="sleep_analysis_in_bed" class="dataNode">
                                 <span class="tint1 label">BED</span>
                                 <span class="data">00</span>
                             </div>
-                            <div id="sleep_analysis_asleep" class="dataNode">
+                            <div data-name="Asleep" data-unit="Hours" id="sleep_analysis_asleep" class="dataNode">
                                 <span class="tint2 label">SLP</span>
                                 <span class="data">00</span>
                             </div>

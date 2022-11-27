@@ -148,8 +148,13 @@ function showTooltip(e, metricKind) {
     if (node != null) {
         let unit = node.dataset.unit
         let value = document.querySelector("#" + metricKind + " .data").innerHTML
+        var name = node.dataset.name
+        if (name == null) {
+            name = metricKind
+        }
+        name = name.replaceAll("_", " ")
 
-        let tooltip = metricKind + ": " + value + " " + unit
+        let tooltip = name + " : " + value + " " + unit
         tooltipElement.innerHTML = tooltip
         let tooltipRect = tooltipElement.getBoundingClientRect()
 
@@ -175,14 +180,11 @@ function showTooltip(e, metricKind) {
 
         tooltipElement.style.left = horizontal
         tooltipElement.style.top = vertical
-
-        console.log("SHOW " + value + " " + unit)
     }
     else {
         document.getElementById("tooltip").innerHTML = ""
         tooltipElement.style.left = "-1000px"
         tooltipElement.style.top = "-1000px"
-        console.log("SHOW " + metricKind)
     }
 }
 
