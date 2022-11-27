@@ -86,7 +86,6 @@ hr {
 }
 
 #centerArea {
-    flex-grow: 1;
     display: flex;
     flex-basis: 100%;
     flex-flow: row;
@@ -345,17 +344,15 @@ hr {
     }
 
     #leadingSidebar {
-        position: unset;
-        left: unset;
-        right: unset;
-        top: unset;
-        bottom: unset;
-        width: 100%;
         min-width: 100%;
         max-width: 100%;
-        padding-left: 0px;
-        padding-right: 0px;
-        flex-grow: 3;
+        flex-basis: auto;
+        flex-grow: 1;
+        overflow: visible;
+
+        outline-width: 1px;
+        outline: solid;
+        outline-color: var(--bg2);
     }
 
     #centerArea {
@@ -379,6 +376,11 @@ hr {
 
     .dataNode {
         align-items: center;
+    }
+
+    .ageIndicator {
+        margin-right: 8px;
+        align-items: end;
     }
 }
 
