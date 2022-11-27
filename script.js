@@ -1,4 +1,3 @@
-import * as DataTypes from './data_types.js'
 import * as ThreeJSMatching from './threejs_matching.js'
 
 // Constants
@@ -167,6 +166,13 @@ function defaultTween(from, to) {
     return new TWEEN.Tween(from)
     .to(to, 600)
     .easing(TWEEN.Easing.Cubic.InOut)
+}
+
+function pulseTween(from, to, duration) {
+    return new TWEEN.Tween(from)
+    .to(to, duration)
+    .repeat(Infinity)
+    .start()
 }
 
 function updateLabel(selector, newValue) {
@@ -404,6 +410,10 @@ function updateActivity(data) {
 
         state.activityNode = activityNode
         container.add(activityNode)
+
+        pulseTween(move.rotation, { x: Math.PI  * 2}, 6000)
+        pulseTween(exercise.rotation, { y: Math.PI * 2 }, 6000)
+        pulseTween(stand.rotation, { z: Math.PI * 2 }, 6000)
     }
 
     var activity = { move: ringArc(activityNode.userData.move), exercise: ringArc(activityNode.userData.exercise), stand: ringArc(activityNode.userData.stand) }
@@ -445,6 +455,8 @@ function updateHydration(data) {
 
         state.hydrationNode = hydrationNode
         container.add(hydrationNode)
+
+        pulseTween(current.rotation, { y: Math.PI }, 6000)
     }
 
     var hydration = { level : hydrationNode.userData.current.children[0].geometry.parameters.height }
@@ -492,7 +504,7 @@ function updateMacronutrition(data) {
         innerContainer.rotation.set(0, 0, Math.PI * 1.5)
         macronutrientNode.add(innerContainer)
 
-        let goalRadius = 200
+        let goalRadius = 60
         let macroRadius = 160
         let littleRadius = 100
         let littlerRadius = 80
@@ -534,6 +546,13 @@ function updateMacronutrition(data) {
         innerContainer.add(calories)
         macronutrientNode.userData.calories = calories
         calories.visible = false
+
+        pulseTween(fat.rotation, { y: Math.PI }, 12000)
+        pulseTween(saturatedFat.rotation, { y: -Math.PI }, 10000)
+        pulseTween(carb.rotation, { y: Math.PI }, 18000)
+        pulseTween(sugar.rotation, { y: -Math.PI }, 16000)
+        pulseTween(fiber.rotation, { y: -Math.PI }, 14000)
+        pulseTween(protein.rotation, { y: Math.PI }, 10000)
 
         state.macronutrientNode = macronutrientNode
         container.add(macronutrientNode)
@@ -646,6 +665,9 @@ function updateSleep(data) {
 
         state.sleepNode = sleepNode
         container.add(sleepNode)
+
+        pulseTween(inBed.rotation, { y: Math.PI }, 6000)
+        pulseTween(asleep.rotation, { y: -Math.PI }, 4000)
     }
 
     var sleep = {
@@ -843,7 +865,6 @@ function animate() {
 }
 
 function setup() {
-    DataTypes.install(container)
     updateBirthOffset()
 }
 
