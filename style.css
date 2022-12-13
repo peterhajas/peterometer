@@ -13,22 +13,14 @@
 }
 
 :root {
-    --primary-bg:  #000D2A;
-    --secondary-bg: #060040;
-    --highlight: #5c29c2ff;
-    --highlight-strong: #c82efbff;
-    --warn: #511b1bff;
-    --primary-text: white;
-    --secondary-text: rgb(200,200,200);
-
-    --bg1: #562c2c;
-    --bg2: #f2542d;
-    --bg3: rgb(244, 154, 116);
-    --selected: rgb(244, 154, 116, 0.4);
-    --text: rgb(245, 223, 187);
-    --tint1: #82baa8;
-    --tint2: #0e9594;
-    --tint3: #127475;
+    --bg1: #31393c;
+    --bg2: #29589e;
+    --bg3: #2176FF;
+    --selected: #33a1fdb5;
+    --text: #98b69f;
+    --tint1: #fdca40;
+    --tint2: #fab132;
+    --tint3: #f79824;
 
     --sidebarWidth: 420px;
 }
