@@ -416,7 +416,7 @@ function updateActivity(data) {
         let clampedArc = Math.max(0, Math.min(arc, Math.PI * 2))
         let geo = new THREE.TorusGeometry(activityRadius - (level * activitySpacing), activityTube, 8, 16 * (arc / Math.PI*2), clampedArc)
         let node = outlinedNode(geo, color)
-        node.userData.arc = 0
+        node.userData.arc = arc
 
         return node
     }
