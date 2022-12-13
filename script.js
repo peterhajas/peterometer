@@ -673,8 +673,17 @@ function updateMicronutrition(data) {
 }
 
 function updateRespiration(data) {
-    updateLabel("#blood_oxygen_saturation .data", data.blood_oxygen_saturation.average)
-    updateLabel("#respiratory_rate .data", data.respiratory_rate.average)
+    var bloodOxygenSaturation = null
+    var respiratoryRate = null
+
+    if (data.blood_oxygen_saturation != null) {
+        bloodOxygenSaturation = data.blood_oxygen_saturation.average
+    }
+    if (data.respiratory_rate != null) {
+        respiratoryRate = data.respiratory_rate.average
+    }
+    updateLabel("#blood_oxygen_saturation .data", bloodOxygenSaturation)
+    updateLabel("#respiratory_rate .data", respiratoryRate)
 }
 
 function updateSleep(data) {
