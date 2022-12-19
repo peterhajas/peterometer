@@ -50,6 +50,10 @@ h1, h2, h3, h4, h5, h6 {
     margin: 0px;
 }
 
+a {
+    color: var(--tint1);
+}
+
 hr {
     margin: 0px;
     border: none;
@@ -75,6 +79,11 @@ hr {
     flex-flow: column;
     padding: 8px;
     overflow: scroll;
+}
+
+#infoButton {
+    width: 100%;
+    text-align: right;
 }
 
 #centerArea {
